@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<title>Dungeon Finished</title>
+		<!-- JS -->
+		<?php echo $GLOBALS['general_js']; ?>
+		<?php echo $GLOBALS['this_js']; ?>
+		<!-- CSS -->
+		<?php echo $GLOBALS['this_css']; ?>
+	</head>
+	<body leftmargin="0" rightmargin="0" bottommargin="0" topmargin="0" bgcolor="#1D1C19">
+		<div class="modalmessage">
+			<br>
+			<div class="title">Dungeon completed</div>
+			<div class="message">
+				<br>
+				<br>
+				You have proven to be wiser than your oponents.<br>
+				<br>
+				Your total reward was:<br>
+				<br>
+				<br>
+				<div class="row">
+					<div class="item">XP:</div>
+					<div class="value"><?php echo $tot_xp; ?></div>
+				</div>
+				<br />
+				<div class="row">
+					<div class="item">Item:</div>
+					<div class="value">items name</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

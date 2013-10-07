@@ -1,0 +1,18 @@
+.main_banner {
+	margin-left:	auto;
+	margin-right:	auto;
+	width:			625px;
+	text-align:	 	center;
+}
+
+.main_title_img {
+	float:		right;
+	margin-top:	20px;;
+}
+
+.loginform {
+	margin-left:	auto;
+	margin-right:	auto;
+	width:			400px;
+	text-align:		center;
+}

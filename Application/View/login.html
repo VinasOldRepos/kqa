@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<header>
+		<title>KQA</title>
+		<!-- JS -->
+		<?php echo $GLOBALS['general_js']; ?>
+		<?php echo $GLOBALS['this_js']; ?>
+		<!-- CSS -->
+		<?php echo $GLOBALS['general_css']; ?>
+		<?php echo $GLOBALS['this_css']; ?>
+	</header>
+	<body class="body" topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0">
+		<div class="container" align="center">
+			<div class="main_banner">
+				<img src="/kqa/Application/View/img/logo_02.png" width="680" height="276" />
+			</div>
+			<br />
+			<div class="loginform" align="center">
+				<fieldset>
+					<form class="form" style="width: 350px;">
+						<label for="email">e-mail:</label> <input type="text" name="email" id="email" maxlength="100" class="main_text_input" /> <br />
+						<label for="password">password:</label> <input type="password" name="password" id="password" maxlength="15" class="main_text_input" /> <br />
+						<br />
+						<input type="image" class="submitme" src="/kqa/Application/View/img/bt_ok.png" width="41" height="41" border="0" />
+					</form>
+				</fieldset>
+			</div>
+			<br /><br />
+			<div id="test_result"></div>
+		</div>
+	</body>
+</html>

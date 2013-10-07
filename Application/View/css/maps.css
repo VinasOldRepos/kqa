@@ -1,0 +1,326 @@
+.formInsertCourse {
+	width:			400px;
+	position:		absolute;
+}
+
+.bt_cancel {
+	float:	left;
+}
+
+.bt_ok {
+	float:	right;
+}
+
+.form_buttons {
+	margin-left:	230px;
+	margin-top:		20px;
+	width:			110px;
+}
+
+.map_area {
+	/* margin-left:	130px; */
+	text-align:		center;
+}
+
+.map_row {
+	width:	382px;
+	height:	33px;
+}
+
+.map_tile {
+	width:			32px;
+	height:			32px;
+	margin-right:	1px;
+}
+
+.world_map_tile:hover {
+	cursor:	pointer;
+}
+
+.content_map {
+	width:		850px;
+	position:	absolute;
+	margin-top:	5px;
+}
+
+.map_interaction {
+	position:			absolute;
+	background-color:	#666;
+	margin-left:		520px;
+	margin-top:			0px;
+	width:				400px;
+	text-align:			center;
+}
+
+.area_interaction {
+	position:			absolute;
+	background-color:	#666;
+	margin-left:		520px;
+	margin-top:			0px;
+	width:				400px;
+	text-align:			center;
+}
+
+.local_map_tile {
+	float:	left;
+	margin:	0.5px;
+}
+
+.encounter_map_tile {
+	float:	left;
+	margin:	0.5px;
+}
+
+.tile_options {
+	width:			250px;
+	text-align:		left;
+	margin-left:	50px;
+}
+
+.tile_opt:hover {
+	cursor:				pointer;
+	text-decoration:	underline;
+}
+.opt_details {
+	display:	none;
+}
+
+.result_id {
+	width:	40px;
+}
+
+.result_iconname {
+	width:	200px;
+}
+
+.result_monsterid {
+	width:	30px;
+	float:	left;
+}
+
+.result_monstername {
+	width:	250px;
+}
+
+.result_icon {
+	width:	30px;
+}
+
+.newDungeon:hover {
+	cursor: 			pointer;
+	text-decoration:	underline;
+}
+
+.tiles_return_row {
+	position:			absolute;
+	border-style:		solid;
+	border-color:		#000;
+	border-width:		1px;
+	margin-bottom:		2px;
+	background-color:	#FFF;
+	color:				#7A7A7A;
+}
+
+.tiles_return_row:hover {
+	cursor:				pointer;
+	background-color:	#7A7A7A;
+	color:				#FFF;
+}
+
+.dtl_tiles_return_row {
+	position:			absolute;
+	border-style:		solid;
+	border-color:		#000;
+	border-width:		1px;
+	margin-bottom:		2px;
+	background-color:	#FFF;
+	color:				#7A7A7A;
+}
+
+.dtl_tiles_return_row:hover {
+	cursor:				pointer;
+	background-color:	#7A7A7A;
+	color:				#FFF;
+}
+
+.area_order_row {
+	position:			absolute;
+	border-style:		solid;
+	border-color:		#000;
+	border-width:		1px;
+	margin-bottom:		2px;
+	margin-left:		10px;
+	background-color:	#FFF;
+	color:				#7A7A7A;
+}
+
+.area_order_row:hover {
+	cursor:				pointer;
+	background-color:	#7A7A7A;
+	color:				#FFF;
+}
+
+.encounterbkg_tiles_return_row {
+	position:			absolute;
+	border-style:		solid;
+	border-color:		#000;
+	border-width:		1px;
+	margin-bottom:		2px;
+	background-color:	#FFF;
+	color:				#7A7A7A;
+}
+
+.encounterbkg_tiles_return_row:hover {
+	cursor:				pointer;
+	background-color:	#7A7A7A;
+	color:				#FFF;
+}
+
+.encounterdtl_tiles_return_row {
+	position:			absolute;
+	border-style:		solid;
+	border-color:		#000;
+	border-width:		1px;
+	margin-bottom:		2px;
+	background-color:	#FFF;
+	color:				#7A7A7A;
+}
+
+.encounterdtl_tiles_return_row:hover {
+	cursor:				pointer;
+	background-color:	#7A7A7A;
+	color:				#FFF;
+}
+
+.monsters_return_row {
+	position:			absolute;
+	border-style:		solid;
+	border-color:		#000;
+	border-width:		1px;
+	margin-bottom:		2px;
+	background-color:	#FFF;
+	color:				#7A7A7A;
+}
+
+.monsters_return_row:hover {
+	cursor:				pointer;
+	background-color:	#7A7A7A;
+	color:				#FFF;
+}
+
+.map_name {
+	float:			left;
+	margin-top:		100px;
+	margin-left:	160px;
+}
+
+.back_button {
+	float:			left;
+	position:		absolute;
+	margin-top:		200px;
+	margin-left:	80px;
+}
+
+.delete_map {
+	position:		absolute;
+	margin-left:	100px;
+	margin-top:		-20px;
+}
+
+.delete_map:hover {
+	text-decoration:	underline;
+	cursor:				pointer;
+}
+
+.details_body {
+	margin:				0px;
+	border:				0px;
+	background-color:	#FFFFFF;
+	text-align:	 		center;
+	font-family:		Arial, Helvetica, sans-serif;
+	font-size:			12px;
+	color:				#FFF;
+}
+
+.monster_list {
+	width:			600px;
+	margin-left:	auto;
+	margin-right:	auto;
+}
+
+.details_result_box {
+	margin-left:	10px;
+}
+
+.remove_monster {
+	font-family:		Arial, Helvetica, sans-serif;
+	font-size:			12px;
+	color:				#FFF;
+	text-decoration:	none;
+}
+
+.remove_monster:hover {
+	cursor:				pointer;
+	font-weight:		bold;
+	color:				#F00;
+}
+
+.go_left {
+	float:			left;
+	position:		absolute;
+	margin-top:		150px;
+	margin-left:	-7px;
+}
+
+.go_right {
+	float:			left;
+	position:		absolute;
+	margin-top:		150px;
+	margin-left:	380px;
+}
+
+.go_down {
+	position:		absolute;
+	margin-top:		360px;
+	margin-left:	175px;
+}
+
+.go_up {
+	width:	50px;
+	margin-bottom:	10px;
+	margin-left:	150px;
+}
+
+.go {
+	color: #FFF;
+}
+
+.go:hover {
+	cursor: pointer;
+}
+
+.area_order {
+	background-color:	#fff;
+}
+
+.map_name_edit {
+	width: 			400px;
+	margin-top:		100px;
+	margin-left:	80px;
+	position:		absolute;
+}
+
+.tile_info {
+	position:			absolute;
+	width:				100px;
+	height:				70px;
+	max-width:			100px;
+	max-height:			70px;
+	padding:			5px;
+	text-align: 		center;
+	font-family:		Arial, Helvetica, sans-serif;
+	font-size:			10px;
+	color:				#AC8F0D;
+	background-color:	#1D1C19;
+	border:				2px solid #ac8f0d;
+}

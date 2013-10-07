@@ -1,0 +1,173 @@
+@font-face {
+  font-family: GameFont; /* Edit this line */
+  src: url('/kqa/Application/View/fonts/BOOKOSB.TTF'); /* Edit this line */
+}
+
+body						{background:url('/kqa/Application/View/img/background.jpg') no-repeat scroll top center #000;}
+
+#main						{max-width:1400px;min-height:900px;margin:auto;}
+
+#header						{width:1200px;max-width:1400px;max-height:170px;margin:auto;}
+#header .logo				{margin-top: 10px; min-width:690px;min-height:150px;float:left;}
+#header .logo h1				{width:590px; height:150px; margin:25px 0 0 60px; padding:0; background:url('/kqa/Application/View/img/logo.png') no-repeat; text-indent:-9999px;display:block;overflow:hidden;}
+#header .advertising			{min-width:510px;min-height:170px;}
+
+.corra_logo	{
+	position: 		absolute;
+	margin-top:		28px;
+	margin-left:	850px;
+}
+
+#top 									{width:100%;height:245px;margin:-85px auto auto;background:url('/kqa/Application/View/img/background-top.png') no-repeat scroll top center transparent; display:inline-block; overflow:hidden; position:relative; index:0;}
+#top .charinfo							{width:1200px;max-width:1400px;height:35px;margin:95px auto auto;}
+#top .charinfo .goldcoins				{width:200px;height:35px;float:left;background:url('/kqa/Application/View/img/img-goldcoins.png') no-repeat scroll 45px -5px transparent;padding:5px 0 0 90px;font: 16px 'GameFont', Arial, Verdana;color:#fecb00;}
+#top .charinfo .goldcoins #gold			{float: right; width: 80px;}
+#top .charinfo .charname				{width:643px;height:35px;float:left;text-align:center;font: 20px 'GameFont', Arial, Verdana; color:#fecb00;}
+#top .charinfo .tokens					{text-align:right;margin-left:16px;width:220px;height:35px;float:left;background:url('/kqa/Application/View/img/img-token.png') no-repeat scroll 170px -8px transparent;padding:5px 0 0 0px; font: 16px 'GameFont', Arial, Verdana; color:#fecb00;}
+#top .charinfo .tokens #tokens			{float: right; margin-right:50px;margin-left:8px;max-width: 80px;}
+#top .otherinfo							{width:1200px;max-width:1400;height:97px;margin:auto;}
+#top .otherinfo .turn					{width:190px;height:95px;float:left;background:url('/kqa/Application/View/img/img-left-button-dock.png') no-repeat 20px 0px;font: 20px 'GameFont', Arial, Verdana; color:#000; padding: 70px 0 0 270px;}
+#top .otherinfo .dungeonname			{width:280px;height:95px;float:left;text-align:center;background:url('/kqa/Application/View/img/img-infobox.png') no-repeat top center;}
+#top .otherinfo .dungeonname .name		{width:280px;text-align:center;font: 20px 'GameFont', Arial, Verdana; color:#fecb00;padding:10px 0 0 0;}
+#top .otherinfo .dungeonname .questions	{width:280px;text-align:left;font: 9px Arial, Verdana; color:#fff;padding:20px 0 0 15px;}
+#top .otherinfo .dungeonname .level		{width:140px;text-align:center;font: 12px Arial, Verdana; color:#fff;padding:6px 0 0 0px;float:left;}
+#top .otherinfo .dungeonname .room		{width:140px;text-align:center;font: 12px Arial, Verdana; color:#fff;padding:6px 0 0 0px;float:left;}
+#top .otherinfo .time					{width:400px;height:95px;float:left;background:url('/kqa/Application/View/img/img-right-button-dock.png') no-repeat 40px 0px;font: 20px 'GameFont', Arial, Verdana; color:#000; padding: 70px 0 0 50px;}
+
+
+#content 						{width:1135px;min-height:400px;clear:both;margin:auto;}
+#content .left					{width:240px;min-height:400px;float:left;}
+#content .left	.tabs 			{width:75px;height:25px;border:1px solid #ac8f0d;background-color:#1d1c19;float:left;text-align:center;font: 10px 'GameFont', Arial, Verdana; color:#fecb00;padding:7px 0 0 0;cursor:pointer;}
+#content .left	.tabs:hover 		{border-top:1px solid #ac8f0d;border-left:1px solid #ac8f0d;border-right:1px solid #ac8f0d;border-bottom:1px solid #1d1c19;}
+#content .left	.boxleft 		{width:210px;height:360px;border:1px solid #ac8f0d;background-color:#1d1c19;color:#fff; font:12px arial;padding:10px;}
+#content .center					{width:670px;min-height:400px;float:left;}
+#content .center h3				{float:left;font: 16px 'GameFont', Arial, Verdana; color:#fecb00;margin:0;padding:0 0 0 15px;z-index:3;position:relative;}
+#content .center .box			{margin-bottom:10px;float:left;}
+#content .center .question		{width:630px;height:25px;float:left; z-index:2;margin-top:-7px;padding:15px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
+#content .center .answers		{width:630px;height:80px;float:left; z-index:2;margin-top:-7px;padding:10px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
+#content .center .response		{width:225px;height:70px;float:left; z-index:2;padding:5px;color:#000; font:14px 'GameFont', arial; overflow:hidden;}
+#content .center .report			{width:380px;height:40px;float:left; z-index:2;margin-top:0px;padding:15px;color:#fff; font:12px arial; overflow:hidden;}
+#content .center .combat			{width:630px;height:70px;float:left; z-index:2;margin-top:-7px;padding:15px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
+#content .right					{width:225px;min-height:400px;float:left;}
+#content .right	.boxright 		{width:200px;height:175px;border:1px solid #ac8f0d;background-color:#1d1c19;color:#fff; font:12px arial;padding:10px;}
+
+#bottom 							{width:1200px;max-width:1400px;min-height:200px;clear:both;margin:auto;}
+#bottom .left					{width:590px;float:left;}
+#bottom .left .boxleft			{width:560px;height:170px;border:1px solid #ac8f0d;background-color:#1d1c19;color:#fff; font:12px arial;padding:10px;margin-top:10px;}
+#bottom .center					{width:310px;float:left;}
+#bottom .center	.boxcenter		{width:280px;height:170px;border:1px solid #ac8f0d;background-color:#1d1c19;color:#fff; font:12px arial;padding:10px;margin-top:10px;}
+#bottom .right					{width:300px;float:left;}
+#bottom .right	.boxright 		{width:256px;height:170px;border:1px solid #ac8f0d;background-color:#1d1c19;color:#fff; font:12px arial;padding:10px;margin-top:10px;}
+
+#footer							{margin:10px auto auto;background-color:#1d1c19;color:#fff; font:12px arial; text-align:center;}
+
+.alpha60 {
+	/* Fallback for web browsers that doesn't support RGBa */
+	background: rgb(0, 0, 0);
+	/* RGBa with 0.6 opacity */
+	background: rgba(0, 0, 0, 0.6);
+	/* For IE 5.5 - 7*/
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+	/* For IE 8*/
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+}
+
+.tex-stroke {   text-shadow: -2px 0 #402a13, 0 2px #402a13, 2px 0 #402a13, 0 -2px #402a13;}
+
+.not_shown {
+	display:	none;
+}
+
+.partial_link {
+	font: 				16px 'GameFont', Arial, Verdana;
+	color:				#000;
+	text-decoration:	none;
+}
+
+.partial_link:hover {
+	cursor:				pointer;
+	text-decoration:	underline;
+}
+
+.form_new_char {
+	width:	504px;
+	margin-left:	auto;
+	margin-right:	auto;
+}
+
+#new_char_submit:hover {
+	cursor: pointer;
+}
+
+.char_name:hover {
+	cursor:				pointer;
+	text-decoration:	underline;
+}
+
+#box_run_round {
+	margin-left:	53px;
+	margin-top:		30px;
+}
+
+#box_gotwrong {
+	margin-left:	53px;
+	margin-top:		30px;
+}
+
+#box_run_round:hover {
+	cursor:	pointer;
+}
+
+#box_gotwrong:hover {
+	cursor:	pointer;
+}
+
+.monster_row {
+	float:			left;
+	width:			196px;
+	padding-top:	2px;
+	pading-bottom:	2px;
+}
+
+.monsters_tit {
+	margin-left:	53px;
+	color:			#FECB00;
+	float:			left;
+	font:			16px 'GameFont',Arial,Verdana;
+}
+
+.monster_tit_name {
+	margin-left:	10px;
+	color:			#FECB00;
+	float:			left;
+	font:			14px 'GameFont',Arial,Verdana;
+}
+
+.monster_tit_hp {
+	margin-right:	13px;
+	color:			#FECB00;
+	float:			right;
+	font:			14px 'GameFont',Arial,Verdana;
+}
+
+.monster_name {
+	margin-left:	5px;
+	float:			left;
+}
+
+.monster_hits {
+	position:		absolute;
+	margin-left:	150px;
+	float:			left;
+}
+
+.char_detail {
+	margin-left:	5px;
+	float:			left;
+}
+
+.char_info {
+	position:		absolute;
+	margin-left:	100px;
+	float:			left;
+}
