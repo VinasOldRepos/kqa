@@ -1,0 +1,3 @@
+					<div class="goldcoins">GOLD COINS: <div id="gold">9999999</div></div>
+					<div class="charname tex-stroke">CHARACTER NAME</div>
+					<div class="tokens">TOKENS: <div id="tokens">9999999</div></div>

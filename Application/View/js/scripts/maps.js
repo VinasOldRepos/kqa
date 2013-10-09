@@ -95,6 +95,7 @@ $('document').ready(function() {
 		} else if ($parent_areatype == 'encounter') {
 			$url			= '/kqa/Maps/loadEncounterArea/';
 		} else {
+			$("#level").html('');
 			$url			= '/kqa/Maps/loadWorldMap/';
 		}
 		if ($id_areamap) {

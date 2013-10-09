@@ -83,11 +83,43 @@
 		}
 
 		/*
-		Get bag combat contents Characters by Char - getCombatBagContentsByCharId($id)
-			@param integer	- user Id
+		Get all inventory contents by Char - getAllInventoryContentsByCharId($id)
+			@param integer	- char Id
 			@return format	- Mixed array
 		*/
-		public function getCombatBagContentsByCharId($id = false) {
+		public function getAllInventoryContentsByCharId($id = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			// Query set up
+			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}'") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get all bag contents by Char - getAllBagContentsByCharId($id)
+			@param integer	- char Id
+			@return format	- Mixed array
+		*/
+		public function getAllBagContentsByCharId($id = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			// Query set up
+			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}' AND boo_bag = 1") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get inventory combat contents by Char - getCombatInventoryContentsByCharId($id)
+			@param integer	- char Id
+			@return format	- Mixed array
+		*/
+		public function getCombatInventoryContentsByCharId($id = false) {
 			// Database Connection
 			$db			= $GLOBALS['db'];
 			// Initialize variables
@@ -99,8 +131,40 @@
 		}
 
 		/*
-		Get bag non-combat contents Characters by Char - getNonCombatBagContentsByCharId($id)
-			@param integer	- user Id
+		Get bag combat contents by Char - getCombatBagContentsByCharId($id)
+			@param integer	- char Id
+			@return format	- Mixed array
+		*/
+		public function getCombatBagContentsByCharId($id = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			// Query set up
+			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}' AND boo_bag = 1 AND boo_combat = 1") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get inventory non-combat contents by Char - getNonCombatInventoryContentsByCharId($id)
+			@param integer	- char Id
+			@return format	- Mixed array
+		*/
+		public function getNonCombatInventoryContentsByCharId($id = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			// Query set up
+			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory', 'id, id_item', "id_character = '{$id}' AND AND boo_combat = 0") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get bag non-combat contents by Char - getNonCombatBagContentsByCharId($id)
+			@param integer	- char Id
 			@return format	- Mixed array
 		*/
 		public function getNonCombatBagContentsByCharId($id = false) {
@@ -109,7 +173,7 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory', 'id, id_item', "id_character = '{$id}' AND boo_combat = 0") : false;
+			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory', 'id, id_item', "id_character = '{$id}' AND boo_bag = 1 AND boo_combat = 0") : false;
 			// Return
 			return $return;
 		}

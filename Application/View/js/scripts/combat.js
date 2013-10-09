@@ -8,53 +8,59 @@ $('document').ready(function() {
 		$monsters_left	= $("#monsters_left").val();
 		$target			= $("#target").val();
 		$turn			= $("#turn").val();
-		// If tile links to another floor
-		if ($target) {
-			// Load Floor
-			alert('go to the next floor');
-		// If its a new combat
-		} else {
-			if (($id_areamap) && ($step)) {
-				$.post('/kqa/Combat/loadCombat/', {
-				}, function($return) {
-					if ($return) {
-						$("#turn").html("Turn: Player");
-						$("#current_monster").val('1');
-						contentShowData("#center", $return.trim());
-						loadQuestion(false, $id_areamap);
-						cursorDefault("#center");
-
-						//loadMonsterList();
-						$.post('/kqa/Combat/loadMonsterList/', {
-							id_areamap: $id_areamap,
-							step:		$step
-						}, function($monsters) {
-							contentShowData("#boxright", $monsters.monsters);
-							//$("#boxright").html($monsters.monsters);
-							$("#id_monster").val($monsters.id_monster);
-							$("#monster_hp").val($monsters.monster_hp);
-							$("#monster_min_dmg").val($monsters.monster_min_dmg);
-							$("#monster_max_dmg").val($monsters.monster_max_dmg);
-							$("#monster_me").val($monsters.monster_me);
-							$("#monster_ds").val($monsters.monster_ds);
-							$("#monster_knowledge").val($monsters.monster_knowledge);
-							$("#monster_treasure").val($monsters.monster_treasure);
-						});
-
-						if ($step == 1) {
-							//loadCharacterInfo;
-							$.post('/kqa/Combat/loadCharInfo/', {}, function($player) {
-								contentShowData("#boxleft", $player.character);
-								$("#player_hp").val($player.player_hp);
-								$("#player_min_dmg").val($player.player_min_dmg);
-								$("#player_max_dmg").val($player.player_max_dmg);
-								$("#player_me").val($player.player_me);
-								$("#player_ds").val($player.player_ds);
+		$tot_steps		= $("#tot_steps").val();
+		if ($tot_steps >= $step) {
+			// if it's next floor
+			if (($tot_steps == $step) && ($target > 0)) {
+				// Load Floor
+				$("#id_areamap").val($target);
+				$("#step").val('0');
+				loadEncounterMap();
+				cursorDefault("#center");
+			// if it's another combat
+			} else {
+				if (($id_areamap) && ($step)) {
+					$.post('/kqa/Combat/loadCombat/', {
+					}, function($return) {
+						if ($return) {
+							$("#turn").html("Turn: Player");
+							$("#current_monster").val('1');
+							contentShowData("#center", $return.trim());
+							loadQuestion(false, $id_areamap);
+							cursorDefault("#center");
+	
+							//loadMonsterList();
+							$.post('/kqa/Combat/loadMonsterList/', {
+								id_areamap: $id_areamap,
+								step:		$step
+							}, function($monsters) {
+								contentShowData("#boxright", $monsters.monsters);
+								//$("#boxright").html($monsters.monsters);
+								$("#id_monster").val($monsters.id_monster);
+								$("#monster_hp").val($monsters.monster_hp);
+								$("#monster_min_dmg").val($monsters.monster_min_dmg);
+								$("#monster_max_dmg").val($monsters.monster_max_dmg);
+								$("#monster_me").val($monsters.monster_me);
+								$("#monster_ds").val($monsters.monster_ds);
+								$("#monster_knowledge").val($monsters.monster_knowledge);
+								$("#monster_treasure").val($monsters.monster_treasure);
 							});
+	
+							if ($step == 1) {
+								//loadCharacterInfo;
+								$.post('/kqa/Combat/loadCharInfo/', {}, function($player) {
+									contentShowData("#boxleft", $player.character);
+									$("#player_hp").val($player.player_hp);
+									$("#player_min_dmg").val($player.player_min_dmg);
+									$("#player_max_dmg").val($player.player_max_dmg);
+									$("#player_me").val($player.player_me);
+									$("#player_ds").val($player.player_ds);
+								});
+							}
+	
 						}
-
-					}
-				});
+					});
+				}
 			}
 			return false;
 		}
@@ -317,7 +323,6 @@ function loadMonster() {
 	return false;
 }
 
-
 function loadLocalMap($id_areamap, $mode) {
 	cursorWait(this);
 	clearInterval(window.tileinfo);
@@ -357,19 +362,18 @@ function loadLocalMap($id_areamap, $mode) {
 
 function loadEncounterMap() {
 	$id_areamap		= $("#id_areamap").val();
-	$id_parentmap	= $("#id_parentmap").val();
 	$step			= $("#step").val();
 	if (($id_areamap) && ($step)) {
 		$step++;
 		$("#step").val($step);
 		$.post('/kqa/Maps/loadEncounterArea/', {
 			id_areamap:		$id_areamap,
-			id_parentmap:	$id_parentmap,
 			step:			$step
 		}, function($return) {
 			if ($return) {
-				$("#id_parentmap").val($id_areamap);
+				$("#id_parentmap").val($return.$id_parentmap);
 				$("#id_areamap").val($return.id_areamap);
+				$("#target").val($return.target);
 				$("#tot_monsters").val($return.tot_monsters);
 				$("#current_monster").val($return.current_monster);
 				$("#step").val($return.step);
@@ -469,6 +473,7 @@ function dungeonEnd() {
 	$id_aremap	= $("#id_areamap").val();
 	$tot_xp		= $("#tot_xp").val();
 	$("#tot_xp").val(0);
+	$("#target").val('');
 	if (($id_aremap) && ($tot_xp)) {
 		// Save Xp to DB
 		saveXP($tot_xp);

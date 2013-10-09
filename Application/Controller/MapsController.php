@@ -180,6 +180,9 @@
 			$step				= (isset($_POST['step'])) ? trim($_POST['step']) : 1;
 			// If values were sent
 			if (($id_areamap) && ($step)) {
+				// Get parent map id
+				$id_parentmap		= $RepMap->getParentMapInfoIdByMapId($id_areamap);
+				$id_parentmap		= ($id_parentmap) ? $id_parentmap['id'] : false;
 				// Get parent map type
 				$parent				= $RepMap->getMapInfoById($id_parentmap);
 				$parent_areatype	= (($parent) && ($parent['boo_encounter'] == 1)) ? 'encounter' : 'local';
@@ -198,6 +201,7 @@
 				$map				= $RepMap->getMapById($id_areamap);
 				// Get linking info
 				$links				= $RepMap->getLinksIconsByAreaId($id_areamap);
+				$target				= ($links) ? $links[0]['id_map_target'] : '0';
 				// Get Map level
 				$level				= ($level = $RepMap->getAreaInfoByMapId($id_areamap)) ? $level['int_level'] : false;
 				// Get all tiles of this step
@@ -207,6 +211,7 @@
 				// Model world
 				if ($map) {
 					$return['id_areamap']		= $id_areamap;
+					$return['target']			= $target;
 					$return['current_monster']	= $current_monster;
 					$return['tot_monsters']		= $tot_monsters;
 					$return['step']				= $step;

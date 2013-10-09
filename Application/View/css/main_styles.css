@@ -28,7 +28,7 @@ body						{background:url('/kqa/Application/View/img/background.jpg') no-repeat 
 #top .otherinfo							{width:1200px;max-width:1400;height:97px;margin:auto;}
 #top .otherinfo .turn					{width:190px;height:95px;float:left;background:url('/kqa/Application/View/img/img-left-button-dock.png') no-repeat 20px 0px;font: 20px 'GameFont', Arial, Verdana; color:#000; padding: 70px 0 0 270px;}
 #top .otherinfo .dungeonname			{width:280px;height:95px;float:left;text-align:center;background:url('/kqa/Application/View/img/img-infobox.png') no-repeat top center;}
-#top .otherinfo .dungeonname .name		{width:280px;text-align:center;font: 20px 'GameFont', Arial, Verdana; color:#fecb00;padding:10px 0 0 0;}
+#top .otherinfo .dungeonname .name		{width:268px; height: 55px; text-align:center;font: 20px 'GameFont', Arial, Verdana; color:#fecb00;padding:10px 5px 0 0;}
 #top .otherinfo .dungeonname .questions	{width:280px;text-align:left;font: 9px Arial, Verdana; color:#fff;padding:20px 0 0 15px;}
 #top .otherinfo .dungeonname .level		{width:140px;text-align:center;font: 12px Arial, Verdana; color:#fff;padding:6px 0 0 0px;float:left;}
 #top .otherinfo .dungeonname .room		{width:140px;text-align:center;font: 12px Arial, Verdana; color:#fff;padding:6px 0 0 0px;float:left;}
@@ -44,7 +44,7 @@ body						{background:url('/kqa/Application/View/img/background.jpg') no-repeat 
 #content .center h3				{float:left;font: 16px 'GameFont', Arial, Verdana; color:#fecb00;margin:0;padding:0 0 0 15px;z-index:3;position:relative;}
 #content .center .box			{margin-bottom:10px;float:left;}
 #content .center .question		{width:630px;height:25px;float:left; z-index:2;margin-top:-7px;padding:15px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
-#content .center .answers		{width:630px;height:80px;float:left; z-index:2;margin-top:-7px;padding:10px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
+#content .center .answers		{width:630px;min-height:80px;float:left; z-index:2;margin-top:-7px;padding:10px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
 #content .center .response		{width:225px;height:70px;float:left; z-index:2;padding:5px;color:#000; font:14px 'GameFont', arial; overflow:hidden;}
 #content .center .report			{width:380px;height:40px;float:left; z-index:2;margin-top:0px;padding:15px;color:#fff; font:12px arial; overflow:hidden;}
 #content .center .combat			{width:630px;height:70px;float:left; z-index:2;margin-top:-7px;padding:15px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
