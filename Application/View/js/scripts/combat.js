@@ -17,7 +17,7 @@ $('document').ready(function() {
 				$("#step").val('0');
 				loadEncounterMap();
 				cursorDefault("#center");
-			// if it's another combat
+			// if it's combat
 			} else {
 				if (($id_areamap) && ($step)) {
 					$.post('/kqa/Combat/loadCombat/', {
@@ -25,39 +25,60 @@ $('document').ready(function() {
 						if ($return) {
 							$("#turn").html("Turn: Player");
 							$("#current_monster").val('1');
-							contentShowData("#center", $return.trim());
-							loadQuestion(false, $id_areamap);
-							cursorDefault("#center");
-	
-							//loadMonsterList();
-							$.post('/kqa/Combat/loadMonsterList/', {
-								id_areamap: $id_areamap,
-								step:		$step
-							}, function($monsters) {
-								contentShowData("#boxright", $monsters.monsters);
-								//$("#boxright").html($monsters.monsters);
-								$("#id_monster").val($monsters.id_monster);
-								$("#monster_hp").val($monsters.monster_hp);
-								$("#monster_min_dmg").val($monsters.monster_min_dmg);
-								$("#monster_max_dmg").val($monsters.monster_max_dmg);
-								$("#monster_me").val($monsters.monster_me);
-								$("#monster_ds").val($monsters.monster_ds);
-								$("#monster_knowledge").val($monsters.monster_knowledge);
-								$("#monster_treasure").val($monsters.monster_treasure);
-							});
-	
 							if ($step == 1) {
 								//loadCharacterInfo;
-								$.post('/kqa/Combat/loadCharInfo/', {}, function($player) {
+								$.post('/kqa/Characters/loadCharInfo/', {}, function($player) {
 									contentShowData("#boxleft", $player.character);
 									$("#player_hp").val($player.player_hp);
 									$("#player_min_dmg").val($player.player_min_dmg);
 									$("#player_max_dmg").val($player.player_max_dmg);
 									$("#player_me").val($player.player_me);
 									$("#player_ds").val($player.player_ds);
+									$("#timebonus").val($player.timebonus);
+
+									//loadMonsterList();
+									$.post('/kqa/Combat/loadMonsterList/', {
+										id_areamap: $id_areamap,
+										step:		$step
+									}, function($monsters) {
+										contentShowData("#boxright", $monsters.monsters);
+										//$("#boxright").html($monsters.monsters);
+										$("#id_monster").val($monsters.id_monster);
+										$("#monster_hp").val($monsters.monster_hp);
+										$("#monster_min_dmg").val($monsters.monster_min_dmg);
+										$("#monster_max_dmg").val($monsters.monster_max_dmg);
+										$("#monster_me").val($monsters.monster_me);
+										$("#monster_ds").val($monsters.monster_ds);
+										$("#monster_knowledge").val($monsters.monster_knowledge);
+										$("#monster_treasure").val($monsters.monster_treasure);
+									});
+
+									contentShowData("#center", $return.trim());
+									loadQuestion(false, $id_areamap);
+									cursorDefault("#center");
 								});
+							} else {
+								//loadMonsterList();
+								$.post('/kqa/Combat/loadMonsterList/', {
+									id_areamap: $id_areamap,
+									step:		$step
+								}, function($monsters) {
+									contentShowData("#boxright", $monsters.monsters);
+									//$("#boxright").html($monsters.monsters);
+									$("#id_monster").val($monsters.id_monster);
+									$("#monster_hp").val($monsters.monster_hp);
+									$("#monster_min_dmg").val($monsters.monster_min_dmg);
+									$("#monster_max_dmg").val($monsters.monster_max_dmg);
+									$("#monster_me").val($monsters.monster_me);
+									$("#monster_ds").val($monsters.monster_ds);
+									$("#monster_knowledge").val($monsters.monster_knowledge);
+									$("#monster_treasure").val($monsters.monster_treasure);
+								});
+
+								contentShowData("#center", $return.trim());
+								loadQuestion(false, $id_areamap);
+								cursorDefault("#center");
 							}
-	
 						}
 					});
 				}
@@ -132,16 +153,23 @@ $('document').ready(function() {
 });
 
 function loadQuestion($id_course, $id_areamap) {
+	// Initialize variables
 	$turn		= $("#turn").val();
+	$timebonus	= parseInt($("#timebonus").val());
 	$action		= false;
+	// IF values were sent
 	if (($id_course) || ($id_areamap)) {
+		// Set whose turn is
 		$turn	= ($turn == 'player') ? 'monster' : 'player';
 		$("#turn").val($turn);
+		// Load question
 		$.post('/kqa/Combat/loadQuestion/', {
 			id_course:	$id_course,
 			id_areamap:	$id_areamap
 		}, function($return) {
+			// If wuestion was loaded
 			if ($return) {
+				// Set and display Question values
 				$("#id_answer").val('');
 				//contentHide("#box_rightanswer");
 				//setTimeout(function(){contentHide("#box_rightanswer")}, 2000);
@@ -153,13 +181,20 @@ function loadQuestion($id_course, $id_areamap) {
 				$("#id_course").val($return.id_course);
 				$("#box_counter").html();
 				$id_question		= $return.id_question;
+				// If it's player's turn
 				if ($turn == 'player') {
+					// Display captions, time and activate timer
 					$("#turn").html("Turn: Player");
 					contentHide("#box_rightanswer");
 					$time_limit		= parseInt($return.time_limit) * 1000;
+					if ($timebonus > 0) {
+						$time_limit	= $time_limit + $time_limit * ($timebonus / 100);
+					}
 					clearInterval(window.counter);
 					window.counter	= displayCounter($time_limit);
+				// If it's monter's turn
 				} else {
+					// Display captions
 					setTimeout(function(){contentHide("#box_rightanswer")}, 2000);
 					$("#turn").html("Turn: Monster");
 					$("#box_counter").html("");
@@ -477,42 +512,58 @@ function dungeonEnd() {
 	if (($id_aremap) && ($tot_xp)) {
 		// Save Xp to DB
 		saveXP($tot_xp);
-		// Display "Dungeon is over" and treasure report Message
-		$.fancybox({
-			href			: '/kqa/Alerts/DungeonFinished/'+$tot_xp,
-			width			: 404,
-			height			: 254,
-			autoScale		: false,
-			showCloseButton	: true,
-			scrolling		: 'no',
-			transitionIn	: 'elastic',
-			transitionOut	: 'elastic',
-			speedIn			: 600,
-			speedOut		: 200,
-			type			: 'iframe',
-			onClosed		: function() {
-			// Go to parent map
-				$.post('/kqa/Maps/loadParentMap/', {
-					id_areamap:	$id_areamap
-				}, function($return) {
+		// Calculate treasure drop
+		$.post('/kqa/Combat/calculateTreasureDrop/', {
+			id_aremap:	$id_aremap
+		}, function($return) {
+			if ($return) {
+				$return.name_item1;
+				$return.name_item2;
+				// Save Gold  -- detele this -> add to this /Combat/calculateTreasureDrop procedure	
+				$.post('/kqa/Combat/saveGold/', {monster_treasure: $return.gold}, function($return) {
 					if ($return) {
-						turn
-						$("#id_parentmap",				$return.id_parentmap);
-						contentHide("#area_name");
-						contentHide("#center");
-						$("#center").html('');
-						$("#turn").html('');
-						$("#boxright").html('');
-						$("#room").html('');
-						contentShowData("#area_name",	$return.area_name);
-						contentShowData("#center",		'<div class="map_area" id="map_area" style="margin-left: 130px;">'+$return.map+'</div>');
-						contentShowData("#level",		'Level '+$return.level);
-					} else {
-						alert("Sorry,\n\nWe weren't able to redirect you to the local map you were before this dungeon.\nWe are working on the problem.\n\nMeanhile, please, try reloading the world of Sophia.\n\nThank you.");
+						$return		= $return.trim();
+						contentShowData("#gold", $return);
+					}
+				});
+				// Display "Dungeon is over" and treasure report Message
+				$.fancybox({
+					href			: '/kqa/Alerts/DungeonFinished/'+$tot_xp+'/'+$return.name_item1+'/'+$return.name_item2,
+					width			: 404,
+					height			: 254,
+					autoScale		: false,
+					showCloseButton	: true,
+					scrolling		: 'no',
+					transitionIn	: 'elastic',
+					transitionOut	: 'elastic',
+					speedIn			: 600,
+					speedOut		: 200,
+					type			: 'iframe',
+					onClosed		: function() {
+					// Go to parent map
+						$.post('/kqa/Maps/loadParentMap/', {
+							id_areamap:	$id_areamap
+						}, function($return) {
+							if ($return) {
+								$("#id_parentmap",				$return.id_parentmap);
+								contentHide("#area_name");
+								contentHide("#center");
+								$("#center").html('');
+								$("#turn").html('');
+								$("#boxright").html('');
+								$("#room").html('');
+								contentShowData("#area_name",	$return.area_name);
+								contentShowData("#center",		'<div class="map_area" id="map_area" style="margin-left: 130px;">'+$return.map+'</div>');
+								contentShowData("#level",		'Level '+$return.level);
+							} else {
+								alert("Sorry,\n\nWe weren't able to redirect you to the local map you were before this dungeon.\nWe are working on the problem.\n\nMeanhile, please, try reloading the world of Sophia.\n\nThank you.");
+							}
+						});
 					}
 				});
 			}
 		});
+		
 	}
 }
 

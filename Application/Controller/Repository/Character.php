@@ -61,7 +61,24 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $return = $db->getRow('tb_character', '*', "id_user = '{$id}'") : false;
+			$return		= ($id) ? $db->getRow('tb_character', '*', "id_user = '{$id}'") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get Character ID by User Id - getCharIdByUserId($id)
+			@param integer	- user Id
+			@return format	- Mixed array
+		*/
+		public function getCharIdByUserId($id = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			// Query set up
+			$return		= $db->getRow('tb_character', 'id', "id_user = '{$id}'");
+			$return		= ($return) ? $return['id'] : false;
 			// Return
 			return $return;
 		}
@@ -77,7 +94,52 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_character', 'id, vc_name, int_xp', "id_user = '{$id}'") : false;
+			$return		= ($id) ? $db->getAllRows_Arr('tb_character', 'id, vc_name, int_xp', "id_user = '{$id}'") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get all inventory contents by Char - getAllWoreItems($id)
+			@param integer	- char Id
+			@return format	- Mixed array
+		*/
+		public function getAllWoreItems($id = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			// Query set up
+			$return		= ($id) ? $db->getRow('tb_wearable', '*', "id_character = '{$id}'") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get all Combat Items - getAllCombatItems($ids)
+			@param array	- item's id
+			@return format	- Mixed array
+		*/
+		public function getAllCombatItems($ids = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			$condition	= false;
+			if ($ids) {
+				foreach ($ids as $id) {
+					if ($condition) {
+						$condition	.= ($id > 0) ? ', '.$id : '';
+					} else {
+						$condition	.= ($id > 0) ? $id : '';
+					}
+				}
+				// Query set up
+				$return				= ($condition) ? $db->getAllRows_Arr('tb_combat_item', '*', "id IN ({$condition})") : false;
+			} else {
+				// Query set up
+				$return				= $db->getAllRows_Arr('tb_combat_item', '*', "1");
+			}
 			// Return
 			return $return;
 		}
@@ -93,7 +155,7 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}'") : false;
+			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}'") : false;
 			// Return
 			return $return;
 		}
@@ -109,7 +171,7 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}' AND boo_bag = 1") : false;
+			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}' AND boo_bag = 1") : false;
 			// Return
 			return $return;
 		}
@@ -125,7 +187,7 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}' AND boo_combat = 1") : false;
+			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}' AND boo_combat = 1") : false;
 			// Return
 			return $return;
 		}
@@ -141,7 +203,7 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}' AND boo_bag = 1 AND boo_combat = 1") : false;
+			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}' AND boo_bag = 1 AND boo_combat = 1") : false;
 			// Return
 			return $return;
 		}
@@ -157,7 +219,7 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory', 'id, id_item', "id_character = '{$id}' AND AND boo_combat = 0") : false;
+			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory', 'id, id_item', "id_character = '{$id}' AND AND boo_combat = 0") : false;
 			// Return
 			return $return;
 		}
@@ -173,7 +235,7 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $return = $db->getAllRows_Arr('tb_inventory', 'id, id_item', "id_character = '{$id}' AND boo_bag = 1 AND boo_combat = 0") : false;
+			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory', 'id, id_item', "id_character = '{$id}' AND boo_bag = 1 AND boo_combat = 0") : false;
 			// Return
 			return $return;
 		}
@@ -207,6 +269,19 @@
 			$db		= $GLOBALS['db'];
 			// Query set up
 			$return	= (($vc_name) && ($id_user)) ? $db->insertRow('tb_character', array($id_user, $vc_name, $hp), array('id_user', 'vc_name', 'int_hp')) : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Insert Item to Inventory - saveItemtoInventory($id_char, $id_item, $boo_bag, $boo_combat)
+			@return format	- Mixed array
+		*/
+		public function saveItemtoInventory($id_char = false, $id_item = false, $boo_bag = 0, $boo_combat = 0) {
+			// Database Connection
+			$db		= $GLOBALS['db'];
+			// Query set up
+			$return	= (($id_char) && ($id_item)) ? $db->insertRow('tb_inventory', array($id_char, $id_item, $boo_bag, $boo_combat), array('id_character', 'id_item', 'boo_bag', 'boo_combat')) : false;
 			// Return
 			return $return;
 		}

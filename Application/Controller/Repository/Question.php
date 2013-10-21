@@ -76,6 +76,30 @@
 		}
 
 		/*
+		get random question by course id  - getRandomTutorTxtByCourseId($ids)
+			@param array	- Course ids
+			@return format	- Mixed array
+		*/
+		public function getRandomTutorTxtByCourseId($ids = false) {
+			// Database Connection
+			$db			= $GLOBALS['db_q'];
+			$return		= false;
+			$id_list	= false;
+			if ($ids) {
+				foreach ($ids as $id) {
+					if ($id_list) {
+						$id_list	.= ', '.$id;
+					} else {
+						$id_list	= $id;
+					}
+				}
+				$return			= ($id_list) ? $db->getRow('tb_question_course AS qc JOIN tb_question AS q ON qc.id_question = q.id', 'q.id, q.tx_tutor', "id_course IN ({$id_list}) ORDER BY RAND() LIMIT 1") : false;
+			}
+			// Return
+			return $return;
+		}
+
+		/*
 		Get question by id - getQuestionById($id)
 			@param integer	- Course id
 			@return format	- Mixed array

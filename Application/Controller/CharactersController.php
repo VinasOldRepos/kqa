@@ -21,8 +21,8 @@
 	// Model Classes
 	//use Application\Model\Menu;
 	//use Application\Model\Pager;
-	//use Application\Model\Map							as ModMap;
 	use Application\Model\Character						as ModCharacter;
+	use Application\Model\Combat						as ModCombat;
 
 	// Repository Classes
 	//use Application\Controller\Repository\Map			as RepMap;
@@ -103,6 +103,65 @@
 				$return['tokens']	= $tokens;
 				$return['gold']		= $gold;
 			}
+			header('Content-Type: application/json');
+			echo json_encode($return);
+		}
+
+		public function loadCharInfo() {
+			// Add Classes
+			$RepCharacter		= new RepCharacter();
+			$ModCombat			= new ModCombat();
+			// Variables
+			$user				= Session::getVar('user');
+			$return				= false;
+			$total_me_bonus		= 0;
+			$total_ds			= 0;
+			$total_time_bonus	= 0;
+			$min_me				= 0;
+			$max_me				= 0;
+			// If values were sent
+			if ($user) {
+				// Get character's info
+				$character		= $RepCharacter->getById($user['id']);
+				if ($character) {
+					// Get character's bag contents
+					//$combat_bag		= $RepCharacter->getCombatBagContentsByCharId($character['id']);
+					$combat_items		= $RepCharacter->getAllWoreItems($character['id']);
+					$noncombat_bag		= $RepCharacter->getNonCombatBagContentsByCharId($character['id']);
+					// Get Combat Items's data
+					if ($combat_items) {
+						$ids[]			= ($combat_items['id_combatitem_head'] > 0) ? $combat_items['id_combatitem_head'] : false;
+						$ids[]			= ($combat_items['id_combatitem_neck'] > 0) ? $combat_items['id_combatitem_neck'] : false;
+						$ids[]			= ($combat_items['id_combatitem_chest'] > 0) ? $combat_items['id_combatitem_chest'] : false;
+						$ids[]			= ($combat_items['id_combatitem_back'] > 0) ? $combat_items['id_combatitem_back'] : false;
+						$ids[]			= ($combat_items['id_combatitem_mainhand'] > 0) ? $combat_items['id_combatitem_mainhand'] : false;
+						$ids[]			= ($combat_items['id_combatitem_offhand'] > 0) ? $combat_items['id_combatitem_offhand'] : false;
+						$ids[]			= ($combat_items['id_combatitem_rightfinger'] > 0) ? $combat_items['id_combatitem_rightfinger'] : false;
+						$ids[]			= ($combat_items['id_combatitem_leftfinger'] > 0) ? $combat_items['id_combatitem_leftfinger'] : false;
+						$ids[]			= ($combat_items['id_combatitem_legs'] > 0) ? $combat_items['id_combatitem_legs'] : false;
+						$ids[]			= ($combat_items['id_combatitem_feet'] > 0) ? $combat_items['id_combatitem_feet'] : false;
+						$combat_items	= $RepCharacter->getAllCombatItems($ids);
+						foreach ($combat_items as $item) {
+							$total_me_bonus		= $total_me_bonus + $item['int_magic_me'];
+							$total_ds			= $total_ds + $item['int_ds'] + $item['int_magic_ds'];
+							$total_time_bonus	= $total_time_bonus + $item['int_time'];
+							if (($item['id_type'] == 5) || ($item['id_type'] == 6)) {
+								$min_me			= $item['int_me_min'];
+								$max_me			= $item['int_me_max'];
+							}
+						}
+					}
+					// Prepare return
+					$return['character']		= $ModCombat->characterDisplay($character, $combat_items, $noncombat_bag);
+					$return['player_hp']		= $character['int_hp'];
+					$return['player_min_dmg']	= $min_me;
+					$return['player_max_dmg']	= $max_me;
+					$return['player_me']		= $total_me_bonus;
+					$return['player_ds']		= $total_ds;
+					$return['timebonus']		= $total_time_bonus;
+				}
+			}
+			// Return
 			header('Content-Type: application/json');
 			echo json_encode($return);
 		}

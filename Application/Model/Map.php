@@ -71,7 +71,7 @@
 				foreach ($links as $link) {
 					$targets[$link['int_pos']][0]	= $link['id_icon'];
 					$targets[$link['int_pos']][1]	= $link['vc_path'];
-					$targets[$link['int_pos']][2]	= ($link['id_map_target'] > 0) ? $link['id_map_target'] : false;
+					$targets[$link['int_pos']][2]	= ($link['id_map_target'] !== false) ? $link['id_map_target'] : false;
 				}
 			}
 			if ($mouseovers) {
@@ -89,7 +89,13 @@
 					$pos		= sprintf('%03d', $i);
 					if (isset($targets[$i])) {
 						$text		= (isset($tile_txts[$targets[$i][2]])) ? $tile_txts[$targets[$i][2]] : false;
-						$return		.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" text="'.$text.'" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
+						if ($targets[$i][2] > 0) {
+							$return		.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" text="'.$text.'" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
+						} else if ($targets[$i][2] < 0) {
+							$return		.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" text="Town" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
+						} else {
+							$return		.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
+						}
 						$return		.= '	<img src="/gamemaster/Application/View/img/textures/'.$targets[$i][1].'" width="32" height="32" />'.PHP_EOL;
 						$return		.= '</div>'.PHP_EOL;
 					} else {

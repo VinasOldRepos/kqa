@@ -151,6 +151,7 @@
 				$level				= ($level = $RepMap->getAreaInfoByMapId($id_areamap)) ? $level['int_level'] : false;
 				// Model Return
 				if ($map) {
+					$return['id_areamap']	= $id_areamap;
 					$return['id_parentmap']	= $id_parentmap;
 					$return['area_name']	= $map['vc_name'];
 					$return['level']		= $level;
@@ -318,4 +319,56 @@
 			echo json_encode($return);
 		}
 
+		/*
+		Prints out a Town page - loadTown()
+			@return format	- print json
+		*/
+		public function loadTown() {
+			// Initialize variables
+			$id_parentmap	= (isset($_POST['id_parentmap'])) ? trim($_POST['id_parentmap']) : false;
+			// If values were sent
+			if ($id_parentmap) {
+				// Prepare return
+				View::set('id_parentmap', $id_parentmap);
+				// Return
+				View::render('partial_town');
+			}
+		}
+
+		/*
+		Prints out tutor page - loadTutor()
+			@return format	- print json
+		*/
+		public function loadTutor() {
+			// Declare Classes
+			$RepMap			= new RepMap();
+			$ModMap			= new ModMap();
+			// Initialize variables
+			$id_parentmap	= (isset($_POST['id_parentmap'])) ? trim($_POST['id_parentmap']) : false;
+			// If values were sent
+			if ($id_parentmap) {
+				// Get all courses on child encounter areas
+				$id_courses	= $RepMap->getCoursesOnChilds($id_parentmap);
+				// Load a random tutor text from one of the courses
+				$RepQuestion	= new RepQuestion();
+				$tutor_text		= $RepQuestion->getRandomTutorTxtByCourseId($id_courses);
+				// Prepare return
+				View::set('id_parentmap', $id_parentmap);
+				View::set('tutor_text', ($tutor_text) ? $tutor_text['tx_tutor'] : false);
+				// Return
+				View::render('partial_tutor');
+			}
+		}
+
+		/*
+		Prints out Shop page - loadShop()
+			@return format	- print json
+		*/
+		public function loadShop() {
+			// Declare Classes
+			//$RepMap		= new RepMap();
+			//$ModMap		= new ModMap();
+			// Return
+			View::render('partial_shop');
+		}
 	}

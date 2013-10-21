@@ -29,7 +29,7 @@
 			// Initialize variables
 			$return				= false;
 			// Query set up
-			$return			= ($id) ? $return = $db->getRow('tb_areamap', '*', "id = '{$id}'") : false;
+			$return			= ($id) ? $db->getRow('tb_areamap', '*', "id = '{$id}'") : false;
 			// Return
 			return $return;
 		}
@@ -73,7 +73,40 @@
 			// Initialize variables
 			$return				= false;
 			// Query set up
-			$return			= ($ids) ? $return = $db->getAllRows_Arr('tb_areamap', 'id, vc_mouseover', "id IN ({$ids})") : false;
+			$return			= ($ids) ? $db->getAllRows_Arr('tb_areamap', 'id, vc_mouseover', "id IN ({$ids})") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get Map by Id - getCoursesOnChilds($ids)
+			@param string	- Maps Ids
+			@return format	- Mixed array
+		*/
+		public function getCoursesOnChilds($id_parentmap = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			$id_list	= false;
+			if ($id_parentmap) {
+				$ids	=  $db->getAllRows_Arr('tb_map_link_icon', 'id_map_target AS id', "id_map_orign = {$id_parentmap}");
+				if ($ids) {
+					foreach ($ids as $id) {
+						if ($id['id'] > 0) {
+							if ($id_list) {
+								$id_list	.= ', '.$id['id'];
+							} else {
+								$id_list	= $id['id'];
+							}
+						}
+					}
+					$ids					= $db->getAllRows_Arr('tb_areamap', 'id_course AS id', "id IN ({$id_list})");
+					foreach ($ids as $id) {
+						$return[]			= $id['id'];
+					}
+				}
+			}
 			// Return
 			return $return;
 		}

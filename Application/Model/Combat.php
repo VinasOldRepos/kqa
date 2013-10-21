@@ -49,25 +49,62 @@
 			return $return;
 		}
 
-		public function characterDisplay($character = false) {
+		public function characterDisplay($character = false, $combat_items = false, $noncombat_bag = false) {
 			$return		= false;
 			if ($character) {
+				$return	.= '<div class="char_spacer">&nbsp;</div>'.PHP_EOL;
 				$return	.= '<div class="monster_row">'.PHP_EOL;
 				$return	.= '	<div class="monsters_tit">CHARACTER</div>'.PHP_EOL;
 				$return	.= '</div>'.PHP_EOL;
+				$return	.= '<div class="char_spacer">&nbsp;</div>'.PHP_EOL;
 				$return	.= '<div class="monster_row">'.PHP_EOL;
 				$return	.= '	<div class="char_detail">Name:</div>'.PHP_EOL;
 				$return	.= '	<div class="char_info">'.$character['vc_name'].'</div>'.PHP_EOL;
 				$return	.= '</div>'.PHP_EOL;
+				$return	.= '<div class="char_spacer">&nbsp;</div>'.PHP_EOL;
 				$return	.= '<div class="monster_row">'.PHP_EOL;
 				$return	.= '	<div class="char_detail">HP:</div>'.PHP_EOL;
 				$return	.= '	<div class="char_info" id="current_hp">'.$character['int_hp'].'</div>'.PHP_EOL;
 				$return	.= '</div>'.PHP_EOL;
-				$return	.= '<br /><br />'.PHP_EOL;
 				$return	.= '<div class="monster_row">'.PHP_EOL;
 				$return	.= '	<div class="char_detail">XP:</div>'.PHP_EOL;
 				$return	.= '	<div class="char_info" id="xp">'.$character['int_xp'].'</div>'.PHP_EOL;
 				$return	.= '</div>'.PHP_EOL;
+			}
+			$return		.= '<div class="char_spacer">&nbsp;</div>'.PHP_EOL;
+			if ($combat_items) {
+				$return	.= '<div class="monster_row">'.PHP_EOL;
+				$return	.= '	<div class="monsters_tit">WEARING</div>'.PHP_EOL;
+				$return	.= '</div>'.PHP_EOL;
+				$return	.= '<div class="char_spacer">&nbsp;</div>'.PHP_EOL;
+				foreach ($combat_items as $item) {
+					$return	.= '<div class="monster_row">'.PHP_EOL;
+					$return	.= '	<div class="char_detail">'.$item['vc_name'].'</div>';
+					/*if (($item['id_type'] == 5) || ($item['id_type'] == 6)) {
+						$return	.= '	<div class="char_info" id="xp">('.$item['int_me_min'].' - '.$item['int_me_max'];
+						if ($item['int_magic_me'] > 0) {
+							$return	.=  ') + '.$item['int_magic_me'];
+						} else {
+							$return	.=  ')';
+						}
+						$return	.=  '</div>'.PHP_EOL;
+					} else if ($item['int_time'] > 0) {
+						$return	.= '	<div class="char_info">(Time bonus: '.$item['int_time'].'%)</div>'.PHP_EOL;
+					} else if ($item['int_ds'] > 0) {
+						$return	.= '	<div class="char_info">(DS +'.$item['int_ds'];
+						if ($item['int_magic_ds'] > 0) {
+							$return	.=  ') + '.$item['int_magic_ds'];
+						} else {
+							$return	.=  ')';
+						}
+						$return	.=  '</div>'.PHP_EOL;
+					} else if ($item['int_magic_ds'] > 0) {
+						$return	.= '	<div class="char_info">(DS +'.$item['int_magic_ds'].')</div>'.PHP_EOL;
+					} else if ($item['int_magic_me'] > 0) {
+						$return	.= '	<div class="char_info">(ME +'.$item['int_magic_me'].')</div>'.PHP_EOL;
+					}*/
+					$return	.= '</div>'.PHP_EOL;
+				}
 			}
 			return $return;
 		}
