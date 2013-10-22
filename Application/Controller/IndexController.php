@@ -21,11 +21,11 @@
 	// Model Classes
 	//use Application\Model\Menu;
 	//use Application\Model\Pager;
-	use Application\Model\Map							as ModMap;
+	//use Application\Model\Map							as ModMap;
 	use Application\Model\Character						as ModCharacter;
 
 	// Repository Classes
-	use Application\Controller\Repository\Map			as RepMap;
+	//use Application\Controller\Repository\Map			as RepMap;
 	use Application\Controller\Repository\Character		as RepCharacter;
 	//use Application\Controller\Repository\Question	as RepQuestion;
 

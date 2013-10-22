@@ -29,7 +29,7 @@
 			if (ENV == 'DEV') {
 				$controller	= $params[2];
 			} else {
-				$controller	= $params[1];
+				$controller	= $params[2];
 			}
 			if (empty($controller)) {
 				$controller	= 'IndexController';
@@ -49,7 +49,7 @@
 			if (ENV == 'DEV') {
 				$pos		= 3;
 			} else {
-				$pos		= 2;
+				$pos		= 3;
 			}
 			if (!empty($params[$pos])) {
 				$function	= $params[$pos];
@@ -70,7 +70,7 @@
 			if (ENV == 'DEV') {
 				$start			= 3;
 			} else {
-				$start			= 2;
+				$start			= 3;
 			}
 			for ($i = $start; $i < $tot_params; $i++) {
 				/*

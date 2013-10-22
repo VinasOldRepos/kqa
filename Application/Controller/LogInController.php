@@ -76,7 +76,8 @@
 			@return format	- boolean
 		*/
 		public static function checkLogin() {
-			return (Session::getVar('user')) ? true : false;
+			$user	= Session::getVar('user');
+			return ($user['rights']['boo_kqa']) ? true : false;
 		}
 
 		/*
