@@ -28,4 +28,98 @@
 			return $return;
 		}
 
+		public function listInventory($inventory = false, $wore = false){
+			$return	= false;
+			if ($inventory) {
+				foreach ($inventory as $item) {
+					if (isset($item['vc_wearable'])) {
+						if ($wore) {
+							$show		= true;
+							foreach ($wore as $weareable) {
+								if (($show) && ($weareable['id'] == $item['id'])){
+									$show	=  false;
+									break;
+								} else {
+									$show	= true;
+								}
+							}
+							$return		.= ($show) ? '<div class="item_name" key="'.$item['id'].'" place="'.$item['vc_wearable'].'">'.$item['vc_name'].'</div>'.PHP_EOL : false;
+						} else {
+							$return	.= '<div class="item_name" key="'.$item['id'].'" place="'.$item['vc_wearable'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
+						}
+					} else {
+						$return	.= '<div class="item_name" key="'.$item['id'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
+					}
+				}
+			}
+			return $return;
+		}
+
+		public function listWore($wore = false) {
+			$return			= false;
+			if ($wore) {
+				if ($wore['head']) {
+					$return	.= '<div class="place" id="head" key="'.$wore['head']['id'].'">'.$wore['head']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="head">-</div>'.PHP_EOL;
+				}
+				if ($wore['neck']) {
+					$return	.= '<div class="place" id="neck" key="'.$wore['neck']['id'].'">'.$wore['neck']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="neck">-</div>'.PHP_EOL;
+				}
+				if ($wore['chest']) {
+					$return	.= '<div class="place" id="chest" key="'.$wore['chest']['id'].'">'.$wore['chest']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="chest">-</div>'.PHP_EOL;
+				}
+				if ($wore['back']) {
+					$return	.= '<div class="place" id="back" key="'.$wore['back']['id'].'">'.$wore['back']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="back">-</div>'.PHP_EOL;
+				}
+				if ($wore['mainhand']) {
+					$return	.= '<div class="place" id="mainhand" key="'.$wore['mainhand']['id'].'">'.$wore['mainhand']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="mainhand">-</div>'.PHP_EOL;
+				}
+				if ($wore['offhand']) {
+					$return	.= '<div class="place" id="offhand" key="'.$wore['offhand']['id'].'">'.$wore['offhand']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="offhand">-</div>'.PHP_EOL;
+				}
+				if ($wore['rightfinger']) {
+					$return	.= '<div class="place" id="rightfinger" key="'.$wore['rightfinger']['id'].'">'.$wore['rightfinger']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="rightfinger">-</div>'.PHP_EOL;
+				}
+				if ($wore['leftfinger']) {
+					$return	.= '<div class="place" id="leftfinger" key="'.$wore['leftfinger']['id'].'">'.$wore['leftfinger']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="leftfinger">-</div>'.PHP_EOL;
+				}
+				if ($wore['legs']) {
+					$return	.= '<div class="place" id="legs" key="'.$wore['legs']['id'].'">'.$wore['legs']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="legs">-</div>'.PHP_EOL;
+				}
+				if ($wore['feet']) {
+					$return	.= '<div class="place" id="feet" key="'.$wore['feet']['id'].'">'.$wore['feet']['vc_name'].'</div>'.PHP_EOL;
+				} else{
+					$return	.= '<div class="place" id="feet">-</div>'.PHP_EOL;
+				}
+			}
+			return $return;
+		}
+
+		public function listBag($bag = false) {
+			$return	= false;
+			if ($bag) {
+				foreach ($bag as $item) {
+					$return	.= '<div class="bagplace" key="'.$item['id'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
+				}
+			}
+			return $return;
+		}
+
 	}

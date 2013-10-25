@@ -46,10 +46,10 @@
 			@return format	- string/false
 		*/
 		private static function getRenderPath($name = false) {
-			$reutnr		= false;
+			$return		= false;
 			if ($name) {
 				$name	= str_replace('_','/', $name);
-				$return	= VIEW_PATH."{$name}.html" ;
+				$return	= VIEW_PATH."{$name}.html";
 			}
 			return $return;
 		}

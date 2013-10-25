@@ -1,0 +1,104 @@
+@font-face {
+  font-family: GameFont; /* Edit this line */
+  src: url('/kqa/Application/View/fonts/BOOKOSB.TTF'); /* Edit this line */
+}
+
+.modalmessage {
+	position:			absolute;
+	float:				left;
+	width:				600px;
+	height:				460px;
+	background-color:	#1D1C19;
+	color:				#FFF;
+	text-align:			center;
+	border:				2px solid #ac8f0d;
+	font-family:		Arial, Helvetica, sans-serif;
+	font-size:			12px;
+}
+
+.modalmessage .title {
+	color:	#FECB00;
+	font:	16px 'GameFont', Arial, Verdana;
+}
+
+.modalmessage .title_right {
+	float:	right;
+	width:	250px;
+	color:	#FECB00;
+	font:	16px 'GameFont', Arial, Verdana;
+}
+
+.modalmessage a {
+	color: #FECB00;
+	text-decoration:	underline;
+}
+
+.modalmessage .row {
+}
+
+.modalmessage .item {
+	float:			left;
+	margin-left:	120px;
+}
+
+.modalmessage .value {
+	float:			right;
+	margin-right:	110px;
+}
+
+.item_name:hover {
+	cursor:				pointer;
+	background-color:	#1D1C19;
+}
+
+.inventory {
+	float:				left;
+	height:				200px;
+	width:				300px;
+	margin-top:			20px;
+	margin-left:		20px;
+	background-color:	#42413E;
+	overflow-y:			 scroll;
+}
+
+.bag {
+	float:				right;
+	height:				200px;
+	width:				200px;
+	margin-top:			20px;
+	margin-right:		20px;
+	background-color:	#42413E;
+	overflow-y:			 scroll;
+}
+
+.bag {
+	float:				right;
+	height:				180px;
+	width:				200px;
+	margin-top:			20px;
+	margin-right:		20px;
+	background-color:	#42413E;
+	overflow-y:			 scroll;
+}
+
+.wearing {
+	text-align:	center;
+}
+
+.places {
+	width:			120px;
+	float:			left;
+	margin-right:	10px;
+	text-align:		right;
+}
+
+.items {
+	width:		260px;
+	float:		left;
+	text-align:	left;
+}
+
+.bagplace:hover {
+	cursor:				pointer;
+	background-color:	#1D1C19;
+}

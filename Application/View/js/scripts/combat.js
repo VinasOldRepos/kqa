@@ -220,6 +220,12 @@ function playerHits() {
 	// Add XP point to temp storage
 	$tot_xp				= (($tot_xp) || 0) + 1;
 	$("#tot_xp").val($tot_xp);
+	// If player uses no weapon
+	if (($player_max_dmg == 0) && ($player_min_dmg == 0)) {
+		// Set fist damage
+		$player_min_dmg	= 1;
+		$player_max_dmg	= 2;
+	}
 	// Calcutale damage
 	$player_dmg			= Math.floor(Math.random() * ($player_max_dmg - $player_min_dmg + 1)) + $player_min_dmg;
 	$player_dmg			= ($player_dmg + $player_me) - $monster_ds;
@@ -517,8 +523,6 @@ function dungeonEnd() {
 			id_aremap:	$id_aremap
 		}, function($return) {
 			if ($return) {
-				$return.name_item1;
-				$return.name_item2;
 				// Save Gold  -- detele this -> add to this /Combat/calculateTreasureDrop procedure	
 				$.post('/kqa/Combat/saveGold/', {monster_treasure: $return.gold}, function($return) {
 					if ($return) {
@@ -528,7 +532,7 @@ function dungeonEnd() {
 				});
 				// Display "Dungeon is over" and treasure report Message
 				$.fancybox({
-					href			: '/kqa/Alerts/DungeonFinished/'+$tot_xp+'/'+$return.name_item1+'/'+$return.name_item2,
+					href			: '/kqa/Alerts/DungeonFinished/'+$return.gold+'/'+$tot_xp+'/'+$return.name_item1+'/'+$return.name_item2,
 					width			: 404,
 					height			: 254,
 					autoScale		: false,

@@ -57,26 +57,45 @@ $('document').ready(function() {
 				});
 			// If it's an encounter area
 			} else {
-				$.post('/kqa/Maps/loadEncounterArea/', {
-					id_areamap:		$target_map,
-					id_parentmap:	$id_areamap
-				}, function($return) {
-					if ($return) {
-						$("#id_parentmap").val($id_areamap);
-						$("#id_areamap").val($return.id_areamap);
-						$("#tot_monsters").val($return.tot_monsters);
-						$("#current_monster").val($return.current_monster);
-						$("#step").val($return.step);
-						$("#tot_steps").val($return.tot_steps);
-						contentHide("#area_name");
-						contentHide("#map_area");
-						contentShowData("#area_name",	$return.area_name);
-						contentShowData("#map_area",	$return.map);
-						contentShowData("#level",		'Level '+$return.step);
-						contentShowData("#room",		'Room '+$return.step+' of '+$return.tot_steps);
+
+				// User select gear fancybox
+				$.fancybox({
+					href			: '/kqa/Characters/selectGear/',
+					width			: 604,
+					height			: 464,
+					autoScale		: false,
+					showCloseButton	: false,
+					scrolling		: 'no',
+					transitionIn	: 'elastic',
+					transitionOut	: 'elastic',
+					speedIn			: 600,
+					speedOut		: 200,
+					type			: 'iframe',
+					onClosed		: function() {
+						// Load encounter area
+						$.post('/kqa/Maps/loadEncounterArea/', {
+							id_areamap:		$target_map,
+							id_parentmap:	$id_areamap
+						}, function($return) {
+							if ($return) {
+								$("#id_parentmap").val($id_areamap);
+								$("#id_areamap").val($return.id_areamap);
+								$("#tot_monsters").val($return.tot_monsters);
+								$("#current_monster").val($return.current_monster);
+								$("#step").val($return.step);
+								$("#tot_steps").val($return.tot_steps);
+								contentHide("#area_name");
+								contentHide("#map_area");
+								contentShowData("#area_name",	$return.area_name);
+								contentShowData("#map_area",	$return.map);
+								contentShowData("#level",		'Level '+$return.step);
+								contentShowData("#room",		'Room '+$return.step+' of '+$return.tot_steps);
+							}
+							cursorDefault(".local_map_tile");
+						});
 					}
-					cursorDefault(".local_map_tile");
 				});
+
 			}
 		} else {
 			cursorDefault(".local_map_tile");

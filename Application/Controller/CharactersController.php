@@ -28,6 +28,7 @@
 	//use Application\Controller\Repository\Map			as RepMap;
 	//use Application\Controller\Repository\Question	as RepQuestion;
 	use Application\Controller\Repository\Character		as RepCharacter;
+	use Application\Controller\Repository\Item			as RepItem;
 
 	// Other Classes
 	use Application\Controller\LogInController			as LogIn;
@@ -44,8 +45,10 @@
 				header('location: '.URL_PATH.'/LogIn/');
 			} else {
 				// Define JSs e CSSs utilizados por este controller
-				$GLOBALS['this_js']		= '';	// Se não houver, definir como vazio ''
-				$GLOBALS['this_css']	= '';	// Se não houver, definir como vazio ''
+				$GLOBALS['this_js']		= '<script type="text/javascript" src="'.URL_PATH.'/Application/View/js/scripts/character.js"></script>'.PHP_EOL;	// Se não houver, definir como vazio ''
+				$GLOBALS['this_js']		.= '<script type="text/javascript" src="'.URL_PATH.'/Application/View/js/libs/jquery.fancybox-1.3.4.pack.js"></script>'.PHP_EOL;	// Se não houver, definir como vazio ''
+				$GLOBALS['this_css']	= '<link rel="stylesheet" href="'.URL_PATH.'/Application/View/css/character.css" type="text/css" media="screen" />'.PHP_EOL;	// Se não houver, definir como vazio ''
+				$GLOBALS['this_css']	.= '<link href="'.URL_PATH.'/Application/View/css/jquery.fancybox-1.3.4.css" rel="stylesheet">'.PHP_EOL;	// Se não houver, definir como vazio ''
 				// Define Menu selection
 				//Menu::defineSelected($GLOBALS['controller_name']);
 			}
@@ -164,6 +167,201 @@
 			// Return
 			header('Content-Type: application/json');
 			echo json_encode($return);
+		}
+
+		/*
+		Display Page where player selects gear to be taken to the dungeon - selectGear()
+			@return format	- Render View
+		*/
+		public function selectGear() {
+			// Classes
+			$RepCharacter	= new RepCharacter();
+			$RepItem		= new RepItem();
+			$ModCharacter	= new ModCharacter();
+			// Initialize variables
+			$return				= false;
+			$user				= Session::getVar('user');
+			// If there are values
+			if ($user) {
+				$id_char		= $RepCharacter->getCharIdByUserId($user['id']);
+				// Empty Player's bag
+				$RepCharacter->emptyBag($id_char);
+				// Load Player's inventory
+				$inventory				= ($id_char) ? $RepCharacter->getAllInventoryContentsByCharId($id_char) : false;
+				// Get wore items names
+				$items					= ($id_char) ? $RepCharacter->getAllWoreItems($id_char) : false;
+				$wore['head']			= ($items['id_combatitem_head'] > 0) ? $RepItem->getCombatById($items['id_combatitem_head']) : false;
+				$wore['neck']			= ($items['id_combatitem_neck'] > 0) ? $RepItem->getCombatById($items['id_combatitem_neck']) : false;
+				$wore['chest']			= ($items['id_combatitem_chest'] > 0) ? $RepItem->getCombatById($items['id_combatitem_chest']) : false;
+				$wore['back']			= ($items['id_combatitem_back'] > 0) ? $RepItem->getCombatById($items['id_combatitem_back']) : false;
+				$wore['mainhand']		= ($items['id_combatitem_mainhand'] > 0) ? $RepItem->getCombatById($items['id_combatitem_mainhand']) : false;
+				$wore['offhand']		= ($items['id_combatitem_offhand'] > 0) ? $RepItem->getCombatById($items['id_combatitem_offhand']) : false;
+				$wore['rightfinger']	= ($items['id_combatitem_rightfinger'] > 0) ? $RepItem->getCombatById($items['id_combatitem_rightfinger']) : false;
+				$wore['leftfinger']		= ($items['id_combatitem_leftfinger'] > 0) ? $RepItem->getCombatById($items['id_combatitem_leftfinger']) : false;
+				$wore['legs']			= ($items['id_combatitem_legs'] > 0) ? $RepItem->getCombatById($items['id_combatitem_legs']) : false;
+				$wore['feet']			= ($items['id_combatitem_feet'] > 0) ? $RepItem->getCombatById($items['id_combatitem_feet']) : false;
+				// Model results and prepare return
+				View::set('inventory',	$ModCharacter->listInventory($inventory, $wore));
+				View::set('wore',		$ModCharacter->listWore($wore));
+			}
+			// Return
+			View::render('partial_modalSelectGear');
+		}
+
+		/*
+		Place item in the player's body - placeWearable()
+			@return format	- jquery print
+		*/
+		public function placeWearable() {
+			// Classes
+			$RepCharacter	= new RepCharacter();
+			$RepItem		= new RepItem();
+			$ModCharacter	= new ModCharacter();
+			// Initialize variables
+			$return			= false;
+			$user			= Session::getVar('user');
+			$id_item		= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
+			$place			= (isset($_POST['place'])) ? trim($_POST['place']): false;
+			// if values were sent
+			if (($id_item) && ($place)) {
+				// Get Character id
+				$id_char	= $RepCharacter->getCharIdByUserId($user['id']);
+				// Save item position in the database
+				$RepCharacter->placeWearable($id_char, $id_item, $place);
+				// Load Player's inventory
+				$inventory				= ($id_char) ? $RepCharacter->getAllInventoryContentsByCharId($id_char) : false;
+				// Get wore items names
+				$items					= ($id_char) ? $RepCharacter->getAllWoreItems($id_char) : false;
+				$wore['head']			= ($items['id_combatitem_head'] > 0) ? $RepItem->getCombatById($items['id_combatitem_head']) : false;
+				$wore['neck']			= ($items['id_combatitem_neck'] > 0) ? $RepItem->getCombatById($items['id_combatitem_neck']) : false;
+				$wore['chest']			= ($items['id_combatitem_chest'] > 0) ? $RepItem->getCombatById($items['id_combatitem_chest']) : false;
+				$wore['back']			= ($items['id_combatitem_back'] > 0) ? $RepItem->getCombatById($items['id_combatitem_back']) : false;
+				$wore['mainhand']		= ($items['id_combatitem_mainhand'] > 0) ? $RepItem->getCombatById($items['id_combatitem_mainhand']) : false;
+				$wore['offhand']		= ($items['id_combatitem_offhand'] > 0) ? $RepItem->getCombatById($items['id_combatitem_offhand']) : false;
+				$wore['rightfinger']	= ($items['id_combatitem_rightfinger'] > 0) ? $RepItem->getCombatById($items['id_combatitem_rightfinger']) : false;
+				$wore['leftfinger']		= ($items['id_combatitem_leftfinger'] > 0) ? $RepItem->getCombatById($items['id_combatitem_leftfinger']) : false;
+				$wore['legs']			= ($items['id_combatitem_legs'] > 0) ? $RepItem->getCombatById($items['id_combatitem_legs']) : false;
+				$wore['feet']			= ($items['id_combatitem_feet'] > 0) ? $RepItem->getCombatById($items['id_combatitem_feet']) : false;
+				// Model results and prepare return
+				$return					= $ModCharacter->listInventory($inventory, $wore);
+			}
+			// Return
+			echo $return;
+		}
+
+		/*
+		Place item in the player's bag - placeBag()
+			@return format	- jquery print
+		*/
+		public function placeBag() {
+			// Classes
+			$RepCharacter	= new RepCharacter();
+			$ModCharacter	= new ModCharacter();
+			// Initialize variables
+			$return			= false;
+			$user			= Session::getVar('user');
+			$id_item		= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
+			// If values were sent
+			if ($id_item) {
+				// Get Character id
+				$id_char	= $RepCharacter->getCharIdByUserId($user['id']);
+				// Add this item to the bag
+				$RepCharacter->placeBag($id_char, $id_item);
+				// Get all bag Items
+				$bag		= ($id_char) ? $RepCharacter->getAllBagContentsByCharId($id_char) : false;
+				// Model return
+				$return		= ($bag) ? $ModCharacter->listBag($bag) : false;
+			}
+			// Return
+			echo $return;
+		}
+
+		/*
+		Remove item from the player's body - removeWearable()
+			@return format	- jquery print
+		*/
+		public function removeWearable() {
+			// Classes
+			$RepCharacter	= new RepCharacter();
+			$RepItem		= new RepItem();
+			$ModCharacter	= new ModCharacter();
+			// Initialize variables
+			$return			= false;
+			$user			= Session::getVar('user');
+			$place			= (isset($_POST['place'])) ? trim($_POST['place']): false;
+			// if values were sent
+			if ($place) {
+				// Get Character id
+				$id_char	= $RepCharacter->getCharIdByUserId($user['id']);
+				// Save item position in the database
+				$RepCharacter->placeWearable($id_char, 0, $place);
+				// Load Player's inventory
+				$inventory				= ($id_char) ? $RepCharacter->getAllInventoryContentsByCharId($id_char) : false;
+				// Get wore items names
+				$items					= ($id_char) ? $RepCharacter->getAllWoreItems($id_char) : false;
+				$wore['head']			= ($items['id_combatitem_head'] > 0) ? $RepItem->getCombatById($items['id_combatitem_head']) : false;
+				$wore['neck']			= ($items['id_combatitem_neck'] > 0) ? $RepItem->getCombatById($items['id_combatitem_neck']) : false;
+				$wore['chest']			= ($items['id_combatitem_chest'] > 0) ? $RepItem->getCombatById($items['id_combatitem_chest']) : false;
+				$wore['back']			= ($items['id_combatitem_back'] > 0) ? $RepItem->getCombatById($items['id_combatitem_back']) : false;
+				$wore['mainhand']		= ($items['id_combatitem_mainhand'] > 0) ? $RepItem->getCombatById($items['id_combatitem_mainhand']) : false;
+				$wore['offhand']		= ($items['id_combatitem_offhand'] > 0) ? $RepItem->getCombatById($items['id_combatitem_offhand']) : false;
+				$wore['rightfinger']	= ($items['id_combatitem_rightfinger'] > 0) ? $RepItem->getCombatById($items['id_combatitem_rightfinger']) : false;
+				$wore['leftfinger']		= ($items['id_combatitem_leftfinger'] > 0) ? $RepItem->getCombatById($items['id_combatitem_leftfinger']) : false;
+				$wore['legs']			= ($items['id_combatitem_legs'] > 0) ? $RepItem->getCombatById($items['id_combatitem_legs']) : false;
+				$wore['feet']			= ($items['id_combatitem_feet'] > 0) ? $RepItem->getCombatById($items['id_combatitem_feet']) : false;
+				// Model results and prepare return
+				$return					= $ModCharacter->listInventory($inventory, $wore);
+			}
+			// Return
+			echo $return;
+		}
+		/*
+		Remove item from player's bag - removeBag()
+			@return format	- jquery print
+		*/
+		public function removeBag() {
+			// Classes
+			$RepCharacter	= new RepCharacter();
+			$RepItem		= new RepItem();
+			$ModCharacter	= new ModCharacter();
+			// Initialize variables
+			$return			= false;
+			$inventory		= false;
+			$user			= Session::getVar('user');
+			$id_item		= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
+			// If values were sent
+			if ($id_item) {
+				// Get Character id
+				$id_char					= $RepCharacter->getCharIdByUserId($user['id']);
+				// Remove this item from the bag
+				$RepCharacter->removeBag($id_char, $id_item);
+				// Load Player's inventory
+				$invent_items				= ($id_char) ? $RepCharacter->getAllInventoryContentsByCharId($id_char) : false;
+				// Remove bag items from the list
+				if ($invent_items) {
+					foreach ($invent_items as $item) {
+						if ($item['boo_bag'] != 1) {
+							$inventory[]	= $item;
+						}
+					}
+				}
+				// Get wore items names
+				$items					= ($id_char) ? $RepCharacter->getAllWoreItems($id_char) : false;
+				$wore['head']			= ($items['id_combatitem_head'] > 0) ? $RepItem->getCombatById($items['id_combatitem_head']) : false;
+				$wore['neck']			= ($items['id_combatitem_neck'] > 0) ? $RepItem->getCombatById($items['id_combatitem_neck']) : false;
+				$wore['chest']			= ($items['id_combatitem_chest'] > 0) ? $RepItem->getCombatById($items['id_combatitem_chest']) : false;
+				$wore['back']			= ($items['id_combatitem_back'] > 0) ? $RepItem->getCombatById($items['id_combatitem_back']) : false;
+				$wore['mainhand']		= ($items['id_combatitem_mainhand'] > 0) ? $RepItem->getCombatById($items['id_combatitem_mainhand']) : false;
+				$wore['offhand']		= ($items['id_combatitem_offhand'] > 0) ? $RepItem->getCombatById($items['id_combatitem_offhand']) : false;
+				$wore['rightfinger']	= ($items['id_combatitem_rightfinger'] > 0) ? $RepItem->getCombatById($items['id_combatitem_rightfinger']) : false;
+				$wore['leftfinger']		= ($items['id_combatitem_leftfinger'] > 0) ? $RepItem->getCombatById($items['id_combatitem_leftfinger']) : false;
+				$wore['legs']			= ($items['id_combatitem_legs'] > 0) ? $RepItem->getCombatById($items['id_combatitem_legs']) : false;
+				$wore['feet']			= ($items['id_combatitem_feet'] > 0) ? $RepItem->getCombatById($items['id_combatitem_feet']) : false;
+				// Model results and prepare return
+				$return					= $ModCharacter->listInventory($inventory, $wore);
+			}
+			// Return
+			echo $return;
 		}
 
 	}

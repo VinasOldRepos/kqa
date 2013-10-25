@@ -14,6 +14,8 @@
 
 	namespace Application\Controller\Repository;
 
+	use SaSeed\Database;
+
 	class LogIn {
 		
 		public function __construct() {

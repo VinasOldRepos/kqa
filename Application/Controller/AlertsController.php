@@ -58,11 +58,13 @@
 
 		public function DungeonFinished() {
 			// Initialize variables
-			$tot_xp	= (isset($GLOBALS['params'][1])) ? trim(($GLOBALS['params'][1])) : false;
-			$name_item1	= ((isset($GLOBALS['params'][2])) && ($GLOBALS['params'][2] != 'false')) ? trim(($GLOBALS['params'][2])) : '-';
-			$name_item2	= ((isset($GLOBALS['params'][3])) && ($GLOBALS['params'][3] != 'false')) ? trim(($GLOBALS['params'][3])) : '-';
+			$tot_gold	= (isset($GLOBALS['params'][1])) ? trim(($GLOBALS['params'][1])) : false;
+			$tot_xp		= (isset($GLOBALS['params'][2])) ? trim(($GLOBALS['params'][2])) : false;
+			$name_item1	= ((isset($GLOBALS['params'][3])) && ($GLOBALS['params'][3] != 'false')) ? str_replace('%20', ' ', trim($GLOBALS['params'][3])) : '-';
+			$name_item2	= ((isset($GLOBALS['params'][4])) && ($GLOBALS['params'][4] != 'false')) ? str_replace('%20', ' ', trim($GLOBALS['params'][4])) : '-';
 			if ($tot_xp) {
 				View::set('tot_xp',		$tot_xp);
+				View::set('tot_gold',	$tot_gold);
 				View::set('name_item1', $name_item1);
 				View::set('name_item2',	$name_item2);
 				View::render('partial_modalDungeonFinished');

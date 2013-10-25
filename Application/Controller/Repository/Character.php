@@ -155,7 +155,15 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}'") : false;
+			$combat		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*, boo_bag', "id_character = '{$id}' AND boo_combat = 1 ORDER BY ci.vc_name") : false;
+			$noncombat	= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_noncombat_item AS nci ON i.id_item = nci.id', 'nci.*, boo_bag', "id_character = '{$id}' AND boo_combat = 0 ORDER BY nci.vc_name") : false;
+			if (($combat) && ($noncombat)) {
+				$return	= array_merge($combat, $noncombat);
+			} else if ($combat) {
+				$return	= $combat;
+			} else if($noncombat) {
+				$return	= $noncombat;
+			}
 			// Return
 			return $return;
 		}
@@ -171,7 +179,7 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*', "id_character = '{$id}' AND boo_bag = 1") : false;
+			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_noncombat_item AS nci ON i.id_item = nci.id', 'nci.*', "id_character = '{$id}' AND boo_bag = 1") : false;
 			// Return
 			return $return;
 		}
@@ -305,6 +313,92 @@
 			}
 			// Return
 			return $return;
+		}
+
+		/*
+		Place wearable item - placeWearable($id, $place)
+			@param integer	- Character ID
+			@param integer	- Combat item id
+			@param string	- Place in the body
+			@return format	- Mixed array
+		*/
+		public function placeWearable($id_char = false, $id = false, $place = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			$return		= false;
+			if (($id_char !== false) && ($id !== false) && ($place !== false)) {
+				$data[]				= $id;
+				switch ($place) {
+					case 'head' :
+						$field[]	= 'id_combatitem_head';
+						break;
+					case 'neck' :
+						$field[]	= 'id_combatitem_neck';
+						break;
+					case 'chest' :
+						$field[]	= 'id_combatitem_chest';
+						break;
+					case 'back' :
+						$field[]	= 'id_combatitem_back';
+						break;
+					case 'mainhand' :
+						$field[]	= 'id_combatitem_mainhand';
+						break;
+					case 'offhand' :
+						$field[]	= 'id_combatitem_offhand';
+						break;
+					case 'rightfinger' :
+						$field[]	= 'id_combatitem_rightfinger';
+						break;
+					case 'leftfinger' :
+						$field[]	= 'id_combatitem_leftfinger';
+						break;
+					case 'legs' :
+						$field[]	= 'id_combatitem_legs';
+						break;
+					case 'feet' :
+						$field[]	= 'id_combatitem_feet';
+						break;
+					default:
+						$field		= false;
+						break;
+				}
+				$return	= $db->updateRow('tb_wearable', $field, $data, 'id_character = '.$id_char);
+			}
+			// Return
+			return $return;
+		}
+
+		/*
+		Place bag item - placeBag($id_char, $id_item)
+			@param integer	- Character ID
+			@param integer	- Non-combat item id
+			@return format	- Mixed array
+		*/
+		public function placeBag($id_char = false, $id_item = false) {
+			$db		= $GLOBALS['db'];
+			$return	= (($id_char) && ($id_item)) ? $db->updateRow('tb_inventory', array('boo_bag'), array(1), 'id_character = '.$id_char.' AND id_item = '.$id_item) : false;
+		}
+
+		/*
+		Remove bag item - removeBag($id_char, $id_item)
+			@param integer	- Character ID
+			@param integer	- Non-combat item id
+			@return format	- Mixed array
+		*/
+		public function removeBag($id_char = false, $id_item = false) {
+			$db		= $GLOBALS['db'];
+			$return	= (($id_char) && ($id_item)) ? $db->updateRow('tb_inventory', array('boo_bag'), array(0), 'id_character = '.$id_char.' AND id_item = '.$id_item.' AND boo_bag = 1') : false;
+		}
+
+		/*
+		Empty Bag - emptyBag($id_char)
+			@param integer	- Character ID
+			@return format	- boolean
+		*/
+		public function emptyBag($id_char = false) {
+			$db		= $GLOBALS['db'];
+			$return	= ($id_char) ? $db->updateRow('tb_inventory', array('boo_bag'), array(0), 'id_character = '.$id_char) : false;
 		}
 
 	}
