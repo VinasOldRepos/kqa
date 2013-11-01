@@ -59,29 +59,62 @@
 		*/
 		public static function Sophia() {
 			// Add classes
-			$RepMap			= new RepMap();
-			$RepCharacter	= new RepCharacter();
-			$ModMap			= new ModMap();
+			$RepMap				= new RepMap();
+			$RepCharacter		= new RepCharacter();
+			$ModMap				= new ModMap();
+			$ModCombat			= new \Application\Model\Combat();
 			// Initialize variables
-			$id_areamap		= (!isset($id_areamap)) ? 45 : $id_areamap;
-			$map			= false;
-			$area_name		= false;
-			$mouseovers		= false;
-			$ids			= false;
-			$gold			= false;
-			$tokens			= false;
-			$user			= Session::getVar('user');
+			$id_areamap			= (!isset($id_areamap)) ? 45 : $id_areamap;
+			$map				= false;
+			$area_name			= false;
+			$mouseovers			= false;
+			$ids				= false;
+			$gold				= false;
+			$tokens				= false;
+			$char_name			= false;
+			$user				= Session::getVar('user');
+			$total_me_bonus		= 0;
+			$total_ds			= 0;
+			$total_time_bonus	= 0;
+			$min_me				= 0;
+			$max_me				= 0;
 			if (($id_areamap) && ($user)) {
 				// Get char info
-				$character			= $RepCharacter->getCharByUserId($user['id']);
-				$character			= ($character) ? $character['vc_name'] : false;
+				$character				= $RepCharacter->getCharByUserId($user['id']);
 				// Load World Map info
-				$map				= $RepMap->getMapById($id_areamap);
-				if ($map) {
-					// Get info
+				$map					= $RepMap->getMapById($id_areamap);
+				if (($map) && ($character)) {
+					// Get character's bag contents
+					//$combat_bag		= $RepCharacter->getCombatBagContentsByCharId($character['id']);
+					$combat_items		= $RepCharacter->getAllWoreItems($character['id']);
+					$noncombat_bag		= $RepCharacter->getNonCombatBagContentsByCharId($character['id']);
+					// Get Combat Items's data
+					if ($combat_items) {
+						$item_ids[]		= ($combat_items['id_combatitem_head'] > 0) ? $combat_items['id_combatitem_head'] : false;
+						$item_ids[]			= ($combat_items['id_combatitem_neck'] > 0) ? $combat_items['id_combatitem_neck'] : false;
+						$item_ids[]			= ($combat_items['id_combatitem_chest'] > 0) ? $combat_items['id_combatitem_chest'] : false;
+						$item_ids[]			= ($combat_items['id_combatitem_back'] > 0) ? $combat_items['id_combatitem_back'] : false;
+						$item_ids[]			= ($combat_items['id_combatitem_mainhand'] > 0) ? $combat_items['id_combatitem_mainhand'] : false;
+						$item_ids[]			= ($combat_items['id_combatitem_offhand'] > 0) ? $combat_items['id_combatitem_offhand'] : false;
+						$item_ids[]			= ($combat_items['id_combatitem_rightfinger'] > 0) ? $combat_items['id_combatitem_rightfinger'] : false;
+						$item_ids[]			= ($combat_items['id_combatitem_leftfinger'] > 0) ? $combat_items['id_combatitem_leftfinger'] : false;
+						$item_ids[]			= ($combat_items['id_combatitem_legs'] > 0) ? $combat_items['id_combatitem_legs'] : false;
+						$item_ids[]			= ($combat_items['id_combatitem_feet'] > 0) ? $combat_items['id_combatitem_feet'] : false;
+						$combat_items	= $RepCharacter->getAllCombatItems($item_ids);
+						foreach ($combat_items as $item) {
+							$total_me_bonus		= $total_me_bonus + $item['int_magic_me'];
+							$total_ds			= $total_ds + $item['int_ds'] + $item['int_magic_ds'];
+							$total_time_bonus	= $total_time_bonus + $item['int_time'];
+							if (($item['id_type'] == 5) || ($item['id_type'] == 6)) {
+								$min_me			= $item['int_me_min'];
+								$max_me			= $item['int_me_max'];
+							}
+						}
+					}
+					$char_name		= $character['vc_name'];
+					$gold			= $character['int_gold'];
 					//$tokens		= $user['int_token'];
 					$tokens			= 0;
-					$gold			= ($gold = $RepCharacter->getById($user['id'])) ? $gold['int_gold'] : '0';
 					// Load Parent map's info
 					$parent			= $RepMap->getParentMapInfoIdByMapId($id_areamap);
 					$id_parentmap	= ($parent) ? $parent['id'] : false;
@@ -96,6 +129,26 @@
 						}
 						$mouseovers	= $RepMap->getAllMouseOversByMapId($ids);
 					}
+					// Get branch ids
+					if ($links) {
+						for ($i = 0; $i < count($links); $i++) {
+							if ($links[$i]['id_map_target'] > 0) {
+								$id_field	= $RepMap->getFieldIdByMapId($links[$i]['id_map_target']);
+								$links[$i]['id_field'] = ($id_field) ? $id_field : 0;
+							} else {
+								$links[$i]['id_field'] = 0;
+							}
+						}
+						$RepQuestion		= new RepQuestion();
+						for ($i = 0; $i < count($links); $i++) {
+							if ($links[$i]['id_field'] > 0) {
+								$id_branch	= $RepQuestion->getBranchIdByFieldId($links[$i]['id_field']);
+								$links[$i]['id_branch'] = ($id_branch) ? $id_branch : 0;
+							} else {
+								$links[$i]['id_branch'] = 0;
+							}
+						}
+					}
 					if ($id_areamap <= 100) {
 						// Model world
 						$map		= $ModMap->world($map, $links, $mouseovers, $navigation);
@@ -105,13 +158,21 @@
 					}
 				}
 			}
+			View::set('character',		$ModCombat->characterDisplay($character, $combat_items, $noncombat_bag));
+			View::set('player_hp',		$character['int_hp']);
+			View::set('player_min_dmg',	$min_me);
+			View::set('player_max_dmg',	$max_me);
+			View::set('player_me',		$total_me_bonus);
+			View::set('player_ds',		$total_ds);
+			View::set('timebonus',		$total_time_bonus);
+
 			// Prepare return
 			View::set('id_areamap',	$id_areamap);
 			View::set('map',		$map);
 			View::set('area_name',	$area_name);
 			View::set('tokens',		$tokens);
 			View::set('gold',		$gold);
-			View::set('character',	$character);
+			View::set('char_name',	$char_name);
 			// Return
 			View::render('map');
 		}

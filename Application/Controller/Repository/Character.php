@@ -19,17 +19,61 @@
 	class Character {
 
 		/*
-		Get Character by Id - getById($id)
+		Get Character by Id - getCharById($id)
 			@param integer	- character Id
 			@return format	- Mixed array
 		*/
-		public function getById($id = false) {
+		public function getCharById($id = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			// Query set up
+			$return		= ($id) ? $db->getRow('tb_character', '*', "id = '{$id}'") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get Character by User Id - getCharByUserId($id)
+			@param integer	- User Id
+			@return format	- Mixed array
+		*/
+		public function getCharByUserId($id = false) {
 			// Database Connection
 			$db			= $GLOBALS['db'];
 			// Initialize variables
 			$return		= false;
 			// Query set up
 			$return		= ($id) ? $db->getRow('tb_character', '*', "id_user = '{$id}'") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get Non-Combat by Id - getItemById($id)
+			@param integer	- Item Id
+			@return format	- Mixed array
+		*/
+		public function getItemById($id = false) {
+			// Database Connection
+			$db		= $GLOBALS['db'];
+			// Query and return
+			$return	= ($id !== false) ? $db->getRow('tb_noncombat_item', '*', "id = '{$id}'") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get Non-Combat by Id - getNonCombatItemByInventoryId($id)
+			@param integer	- Inventory Id
+			@return format	- Mixed array
+		*/
+		public function getNonCombatItemByInventoryId($id = false) {
+			// Database Connection
+			$db		= $GLOBALS['db'];
+			// Query and return
+			$return	= ($id !== false) ? $db->getRow('tb_inventory AS i JOIN tb_noncombat_item AS nci ON i.id_item = nci.id', 'nci.*', "i.id = '{$id}'") : false;
 			// Return
 			return $return;
 		}
@@ -46,22 +90,6 @@
 			$return		= false;
 			// Query set up
 			$return		= ($id) ? $db->getRow('tb_character', 'int_gold', "id = '{$id}'") : false;
-			// Return
-			return $return;
-		}
-
-		/*
-		Get Character by User Id - getCharByUserId($id)
-			@param integer	- user Id
-			@return format	- Mixed array
-		*/
-		public function getCharByUserId($id = false) {
-			// Database Connection
-			$db			= $GLOBALS['db'];
-			// Initialize variables
-			$return		= false;
-			// Query set up
-			$return		= ($id) ? $db->getRow('tb_character', '*', "id_user = '{$id}'") : false;
 			// Return
 			return $return;
 		}
@@ -155,8 +183,8 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$combat		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'ci.*, boo_bag', "id_character = '{$id}' AND boo_combat = 1 ORDER BY ci.vc_name") : false;
-			$noncombat	= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_noncombat_item AS nci ON i.id_item = nci.id', 'nci.*, boo_bag', "id_character = '{$id}' AND boo_combat = 0 ORDER BY nci.vc_name") : false;
+			$combat		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_combat_item AS ci ON i.id_item = ci.id', 'i.id AS id_inventory, ci.*, i.boo_bag', "id_character = '{$id}' AND boo_combat = 1 ORDER BY ci.vc_name") : false;
+			$noncombat	= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_noncombat_item AS nci ON i.id_item = nci.id', 'i.id AS id_inventory, nci.*, i.boo_bag', "id_character = '{$id}' AND boo_combat = 0 ORDER BY nci.vc_name") : false;
 			if (($combat) && ($noncombat)) {
 				$return	= array_merge($combat, $noncombat);
 			} else if ($combat) {
@@ -179,7 +207,7 @@
 			// Initialize variables
 			$return		= false;
 			// Query set up
-			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_noncombat_item AS nci ON i.id_item = nci.id', 'nci.*', "id_character = '{$id}' AND boo_bag = 1") : false;
+			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory AS i JOIN tb_noncombat_item AS nci ON i.id_item = nci.id', 'i.id AS id_inventory, nci.*', "id_character = '{$id}' AND boo_bag = 1") : false;
 			// Return
 			return $return;
 		}
@@ -244,6 +272,21 @@
 			$return		= false;
 			// Query set up
 			$return		= ($id) ? $db->getAllRows_Arr('tb_inventory', 'id, id_item', "id_character = '{$id}' AND boo_bag = 1 AND boo_combat = 0") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get all inventory contents by Char - getTalismanInBagIdInventory($id)
+			@param integer	- char Id
+			@return format	- Mixed array
+		*/
+		public function getTalismanInBagIdInventory($id_char = false) {
+			// Database Connection
+			$db		= $GLOBALS['db'];
+			// Query set up
+			$return	= ($id_char) ? $db->getRow('tb_inventory', 'id', "id_item = 13 AND id_character = '{$id_char}' AND boo_bag = 1 AND boo_combat = 0 ORDER BY id") : false;
+			$return	= ($return) ? $return['id'] : false;
 			// Return
 			return $return;
 		}
@@ -370,25 +413,46 @@
 		}
 
 		/*
-		Place bag item - placeBag($id_char, $id_item)
-			@param integer	- Character ID
-			@param integer	- Non-combat item id
+		Place bag item - placeBag($id)
+			@param integer	- Inventory ID
 			@return format	- Mixed array
 		*/
-		public function placeBag($id_char = false, $id_item = false) {
+		public function placeBag($id = false) {
 			$db		= $GLOBALS['db'];
-			$return	= (($id_char) && ($id_item)) ? $db->updateRow('tb_inventory', array('boo_bag'), array(1), 'id_character = '.$id_char.' AND id_item = '.$id_item) : false;
+			$return	= ($id) ? $db->updateRow('tb_inventory', array('boo_bag'), array(1), 'id = '.$id) : false;
 		}
 
 		/*
-		Remove bag item - removeBag($id_char, $id_item)
+		Remove bag item - removeBag($id)
+			@param integer	- Inventory ID
+			@return format	- Mixed array
+		*/
+		public function removeBag($id = false) {
+			$db		= $GLOBALS['db'];
+			$return	= ($id) ? $db->updateRow('tb_inventory', array('boo_bag'), array(0), 'id = '.$id) : false;
+		}
+
+		/*
+		Remove bag item - removeNonCombatInventory($id_char, $id_item)
 			@param integer	- Character ID
 			@param integer	- Non-combat item id
 			@return format	- Mixed array
 		*/
-		public function removeBag($id_char = false, $id_item = false) {
+		public function removeNonCombatInventory($id_char = false, $id_item = false) {
 			$db		= $GLOBALS['db'];
-			$return	= (($id_char) && ($id_item)) ? $db->updateRow('tb_inventory', array('boo_bag'), array(0), 'id_character = '.$id_char.' AND id_item = '.$id_item.' AND boo_bag = 1') : false;
+			$return	= (($id_char) && ($id_item)) ? $db->deleteRow('tb_inventory', 'id_character = '.$id_char.' AND id_item = '.$id_item.' AND boo_bag = 1 AND boo_combat = 0') : false;
+			return $return;
+		}
+
+		/*
+		Remove bag item - removeFromInventory($id)
+			@param integer	- Inventory id
+			@return format	- Mixed array
+		*/
+		public function removeFromInventory($id = false) {
+			$db		= $GLOBALS['db'];
+			$return	= ($id) ? $db->deleteRow('tb_inventory', 'id = '.$id) : false;
+			return $return;
 		}
 
 		/*

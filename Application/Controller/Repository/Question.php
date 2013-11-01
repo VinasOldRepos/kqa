@@ -153,6 +153,20 @@
 		}
 
 		/*
+		Get Branch Id by Field Id - getBranchIdByFieldId($id)
+			@param integer	- Field ID
+			@return format	- Mixed array
+		*/
+		public function getBranchIdByFieldId($id = false) {
+			// Database Connection
+			$db					= $GLOBALS['db_q'];
+			// Query set up	
+			$return			= (($id) && ($return = $db->getRow('tb_field AS f JOIN tb_branch AS b ON f.id_branch = b.id', 'b.id', "f.id = {$id}"))) ? $return['id'] : false;
+			// Return
+			return $return;
+		}
+
+		/*
 		Get All Branches - getAllBranches()
 			@return format	- Mixed array
 		*/

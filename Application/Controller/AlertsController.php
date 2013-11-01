@@ -23,6 +23,7 @@
 
 	// Repository Classes
 	use Application\Controller\Repository\Map			as RepMap;
+	use Application\Controller\Repository\Character		as RepCharacter;
 
 	// Other Classes
 	use Application\Controller\LogInController			as LogIn;
@@ -73,14 +74,24 @@
 
 		public function PlayerDies() {
 			// Classes
-			$RepMap		= new RepMap();
+			$RepMap			= new RepMap();
+			$RepCharacter	= new RepCharacter();
 			// Initialize variables
-			$id_areamap	= (isset($GLOBALS['params'][1])) ? trim(($GLOBALS['params'][1])) : false;
+			$id_areamap		= (isset($GLOBALS['params'][1])) ? trim(($GLOBALS['params'][1])) : false;
+			$user			= Session::getVar('user');
 			// If values were sent
 			if ($id_areamap) {
 				// Get local parentmap id
 				$id_parentmap	= ($id_parentmap = $RepMap->getLocalParentMapIdByMapId($id_areamap)) ? $id_parentmap : false;
-				View::set('id_parentmap', $id_parentmap);
+				// Check if the the user has a Talisman of Resurrection
+				$id_char		= $RepCharacter->getCharIdByUserId($user['id']);
+				$id_inventory	= ($id_char) ? $RepCharacter->getTalismanInBagIdInventory($id_char) : false;
+				// Model return
+				$talisman		= ($id_inventory) ? '<a id="use_talisman" key="'.$id_inventory.'" href="#">USE</a> one of your Talimans of Resurrection<br><br>' : '';
+				// Prepare Return
+				View::set('id_parentmap',	$id_parentmap);
+				View::set('talisman',		$talisman);
+				// Return
 				View::render('partial_modalPlayerDies');
 			}
 		}

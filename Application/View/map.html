@@ -24,7 +24,7 @@
 			<div id="top">
 				<div class="charinfo">
 					<div class="goldcoins">GOLD COINS: <div id="gold"><?php echo $gold; ?></div></div>
-					<div class="charname tex-stroke"><?php echo $character; ?></div>
+					<div class="charname tex-stroke"><?php echo $char_name; ?></div>
 					<div class="tokens">TOKENS: <div id="tokens"><?php echo $tokens; ?></div></div>
 				</div>
 				<div class="otherinfo">
@@ -43,7 +43,7 @@
 					<div class="tabs">CHARACTER</div>
 					<div class="tabs">ITENS</div>
 					<div class="tabs">STATS</div>
-					<div class="boxleft" id="boxleft"></div>
+					<div class="boxleft" id="boxleft"><?php echo $character; ?></div>
 				</div>
 				<!-- *** MAP *** -->
 				<input type="hidden" name="id_parentmap" id="id_parentmap" value="<?php echo $id_parentmap; ?>" />
@@ -54,12 +54,12 @@
 				<input type="hidden" name="step" id="step" value="" />
 				<input type="hidden" name="tot_steps" id="tot_steps" value="" />
 				<!-- *** PLAYER *** -->
-				<input type="hidden" name="player_hp" id="player_hp" value="" />
-				<input type="hidden" name="player_min_dmg" id="player_min_dmg" value="" />
-				<input type="hidden" name="player_max_dmg" id="player_max_dmg" value="" />
-				<input type="hidden" name="player_me" id="player_me" value="" />
-				<input type="hidden" name="player_ds" id="player_ds" value="" />
-				<input type="hidden" name="timebonus" id="timebonus" value="" />
+				<input type="hidden" name="player_hp" id="player_hp" value="<?php echo $player_hp; ?>" />
+				<input type="hidden" name="player_min_dmg" id="player_min_dmg" value="<?php echo $player_min_dmg; ?>" />
+				<input type="hidden" name="player_max_dmg" id="player_max_dmg" value="<?php echo $player_max_dmg; ?>" />
+				<input type="hidden" name="player_me" id="player_me" value="<?php echo $player_me; ?>" />
+				<input type="hidden" name="player_ds" id="player_ds" value="<?php echo $player_ds; ?>" />
+				<input type="hidden" name="timebonus" id="timebonus" value="<?php echo $timebonus; ?>" />
 				<input type="hidden" name="tot_treasure" id="tot_treasure" value="" />
 				<input type="hidden" name="tot_xp" id="tot_xp" value="" />
 				<input type="hidden" name="tot_gold" id="tot_gold" value="" />
@@ -73,23 +73,23 @@
 				</div>
 				<div class="right">
 					<div class="boxright" id="boxright"></div>
-					<div class="boxright">BOX RIGHT 2</div>
+					<div class="boxright"></div>
 				</div>
 			</div>
 			
 			<div id="bottom">
 				<div class="left">
-					<div class="boxleft">BOX LEFT</div>
+					<div class="boxleft"></div>
 				</div>
 				<div class="center" id="center">
-					<div class="boxcenter">BOX CENTER</div>
+					<div class="boxcenter"></div>
 				</div>
 				<div class="right">
-					<div class="boxright">BOX RIGHT</div>
+					<div class="boxright"></div>
 				</div>
 			</div>
 			
-			<div id="footer">FOOTER</div>
+			<div id="footer"></div>
 			
 		</div>
 

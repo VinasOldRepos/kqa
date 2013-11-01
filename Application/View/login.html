@@ -11,22 +11,35 @@
 	</header>
 	<body class="body" topmargin="0" bottommargin="0" leftmargin="0" rightmargin="0">
 		<div class="container" align="center">
-			<div class="main_banner">
-				<img src="/kqa/Application/View/img/logo_02.png" width="680" height="276" />
-			</div>
-			<br />
-			<div class="loginform" align="center">
-				<fieldset>
+			<div id="main">
+				<div id="header">
+					<div class="logo"><h1>Knowledge Quest Adventures - Piercing the Veil of Ignorance</h1></div>
+					<div class="advertising">
+						<div class="corra_logo"><img src="/kqa/Application/View/img/corra_logo.png" width="235" height="147" alt="Corra Studios" title="Corra Studios" /></div>
+					</div>
+				</div>
+				<br />
+				<div class="loginform" align="center">
+					<div class="login_title">LOGIN</div>
+					<br />
 					<form class="form" style="width: 350px;">
-						<label for="email">e-mail:</label> <input type="text" name="email" id="email" maxlength="100" class="main_text_input" /> <br />
-						<label for="password">password:</label> <input type="password" name="password" id="password" maxlength="15" class="main_text_input" /> <br />
-						<br />
-						<input type="image" class="submitme" src="/kqa/Application/View/img/bt_ok.png" width="41" height="41" border="0" />
+						<div>
+							<div class="captions">
+								<div class="login_item"><label for="email">e-mail:</label></div>
+								<div class="login_item"><label for="password">password:</label></div>
+							</div>
+							<div class="fields">
+								<div class="login_item"><input type="text" name="email" id="email" maxlength="100" class="login_input" /></div>
+								<div class="login_item"><input type="password" name="password" id="password" maxlength="15" class="login_input" /></div>
+							</div>
+						</div>
+						<div class="bt_continue"><input type="image" class="submitme" src="/kqa/Application/View/img/btn-continue.png" width="95" height="28" border="0" /></div>
+						
 					</form>
-				</fieldset>
+					<br /><br />
+					<div id="login_result"></div>
+				</div>
 			</div>
-			<br /><br />
-			<div id="test_result"></div>
 		</div>
 	</body>
 </html>

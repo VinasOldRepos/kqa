@@ -20,6 +20,7 @@
 
 	// Model Classes
 	use Application\Model\Combat	as ModCombat;
+	use Application\Model\Character	as ModCharacter;
 
 	// Repository Classes
 	use Application\Controller\Repository\Map			as RepMap;
@@ -44,8 +45,8 @@
 				header('location: '.URL_PATH.'/LogIn/');
 			} else {
 				// Define JSs e CSSs utilizados por este controller
-				$GLOBALS['this_js']		= ''.PHP_EOL;	// Se não houver, definir como vazio ''
-				$GLOBALS['this_css']	= ''.PHP_EOL;	// Se não houver, definir como vazio ''
+				$GLOBALS['this_js']		= '<script type="text/javascript" src="'.URL_PATH.'/Application/View/js/scripts/combat.js"></script>'.PHP_EOL;	// Se não houver, definir como vazio ''
+				$GLOBALS['this_css']	= '<link rel="stylesheet" href="'.URL_PATH.'/Application/View/css/combat.css" type="text/css" media="screen" />'.PHP_EOL;	// Se não houver, definir como vazio ''
 				// Define Menu selection
 				//Menu::defineSelected($GLOBALS['controller_name']);
 			}
@@ -294,6 +295,26 @@
 			echo $return;
 		}
 
+		public function loadBagContents() {
+			// Classes
+			$RepCharacter	= new RepCharacter();
+			$ModCharacter	= new ModCharacter();
+			// Initialze variables
+			$user			= Session::getVar('user');
+			$id_char		= $RepCharacter->getCharIdByUserId($user['id']);
+			$return			= false;
+			if ($id_char) {
+				// Get all bag contents
+				$bag		= $RepCharacter->getAllBagContentsByCharId($id_char);
+				// Model return
+				$return		= $ModCharacter->listBagItems($bag);;
+			}
+			// Prepare return
+			View::set('bag',	$return);
+			// Return
+			View::render('partial_modalBagContents');
+		}
+
 		public function saveXP() {
 			// Class
 			$RepCharacter	= new RepCharacter();
@@ -303,7 +324,7 @@
 			$return			= false;
 			if (($tot_xp) && ($user)) {
 				// Save XP
-				$character	= $RepCharacter->getById($user['id']);
+				$character	= $RepCharacter->getCharByUserId($user['id']);
 				if ($character) {
 					$character['int_xp']	= $character['int_xp'] + $tot_xp;
 					$return	= (($RepCharacter->updateCharacter($character))) ? $character['int_xp'] : false;
@@ -322,7 +343,7 @@
 			$return				= false;
 			if (($monster_treasure) && ($user)) {
 				// Save XP
-				$character		= $RepCharacter->getById($user['id']);
+				$character		= $RepCharacter->getCharByUserId($user['id']);
 				if ($character) {
 					$character['int_gold']	= $character['int_gold'] + $monster_treasure;
 					$return		= (($RepCharacter->updateCharacter($character))) ? $character['int_gold'] : false;
@@ -860,6 +881,42 @@
 				$return['gold']			= $gold;
 				$return['name_item1']	= ($item1) ? $item1['vc_name'] : false;
 				$return['name_item2']	= ($item2) ? $item2['vc_name'] : false;
+			}
+			// Return
+			header('Content-Type: application/json');
+			echo json_encode($return);
+		}
+
+		public function actionOptions() {
+			View::render('partial_actionOptions');
+		}
+
+		public function useItem() {
+			// Classes
+			$RepCharacter	= new RepCharacter();
+			// Initialize variables
+			$return			= false;
+			$id_inventory	= (isset($_POST['id_item'])) ? trim($_POST['id_item']) : false;
+			$user			= Session::getVar('user');
+			// If value were sent
+			if ($id_inventory) {
+				// Get item info
+				$item		= $RepCharacter->getNonCombatItemByInventoryId($id_inventory);
+				// If item was found
+				if ($item) {
+					// Get item data
+					$bonus_min	= $item['int_bonus_start'];
+					$bonus_max	= $item['int_bonus_end'];
+					$type		= $item['id_type'];
+					// Calculate Bonus
+					$bonus		= rand($bonus_min, $bonus_max);
+					// Get char's max hp if it's a healing item
+					$max_hp		= ((($type == 1) || ($type == 5)) && ($char = $RepCharacter->getCharByUserId($user['id']))) ? $char['int_hp'] : false;
+					// Prepare return
+					$return['bonus']	= $bonus;
+					$return['type']		= $type;
+					$return['max_hp']	= $max_hp;
+				}
 			}
 			// Return
 			header('Content-Type: application/json');

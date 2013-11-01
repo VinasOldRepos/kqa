@@ -50,7 +50,7 @@
 			$return			= 'false';
 			// Get form data
 			$email			= (isset($_POST['email'])) ? trim($_POST['email']) : false;
-			$password		= (isset($_POST['password'])) ? trim($_POST['password']) : false;
+			$password		= (isset($_POST['password'])) ? md5(trim($_POST['password'])) : false;
 			// If data was sent
 			if (($email) && ($password)) {
 				// Get user info from DB and check password

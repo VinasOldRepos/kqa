@@ -164,6 +164,28 @@ body						{background:url('/kqa/Application/View/img/background.jpg') no-repeat 
 	float:			left;
 }
 
+.action_row {
+	float:			left;
+	width:			196px;
+	padding-top:	10px;
+	pading-bottom:	2px;
+}
+
+.action_row:hover {
+	cursor:				pointer;
+	text-decoration:	underline;
+}
+
+.bag_contents {
+	margin-top:		30px;
+	margin-left:	10px;
+}
+
+.bag_item:hover {
+	cursor:				pointer;
+	text-decoration:	underline;
+}
+
 .char_detail {
 	margin-left:	5px;
 	float:			left;

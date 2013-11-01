@@ -169,6 +169,20 @@
 		}
 
 		/*
+		Get Field id By Map Id - getFieldIdByMapId($id)
+			@param integer	- Map ID
+			@return format	- Mixed array
+		*/
+		public function getFieldIdByMapId($id = false) {
+			// Database Connection
+			$db				= $GLOBALS['db'];
+			// Query set up
+			$return			= (($id) && ($return = $db->getRow('tb_area', 'id_field', 'id_areamap = '.$id))) ? $return['id_field'] : false;
+			// Return
+			return $return;
+		}
+
+		/*
 		Get parent map id and type by map id- getParentMapInfoIdByMapId($id)
 			@param integer	- Area Id
 			@return format	- Mixed array

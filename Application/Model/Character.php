@@ -48,7 +48,7 @@
 							$return	.= '<div class="item_name" key="'.$item['id'].'" place="'.$item['vc_wearable'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
 						}
 					} else {
-						$return	.= '<div class="item_name" key="'.$item['id'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
+						$return	.= '<div class="item_name" key="'.$item['id_inventory'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
 					}
 				}
 			}
@@ -116,8 +116,20 @@
 			$return	= false;
 			if ($bag) {
 				foreach ($bag as $item) {
-					$return	.= '<div class="bagplace" key="'.$item['id'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
+					$return	.= '<div class="bagplace" key="'.$item['id_inventory'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
 				}
+			}
+			return $return;
+		}
+
+		public function listBagItems($bag = false) {
+			$return	= false;
+			if ($bag) {
+				foreach ($bag as $item) {
+					$return	.= '<div class="bag_item" key="'.$item['id_inventory'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
+				}
+			} else {
+				$return	.= '<div class="bag_item" style="text-align: center; width: 100%;">(no items in your bag)</div>'.PHP_EOL;
 			}
 			return $return;
 		}

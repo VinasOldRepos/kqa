@@ -74,12 +74,12 @@ $('document').ready(function() {
 	});
 
 	$(".bagplace").live("click", function() {
-		$id_item	= $(this).attr('key');
-		if ($id_item) {
+		$id_inventory	= $(this).attr('key');
+		if ($id_inventory) {
 			$(this).hide();
 			// Remove Item from bag
 			$.post('/kqa/Characters/removeBag/', {
-				id_item:		$id_item
+				id_item:	$id_item
 			}, function($return) {
 				$("#inventory").html($return);
 			});

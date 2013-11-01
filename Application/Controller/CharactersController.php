@@ -111,7 +111,7 @@
 		}
 
 		public function loadCharInfo() {
-			// Add Classes
+ 			// Add Classes
 			$RepCharacter		= new RepCharacter();
 			$ModCombat			= new ModCombat();
 			// Variables
@@ -125,7 +125,7 @@
 			// If values were sent
 			if ($user) {
 				// Get character's info
-				$character		= $RepCharacter->getById($user['id']);
+				$character		= $RepCharacter->getCharByUserId($user['id']);
 				if ($character) {
 					// Get character's bag contents
 					//$combat_bag		= $RepCharacter->getCombatBagContentsByCharId($character['id']);
@@ -260,13 +260,13 @@
 			// Initialize variables
 			$return			= false;
 			$user			= Session::getVar('user');
-			$id_item		= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
+			$id_inventory	= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
 			// If values were sent
-			if ($id_item) {
+			if ($id_inventory) {
 				// Get Character id
 				$id_char	= $RepCharacter->getCharIdByUserId($user['id']);
 				// Add this item to the bag
-				$RepCharacter->placeBag($id_char, $id_item);
+				$RepCharacter->placeBag($id_inventory);
 				// Get all bag Items
 				$bag		= ($id_char) ? $RepCharacter->getAllBagContentsByCharId($id_char) : false;
 				// Model return
@@ -315,8 +315,9 @@
 			// Return
 			echo $return;
 		}
+
 		/*
-		Remove item from player's bag - removeBag()
+		Remove item from player's bag on selection fancybox - removeBag()
 			@return format	- jquery print
 		*/
 		public function removeBag() {
@@ -328,13 +329,13 @@
 			$return			= false;
 			$inventory		= false;
 			$user			= Session::getVar('user');
-			$id_item		= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
+			$id_inventory	= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
 			// If values were sent
-			if ($id_item) {
+			if ($id_inventory) {
 				// Get Character id
 				$id_char					= $RepCharacter->getCharIdByUserId($user['id']);
 				// Remove this item from the bag
-				$RepCharacter->removeBag($id_char, $id_item);
+				$RepCharacter->removeBag($id_inventory);
 				// Load Player's inventory
 				$invent_items				= ($id_char) ? $RepCharacter->getAllInventoryContentsByCharId($id_char) : false;
 				// Remove bag items from the list
@@ -359,6 +360,48 @@
 				$wore['feet']			= ($items['id_combatitem_feet'] > 0) ? $RepItem->getCombatById($items['id_combatitem_feet']) : false;
 				// Model results and prepare return
 				$return					= $ModCharacter->listInventory($inventory, $wore);
+			}
+			// Return
+			echo $return;
+		}
+
+		/*
+		Remove non combat item from player's Inventory - removeNonCombatInventory()
+			@return format	- jquery print
+		*/
+		public function removeNonCombatInventory() {
+			// Classes
+			$RepCharacter	= new RepCharacter();
+			// Initialize variables
+			$return			= false;
+			$inventory		= false;
+			$user			= Session::getVar('user');
+			$id_inventory	= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
+			// If values were sent
+			if ($id_inventory) {
+				// Remove this item from the bag
+				$return		= ($RepCharacter->removeNonCombatInventory($id_inventory)) ? 'ok' : false;
+			}
+			// Return
+			echo $return;
+		}
+
+		/*
+		Remove item from player's Inventory - removeFromInventory()
+			@return format	- jquery print
+		*/
+		public function removeFromInventory() {
+			// Classes
+			$RepCharacter	= new RepCharacter();
+			// Initialize variables
+			$return			= false;
+			$inventory		= false;
+			$id_inventory	= (isset($_POST['id_inventory'])) ? trim($_POST['id_inventory']) : false;
+			$id_inventory	= ((!$id_inventory) && (isset($_POST['id_item']))) ? trim($_POST['id_item']) : false;
+			// If values were sent
+			if ($id_inventory) {
+				// Remove this item from the inventory
+				$return		= ($RepCharacter->removeFromInventory($id_inventory)) ? 'ok' : false;
 			}
 			// Return
 			echo $return;

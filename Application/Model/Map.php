@@ -17,9 +17,40 @@
 
 		public function world($world = false, $links = false, $mouseovers = false, $navigation = false) {
 			$return				= false;
+			$blocked			= false;
+			$id_target			= false;
+			$color_branch		= false;
 			if ($links) {
 				foreach ($links as $link) {
 					$id_target[$link['int_pos']]	= $link['id_map_target'];
+					if ($link['id_branch'] == 1) {
+						$color_branch[$link['int_pos']]	= 'field_blue.png';
+						$blocked[$link['int_pos']]		= 0;
+					} else if ($link['id_branch'] == 2) {
+						$color_branch[$link['int_pos']]	= 'field_green.png';
+						$blocked[$link['int_pos']]		= 0;
+					} else if ($link['id_branch'] == 3) {
+						$color_branch[$link['int_pos']]	= 'field_purple.png';
+						$blocked[$link['int_pos']]		= 0;
+					} else if ($link['id_branch'] == 4) {
+						$color_branch[$link['int_pos']]	= 'field_red.png';
+						$blocked[$link['int_pos']]		= 0;
+					} else if ($link['id_branch'] == 5) {
+						$color_branch[$link['int_pos']]	= 'field_yellow.png';
+						$blocked[$link['int_pos']]		= 0;
+					} else if ($link['id_branch'] == 6) {
+						$color_branch[$link['int_pos']]	= 'field_gray.png';
+						$blocked[$link['int_pos']]		= 0;
+					} else if ($link['id_branch'] == 7) {
+						$color_branch[$link['int_pos']]	= 'field_white.png';
+						$blocked[$link['int_pos']]		= 0;
+					} else if ($link['id_branch'] == 8) {
+						$color_branch[$link['int_pos']]	= 'field_orange.png';
+						$blocked[$link['int_pos']]		= 0;
+					} else {
+						$color_branch[$link['int_pos']]	= 'pixel.gif';
+						$blocked[$link['int_pos']]		= 1;
+					}
 				}
 			}
 			if ($mouseovers) {
@@ -48,11 +79,15 @@
 					}
 					$pos		= sprintf('%03d', $i);
 					if ($world['vc_coord_'.$pos] == '0') {
-						$return	.= '<img class="map_tile world_map_tile" text="The Veil of Ignorance" pos="'.$pos.'" key="NewLocalMap" src="/gamemaster/Application/View/img/textures/bk_veil_of_ignorance.gif" width="32" height="32" border="0" alt="" title="" >';
+						//$return	.= '<img class="map_tile world_map_tile" text="The Veil of Ignorance" pos="'.$pos.'" key="NewLocalMap" src="/gamemaster/Application/View/img/textures/bk_veil_of_ignorance.gif" width="32" height="32" border="0" alt="" title="" >';
+						$return	.= '<div class="map_tile world_map_tile" pos="'.$pos.'" text="The Veil of Ignorance" bkgrnd="bk_veil_of_ignorance.gif" target="" style="background-image:url(/gamemaster/Application/View/img/textures/bk_veil_of_ignorance.gif);"></div>'.PHP_EOL;
 					} else {
 						$map	= (isset($id_target[$i])) ? $id_target[$i] : false;
 						$text	= ($id_target[$i]) ? $tile_txts[$id_target[$i]] : false;
-						$return	.= '<img class="map_tile world_map_tile" text="'.$text.'" pos="'.$pos.'" key="EditLocalMap" map="'.$map.'" src="/gamemaster/Application/View/img/textures/'.$world['vc_coord_'.$pos].'" width="32" height="32" border="0" alt="" title="" >';
+						//$return	.= '<img class="map_tile world_map_tile" text="'.$text.'" pos="'.$pos.'" key="EditLocalMap" map="'.$map.'" src="/gamemaster/Application/View/img/textures/'.$world['vc_coord_'.$pos].'" width="32" height="32" border="0" alt="" title="" >';
+						$return	.= '<div class="map_tile world_map_tile" pos="'.$pos.'" text="'.$text.'" map="'.$map.'" bkgrnd="'.$world['vc_coord_'.$pos].'" blocked="'.$blocked[$i].'" style="background-image:url(/gamemaster/Application/View/img/textures/'.$world['vc_coord_'.$pos].');">'.PHP_EOL;
+						$return	.= '	<img src="/gamemaster/Application/View/img/textures/'.$color_branch[$i].'" width="32" height="32" />'.PHP_EOL;
+						$return	.= '</div>'.PHP_EOL;
 					}
 					if ($i % 10 == 0) {
 						$return	.= '</div>'.PHP_EOL;

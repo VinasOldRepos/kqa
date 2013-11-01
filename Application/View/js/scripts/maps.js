@@ -7,7 +7,8 @@ $('document').ready(function() {
 		contentHide("#tile_info");
 		$target_map				= $(this).attr('map');
 		$id_areamap				= $("#id_areamap").val();
-		if (($target_map) && ($id_areamap)) {
+		$blocked				= $(this).attr('blocked');
+		if (($target_map) && ($id_areamap) && ($blocked == 0)){
 			$.post('/kqa/Maps/loadLocalMap/', {
 				id_areamap:		$target_map,
 				id_parentmap:	$id_areamap
@@ -90,6 +91,8 @@ $('document').ready(function() {
 								contentShowData("#map_area",	$return.map);
 								contentShowData("#level",		'Level '+$return.step);
 								contentShowData("#room",		'Room '+$return.step+' of '+$return.tot_steps);
+								// Show action options
+								$("#boxright").load("/kqa/Combat/actionOptions/");
 							}
 							cursorDefault(".local_map_tile");
 						});

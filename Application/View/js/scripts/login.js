@@ -6,10 +6,10 @@ $('document').ready(function() {
 		$.post('/kqa/LogIn/in', $formdata, function($data) {
 			$return = $data.trim();
 			if ($return == 'true') {
-				contentShowData('#test_result', 'Login OK');
+				contentShowData('#login_result', 'Login OK');
 				$(location).attr('href', '/kqa/');
 			} else {
-				contentShowData('#test_result', 'Login Failed');
+				contentShowData('#login_result', 'Login Failed');
 			}
 		});
 		return false;

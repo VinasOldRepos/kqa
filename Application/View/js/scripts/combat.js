@@ -27,14 +27,16 @@ $('document').ready(function() {
 							$("#current_monster").val('1');
 							if ($step == 1) {
 								//loadCharacterInfo;
-								$.post('/kqa/Characters/loadCharInfo/', {}, function($player) {
+								/*$.post('/kqa/Characters/loadCharInfo/', {}, function($player) {
 									contentShowData("#boxleft", $player.character);
-									$("#player_hp").val($player.player_hp);
+									if ($("#player_hp").val() <= 0) {
+										$("#player_hp").val($player.player_hp);
+									}
 									$("#player_min_dmg").val($player.player_min_dmg);
 									$("#player_max_dmg").val($player.player_max_dmg);
 									$("#player_me").val($player.player_me);
 									$("#player_ds").val($player.player_ds);
-									$("#timebonus").val($player.timebonus);
+									$("#timebonus").val($player.timebonus);*/
 
 									//loadMonsterList();
 									$.post('/kqa/Combat/loadMonsterList/', {
@@ -56,7 +58,7 @@ $('document').ready(function() {
 									contentShowData("#center", $return.trim());
 									loadQuestion(false, $id_areamap);
 									cursorDefault("#center");
-								});
+								//});
 							} else {
 								//loadMonsterList();
 								$.post('/kqa/Combat/loadMonsterList/', {
@@ -89,6 +91,10 @@ $('document').ready(function() {
 		document.body.style.cursor	= 'pointer';
 	}).live("mouseout", function() {
 		document.body.style.cursor	= 'default';
+	});
+
+	$("#load_potion").live("click", function() {
+		openFancybox('/kqa/Combat/loadBagContents/', 304, 504, true);
 	});
 
 	$("#box_run_round").live("click", function() {
@@ -143,12 +149,108 @@ $('document').ready(function() {
 		return false;
 	});
 
+	$(".bag_item").live("click", function() {
+		$id_item			= $(this).attr('key');
+		if ($id_item) {
+			$.post('/kqa/Combat/useItem/', {
+				id_item:	$id_item
+			}, function($return) {
+				if ($return) {
+					// Get item info
+					$bonus			= parseInt($return.bonus);
+					$type			= parseInt($return.type);
+					$max_hp			= parseInt($return.max_hp);
+					$char_hp		= parent.$("#player_hp").val();
+					$char_hp		= ($char_hp) ? parseInt($char_hp) : 0;
+					// If it's a healing potion
+					if ($type == 1) {
+						$char_hp	= $char_hp + $bonus;
+						$char_hp	= ($char_hp > $max_hp) ? $max_hp : $char_hp;
+					// If its a temp hit potion
+					} else if ($type == 5) {
+						$char_hp	= ($char_hp == 0) ? $max_hp + $bonus : $char_hp + $bonus;
+					}
+					// Take it out of the bag
+					if (($type == 1) || ($type == 5)) {
+						parent.$.post('/kqa/Characters/removeFromInventory/', {
+							id_item:	$id_item
+						}, function($return) {
+							$return		= $return.trim();
+							if ($return != 'ok') {
+								alert("Sorry,\n\nSomething prevented us from removing this item from your inventory.\n\nError: "+$return);
+							}
+						});
+						parent.$("#player_hp").val($char_hp);
+						parent.$("#current_hp").html($char_hp);
+					}
+					parent.$.fancybox.close();
+				} else {
+					alert('Sorry,\n\nThere was a problem when using that item.');
+				}
+			});
+			// Hide this option
+			$(this).hide();
+		}
+	});
+
 	/*/
 	$(".radio_answer_opt").live("click", function() {
 		alert($("#correct").val());
 		return false;
 	});
 	/*/
+
+	$("#use_talisman").live("click", function() {
+		$id_inventory	= $(this).attr('key');
+		$id_areamap		= parent.$("#id_areamap").val();
+		$step			= parent.$("#step").val();
+		if (($id_inventory) && ($id_areamap) && ($step)) {
+			// Load/reset character info
+			parent.$.post('/kqa/Characters/loadCharInfo/', {}, function($player) {
+				contentShowData("#boxleft", $player.character);
+				$("#player_hp").val($player.player_hp);
+				$("#player_min_dmg").val($player.player_min_dmg);
+				$("#player_max_dmg").val($player.player_max_dmg);
+				$("#player_me").val($player.player_me);
+				$("#player_ds").val($player.player_ds);
+				$("#timebonus").val($player.timebonus);
+				// Erase item from inventory
+				$.post('/kqa/Characters/removeFromIntenvory/', {
+					id_inventory:	$id_inventory
+				}, function ($return) {
+					$return	= $return.trim();
+					if ($return != 'ok') {
+						alert("Sorry,\n\nFor some reason we couldn't exclude that item from your inventory.\n\nError: "+$return);
+					}
+				});
+			});
+			// Go back to the dungeon right where the user last was
+			//loadEncounterMap();
+			parent.$.post('/kqa/Maps/loadEncounterArea/', {
+				id_areamap:		$id_areamap,
+				step:			$step
+			}, function($return) {
+				if ($return) {
+					$("#id_parentmap").val($return.$id_parentmap);
+					$("#id_areamap").val($return.id_areamap);
+					$("#target").val($return.target);
+					$("#tot_monsters").val($return.tot_monsters);
+					$("#current_monster").val($return.current_monster);
+					$("#step").val($return.step);
+					$("#tot_steps").val($return.tot_steps);
+					contentHide("#area_name");
+					contentHide("#map_area");
+					contentShowData("#area_name",	$return.area_name);
+					contentShowData("#center",	'<div id="map_area" class="map_area" style="margin-left: 130px; display: block;">'+$return.map+'</div>');
+					contentShowData("#room",		'Room '+$return.step+' of '+$return.tot_steps);
+				}
+				cursorDefault(".local_map_tile");
+			});
+			// Close fancybox
+			parent.$.fancybox.close();
+		}
+		return false;
+	});
 
 });
 
@@ -320,6 +422,9 @@ function restartCombat() {
 	// If this step is over
 	if (($current_monster > $tot_monsters) && ($step != $tot_steps)) {
 		//$("#step").val('1')
+		// Show action options
+		$("#boxright").load("/kqa/Combat/actionOptions/");
+		// Load encounter map
 		loadEncounterMap();
 	// If dungeon is over
 	} else if (($current_monster > $tot_monsters) && ($step == $tot_steps)) {
@@ -544,7 +649,19 @@ function dungeonEnd() {
 					speedOut		: 200,
 					type			: 'iframe',
 					onClosed		: function() {
-					// Go to parent map
+						// Load/reset Char info
+						$.post('/kqa/Characters/loadCharInfo/', {}, function($player) {
+							contentShowData("#boxleft", $player.character);
+							if ($("#player_hp").val() <= 0) {
+								$("#player_hp").val($player.player_hp);
+							}
+							$("#player_min_dmg").val($player.player_min_dmg);
+							$("#player_max_dmg").val($player.player_max_dmg);
+							$("#player_me").val($player.player_me);
+							$("#player_ds").val($player.player_ds);
+							$("#timebonus").val($player.timebonus);
+						});
+						// Go to parent map
 						$.post('/kqa/Maps/loadParentMap/', {
 							id_areamap:	$id_areamap
 						}, function($return) {
