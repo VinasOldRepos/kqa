@@ -21,7 +21,7 @@ body						{background:url('/kqa/Application/View/img/background.jpg') no-repeat 
 #next_tutor_text:hover	{cursor: pointer;}
 #back_localmap:hover	{cursor: pointer;}
 
-#top 									{width:100%;height:245px;margin:-85px auto auto;background:url('/kqa/Application/View/img/background-top.png') no-repeat scroll top center transparent; display:inline-block; overflow:hidden; position:relative; index:0;}
+#top 									{width:100%;height:230px;margin:-85px auto auto;background:url('/kqa/Application/View/img/background-top.png') no-repeat scroll top center transparent; display:inline-block; overflow:hidden; position:relative; index:0;}
 #top .charinfo							{width:1200px;max-width:1400px;height:35px;margin:95px auto auto;}
 #top .charinfo .goldcoins				{width:200px;height:35px;float:left;background:url('/kqa/Application/View/img/img-goldcoins.png') no-repeat scroll 45px -5px transparent;padding:5px 0 0 90px;font: 16px 'GameFont', Arial, Verdana;color:#fecb00;}
 #top .charinfo .goldcoins #gold			{float: right; width: 80px;}

@@ -219,4 +219,29 @@ $('document').ready(function() {
 			});
 		}
 	});
+
+	$("#flee_dungeon").live("click", function() {
+		$id_areamap	= $("#id_areamap").val();
+		if ($id_areamap) {
+			$.post('/kqa/Maps/loadParentMap/', {
+				id_areamap: $id_areamap
+			}, function($return) {
+				if ($return) {
+					$("#id_parentmap",				$return.id_parentmap);
+					contentHide("#area_name");
+					contentHide("#center");
+					$("#center").html('');
+					$("#turn").html('');
+					$("#boxright").html('');
+					$("#room").html('');
+					contentShowData("#area_name",	$return.area_name);
+					contentShowData("#center",		'<div class="map_area" id="map_area" style="margin-left: 130px;">'+$return.map+'</div>');
+					contentShowData("#level",		'Level '+$return.level);
+				} else {
+					alert("Sorry,\n\nWe weren't able to redirect you to the local map you were before this dungeon.\nWe are working on the problem.\n\nMeanhile, please, try reloading the world of Sophia.\n\nThank you.");
+				}
+			});
+		}
+	});
+
 });

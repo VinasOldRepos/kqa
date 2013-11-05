@@ -128,9 +128,7 @@
 							$ids	= ($ids) ? $ids.','.$link['id_map_target'] : $link['id_map_target'];
 						}
 						$mouseovers	= $RepMap->getAllMouseOversByMapId($ids);
-					}
-					// Get branch ids
-					if ($links) {
+						// Get branch ids
 						for ($i = 0; $i < count($links); $i++) {
 							if ($links[$i]['id_map_target'] > 0) {
 								$id_field	= $RepMap->getFieldIdByMapId($links[$i]['id_map_target']);
@@ -360,15 +358,33 @@
 				// Load World Map info
 				$map	= $RepMap->getMapById($id_areamap);
 				if ($map) {
+					$navigation		= $RepMap->getNavigationLinkByAreaId($id_areamap);
 					// Get linking info
-					$links	= $RepMap->getLinksIconsByAreaId($id_areamap);
+					$links			= $RepMap->getLinksIconsByAreaId($id_areamap);
 					if ($links) {
 						foreach ($links as $link) {
 							$ids	= ($ids) ? $ids.','.$link['id_map_target'] : $link['id_map_target'];
 						}
 						$mouseovers	= $RepMap->getAllMouseOversByMapId($ids);
+						// Get branch ids
+						for ($i = 0; $i < count($links); $i++) {
+							if ($links[$i]['id_map_target'] > 0) {
+								$id_field	= $RepMap->getFieldIdByMapId($links[$i]['id_map_target']);
+								$links[$i]['id_field'] = ($id_field) ? $id_field : 0;
+							} else {
+								$links[$i]['id_field'] = 0;
+							}
+						}
+						$RepQuestion		= new RepQuestion();
+						for ($i = 0; $i < count($links); $i++) {
+							if ($links[$i]['id_field'] > 0) {
+								$id_branch	= $RepQuestion->getBranchIdByFieldId($links[$i]['id_field']);
+								$links[$i]['id_branch'] = ($id_branch) ? $id_branch : 0;
+							} else {
+								$links[$i]['id_branch'] = 0;
+							}
+						}
 					}
-					$navigation		= $RepMap->getNavigationLinkByAreaId($id_areamap);
 					// Model world and return
 					$return['id_areamap']	= $map['id'];
 					$return['area_name']	= $map['vc_name'];

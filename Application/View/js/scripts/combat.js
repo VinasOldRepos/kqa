@@ -1,7 +1,7 @@
 $('document').ready(function() {
 
 	// What happens when user clicks on an encounter map tile
-	$(".encounter_map_tile").live("click", function() {
+	$(".encounter_map_tile, #next_area").live("click", function() {
 		cursorWait(".encounter_map_tile");
 		$id_areamap		= $("#id_areamap").val();
 		$step			= $("#step").val();

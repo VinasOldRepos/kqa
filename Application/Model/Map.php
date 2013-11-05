@@ -63,13 +63,13 @@
 				if ($navigation) {
 					foreach ($navigation as $link) {
 						if ($link['vc_direction'] == 'up') {
-							$return	.= '<div class="go_up go pointer" key="'.$link['id_map_target'].'">up</div>'.PHP_EOL;
+							$return	.= '<div class="go_up go pointer" key="'.$link['id_map_target'].'"><img src="/kqa/Application/View/img/img_arrow_up.gif" width="19" height="17" /></div>'.PHP_EOL;
 						} else if ($link['vc_direction'] == 'left') {
-							$return	.= '<div class="go_left go pointer" key="'.$link['id_map_target'].'">&lt;-</div>'.PHP_EOL;
+							$return	.= '<div class="go_left go pointer" key="'.$link['id_map_target'].'"><img src="/kqa/Application/View/img/img_arrow_left.gif" width="17" height="19" /></div>'.PHP_EOL;
 						} else if ($link['vc_direction'] == 'right') {
-							$return	.= '<div class="go_right go pointer" key="'.$link['id_map_target'].'">-&gt;</div>'.PHP_EOL;
+							$return	.= '<div class="go_right go pointer" key="'.$link['id_map_target'].'"><img src="/kqa/Application/View/img/img_arrow_right.gif" width="17" height="19" /></div>'.PHP_EOL;
 						} else if ($link['vc_direction'] == 'down') {
-							$return	.= '<div class="go_down go pointer" key="'.$link['id_map_target'].'">down</div>'.PHP_EOL;
+							$return	.= '<div class="go_down go pointer" key="'.$link['id_map_target'].'"><img src="/kqa/Application/View/img/img_arrow_down.gif" width="19" height="17" /></div>'.PHP_EOL;
 						}
 					}
 				}
@@ -116,7 +116,7 @@
 			}
 			if (($map) && ($id_parentmap) && ($parent_areatype)) {
 				//$return	.= '<input type="hidden" name="id_areamap" id="id_areamap" value="'.$map['id'].'">'.PHP_EOL;
-				$return	.= '<div class="go_left go pointer" key="'.$id_parentmap.'" type="'.$parent_areatype.'" style="margin-left: -20px;">&lt;-</div>'.PHP_EOL;
+				$return	.= '<div class="go_left go pointer" key="'.$id_parentmap.'" type="'.$parent_areatype.'" style="margin-top: 156px;"><img src="/kqa/Application/View/img/img_arrow_left.gif" width="17" height="19" /></div>'.PHP_EOL;
 				for ($i = 1; $i <= 100; $i++) {
 					if ($i == 1) {
 						$return	.= '<div class="map_row">'.PHP_EOL;
@@ -154,7 +154,6 @@
 				}
 			}
 			if (($map) && ($vis_tiles) && ($id_parentmap)) {
-				//$return			.= '<div class="go_left go pointer" key="'.$id_parentmap.'" type="'.$parent_areatype.'" style="margin-left: -20px;">&lt;-</div>'.PHP_EOL;
 				for ($i = 1; $i <= 100; $i++) {
 					$visible	= false;
 					if ($i == 1) {
