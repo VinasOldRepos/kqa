@@ -17,14 +17,14 @@ $('document').ready(function() {
 				}, function($return) {
 					$return	= $return.trim();
 					if ($return) {
-						/*if ($place == 'bothhands') {
+						if ($place == 'bothhands') {
 							$("#mainhand").html($item_name);
-							$("#offhand").html('(busy)');
+							$("#offhand").html($item_name);
 						} else if ($place == 'offhand') {
 							$("#offhand").html($item_name);
 						} else {
 							$("#"+$place).html($item_name);
-						}*/
+						}
 						$("#"+$place).html($item_name);
 						$("#inventory").html($return);
 					} else {
@@ -51,14 +51,24 @@ $('document').ready(function() {
 	$(".place").live("click", function() {
 		$id_item	= $(this).attr('key');
 		$place		= $(this).attr('id');
+		$main_hand	= $("#mainhand").attr('key');
+		$off_hand	= $("#offhand").attr('key');
 		if ($place) {
 			// Remove Item from that spot
+			if (($id_item) && ($id_item == $main_hand) && ($id_item == $off_hand)) {
+				$("#mainhand").html('-');
+				$("#offhand").html('-');
+			} else {
+				$("#"+$place).html('-');
+			}
 			$.post('/kqa/Characters/removeWearable/', {
-				place:		$place
+				place:		$place,
+				id_item:	$id_item,
+				main_hand:	$main_hand,
+				off_hand:	$off_hand
 			}, function($return) {
 				$return	= $return.trim();
 				if ($return) {
-					$("#"+$place).html('-');
 					$("#inventory").html($return);
 				} else {
 					alert("Sorry,\n\nwe weren't able to unequip this item from you.");

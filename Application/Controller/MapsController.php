@@ -190,14 +190,11 @@
 			$mouseovers		= false;
 			$ids			= false;
 			$id_areamap		= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
-			$id_parentmap	= (isset($_POST['id_parentmap'])) ? trim($_POST['id_parentmap']) : false;
 			// If values were sent
 			if ($id_areamap) {
 				// Load Parent map's info
-				if (!$id_parentmap) {
-					$parent			= $RepMap->getParentMapInfoIdByMapId($id_areamap);
-					$id_parentmap	= ($parent) ? $parent['id'] : false;
-				}
+				$parent			= $RepMap->getParentMapInfoIdByMapId($id_areamap);
+				$id_parentmap	= ($parent) ? $parent['id'] : false;
 				// Load Map info
 				$map				= $RepMap->getMapById($id_areamap);
 				// Get linking info

@@ -122,6 +122,7 @@
 			$total_time_bonus	= 0;
 			$min_me				= 0;
 			$max_me				= 0;
+			$last_id			= 0;
 			// If values were sent
 			if ($user) {
 				// Get character's info
@@ -151,6 +152,7 @@
 							if (($item['id_type'] == 5) || ($item['id_type'] == 6)) {
 								$min_me			= $item['int_me_min'];
 								$max_me			= $item['int_me_max'];
+								$last_id		= $item['id'];
 							}
 						}
 					}
@@ -225,7 +227,7 @@
 			// if values were sent
 			if (($id_item) && ($place)) {
 				// Get Character id
-				$id_char	= $RepCharacter->getCharIdByUserId($user['id']);
+				$id_char				= $RepCharacter->getCharIdByUserId($user['id']);
 				// Save item position in the database
 				$RepCharacter->placeWearable($id_char, $id_item, $place);
 				// Load Player's inventory
@@ -289,12 +291,20 @@
 			$return			= false;
 			$user			= Session::getVar('user');
 			$place			= (isset($_POST['place'])) ? trim($_POST['place']): false;
+			$id_item		= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
+			$main_hand		= (isset($_POST['main_hand'])) ? trim($_POST['main_hand']): false;
+			$off_hand		= (isset($_POST['off_hand'])) ? trim($_POST['off_hand']): false;
 			// if values were sent
 			if ($place) {
 				// Get Character id
 				$id_char	= $RepCharacter->getCharIdByUserId($user['id']);
 				// Save item position in the database
-				$RepCharacter->placeWearable($id_char, 0, $place);
+				if (($id_item) && ($id_item == $main_hand) && ($id_item == $off_hand)) {
+					$RepCharacter->placeWearable($id_char, 0, "mainhand");
+					$RepCharacter->placeWearable($id_char, 0, "offhand");
+				} else {
+					$RepCharacter->placeWearable($id_char, 0, $place);
+				}
 				// Load Player's inventory
 				$inventory				= ($id_char) ? $RepCharacter->getAllInventoryContentsByCharId($id_char) : false;
 				// Get wore items names

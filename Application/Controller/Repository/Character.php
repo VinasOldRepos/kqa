@@ -402,6 +402,11 @@
 					case 'feet' :
 						$field[]	= 'id_combatitem_feet';
 						break;
+					case 'bothhands' :
+						$data[]		= $id;
+						$field[]	= 'id_combatitem_mainhand';
+						$field[]	= 'id_combatitem_offhand';
+						break;
 					default:
 						$field		= false;
 						break;

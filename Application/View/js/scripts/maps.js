@@ -5,13 +5,11 @@ $('document').ready(function() {
 		cursorWait(".world_map_tile");
 		clearInterval(window.tileinfo);
 		contentHide("#tile_info");
-		$target_map				= $(this).attr('map');
-		$id_areamap				= $("#id_areamap").val();
+		$id_areamap				= $(this).attr('map');
 		$blocked				= $(this).attr('blocked');
-		if (($target_map) && ($id_areamap) && ($blocked == 0)){
+		if (($id_areamap) && ($blocked == 0)){
 			$.post('/kqa/Maps/loadLocalMap/', {
-				id_areamap:		$target_map,
-				id_parentmap:	$id_areamap
+				id_areamap:		$id_areamap
 			}, function($return) {
 				if ($return) {
 					$("#id_parentmap").val($id_areamap);
