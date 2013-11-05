@@ -196,3 +196,7 @@ body						{background:url('/kqa/Application/View/img/background.jpg') no-repeat 
 	margin-left:	100px;
 	float:			left;
 }
+
+.pointer:hover {
+	cursor:	pointer;
+}

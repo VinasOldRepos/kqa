@@ -107,31 +107,37 @@ $('document').ready(function() {
 		$player_hp			= $("#player_hp").val();
 		$monster_xp			= 1;
 		$answer				= $('#opt_'+$correct).attr('caption');
-		clearInterval(window.counter);
 		if (($id_course) && ($turn)) {
+			$("#box_rightanswer").hide();
 			//contentHide("#box_rightanswer");
 			// If it's player's turn
 			if ($turn == 'player') {
-				// if answer is correct
-				$("#id_answer").val($id_answer);
-				if ($correct == $id_answer) {
-					// Display message
-					contentShowData("#box_rightanswer", 'Answer was correct!.<br /><br />It was: "'+$answer+'"');
-					setTimeout(function(){contentHide("#box_rightanswer")},5000);
-					// Player hits monster
-					$action		= playerHits();
-				// If the Player got it wrong
-				} else {
-					// Display message
-					contentHide("#box_run_round");
-					setTimeout(function(){contentShow("#box_gotwrong")},2000);
-					contentShowData("#box_rightanswer", 'You were wrong.<br />The right answer was: "'+$answer+'"');
+				if ($id_answer) {
+					clearInterval(window.counter);
+					$(this).hide();
+					// if answer is correct
+					$("#id_answer").val($id_answer);
+					if ($correct == $id_answer) {
+						// Display message
+						contentShowData("#box_rightanswer", 'Answer was correct!.<br /><br />It was: "'+$answer+'"');
+						setTimeout(function(){contentHide("#box_rightanswer")},5000);
+						// Player hits monster
+						$action		= playerHits();
+					// If the Player got it wrong
+					} else {
+						// Display message
+						contentHide("#box_run_round");
+						setTimeout(function(){contentShow("#box_gotwrong")},2000);
+						contentShowData("#box_rightanswer", 'You were wrong.<br />The right answer was: "'+$answer+'"');
+					}
 				}
 			// If it's monster's turn
 			} else {
 				$action		= monstersTurn();
 			}
-			performAction($action);
+			if ($action) {
+				performAction($action);
+			}
 		}
 		return false;
 	});
@@ -140,6 +146,7 @@ $('document').ready(function() {
 		$id_course	= $("#id_course").val();
 		loadQuestion($id_course);
 		contentHide("#box_gotwrong");
+		$("#box_rightanswer").hide();
 		setTimeout(function(){contentShow("#box_run_round")},2000);
 	});
 
@@ -285,9 +292,10 @@ function loadQuestion($id_course, $id_areamap) {
 				$id_question		= $return.id_question;
 				// If it's player's turn
 				if ($turn == 'player') {
+					$("#box_run_round").show();
 					// Display captions, time and activate timer
 					$("#turn").html("Turn: Player");
-					contentHide("#box_rightanswer");
+					$("#box_rightanswer").hide();
 					$time_limit		= parseInt($return.time_limit) * 1000;
 					if ($timebonus > 0) {
 						$time_limit	= $time_limit + $time_limit * ($timebonus / 100);
@@ -483,7 +491,7 @@ function loadLocalMap($id_areamap, $mode) {
 					parent.$("#room").html('');
 					parent.$("#turn").html('');
 					parent.$("#boxright").html('');
-					parent.$("#boxleft").html('');
+					//parent.$("#boxleft").html('');
 					parent.$("#center").html('<div id="map_area" class="map_area" style="margin-left: 130px; display: block;">'+$return.map+'</div>');
 					parent.$("#id_parentmap").val($return.id_parentmap);
 					parent.$("#area_name").html($return.area_name);
@@ -595,6 +603,19 @@ function performAction($action) {
 			$id_areamap			= $("#id_areamap").val();
 			// Display message and options
 			openFancybox('/kqa/Alerts/PlayerDies/'+$id_areamap, 404, 254, false);
+			// Reload player's info
+			// Load/reset Char info
+			$.post('/kqa/Characters/loadCharInfo/', {}, function($player) {
+				contentShowData("#boxleft", $player.character);
+				if ($("#player_hp").val() <= 0) {
+					$("#player_hp").val($player.player_hp);
+				}
+				$("#player_min_dmg").val($player.player_min_dmg);
+				$("#player_max_dmg").val($player.player_max_dmg);
+				$("#player_me").val($player.player_me);
+				$("#player_ds").val($player.player_ds);
+				$("#timebonus").val($player.timebonus);
+			});
 			// Redirect to the parent local map
 			//$(location).attr('href', '/kqa/Maps/Sophia/');
 		// If User won

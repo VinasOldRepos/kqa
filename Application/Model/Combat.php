@@ -21,7 +21,7 @@
 			if ($answers) {
 				foreach ($answers as $answer) {
 					$correct	= ((!$correct) && ($answer['boo_correct'] == 1)) ? $answer['id'] : $correct;
-					$return		.= '<input type="radio" name="answer_opt" id="opt_'.$answer['id'].'" value="'.$answer['id'].'" caption="'.$answer['vc_answer'].'" class="radio_answer_opt" /> '.$answer['vc_answer'].'<br />'.PHP_EOL;
+					$return		.= '<input type="radio" name="answer_opt" id="opt_'.$answer['id'].'" value="'.$answer['id'].'" caption="'.$answer['vc_answer'].'" class="radio_answer_opt pointer" /><label for="opt_'.$answer['id'].'" class="pointer">'.$answer['vc_answer'].'</label><br />'.PHP_EOL;
 				}
 				//$return			.= '<input type="hidden" name="correct" id="correct" value="'.md5($correct).'" />'.PHP_EOL;
 			}
