@@ -100,14 +100,16 @@
 						$item_ids[]			= ($combat_items['id_combatitem_leftfinger'] > 0) ? $combat_items['id_combatitem_leftfinger'] : false;
 						$item_ids[]			= ($combat_items['id_combatitem_legs'] > 0) ? $combat_items['id_combatitem_legs'] : false;
 						$item_ids[]			= ($combat_items['id_combatitem_feet'] > 0) ? $combat_items['id_combatitem_feet'] : false;
-						$combat_items	= $RepCharacter->getAllCombatItems($item_ids);
-						foreach ($combat_items as $item) {
-							$total_me_bonus		= $total_me_bonus + $item['int_magic_me'];
-							$total_ds			= $total_ds + $item['int_ds'] + $item['int_magic_ds'];
-							$total_time_bonus	= $total_time_bonus + $item['int_time'];
-							if (($item['id_type'] == 5) || ($item['id_type'] == 6)) {
-								$min_me			= $item['int_me_min'];
-								$max_me			= $item['int_me_max'];
+						$combat_items		= ($combat_items = $RepCharacter->getAllCombatItems($item_ids)) ? $combat_items : false;
+						if ($combat_items) {
+							foreach ($combat_items as $item) {
+								$total_me_bonus		= $total_me_bonus + $item['int_magic_me'];
+								$total_ds			= $total_ds + $item['int_ds'] + $item['int_magic_ds'];
+								$total_time_bonus	= $total_time_bonus + $item['int_time'];
+								if (($item['id_type'] == 5) || ($item['id_type'] == 6)) {
+									$min_me			= $item['int_me_min'];
+									$max_me			= $item['int_me_max'];
+								}
 							}
 						}
 					}

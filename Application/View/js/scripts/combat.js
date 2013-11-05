@@ -126,7 +126,7 @@ $('document').ready(function() {
 					// If the Player got it wrong
 					} else {
 						// Display message
-						contentHide("#box_run_round");
+						$("#box_run_round").hide();
 						setTimeout(function(){contentShow("#box_gotwrong")},2000);
 						contentShowData("#box_rightanswer", 'You were wrong.<br />The right answer was: "'+$answer+'"');
 					}
@@ -147,7 +147,7 @@ $('document').ready(function() {
 		loadQuestion($id_course);
 		contentHide("#box_gotwrong");
 		$("#box_rightanswer").hide();
-		setTimeout(function(){contentShow("#box_run_round")},2000);
+		//setTimeout(function(){$("#box_run_round").show()},2000);
 	});
 
 	$("#back_to_localmap").live("click", function() {
@@ -290,9 +290,9 @@ function loadQuestion($id_course, $id_areamap) {
 				$("#id_course").val($return.id_course);
 				$("#box_counter").html();
 				$id_question		= $return.id_question;
+				$("#box_run_round").show();
 				// If it's player's turn
 				if ($turn == 'player') {
-					$("#box_run_round").show();
 					// Display captions, time and activate timer
 					$("#turn").html("Turn: Player");
 					$("#box_rightanswer").hide();
@@ -591,7 +591,10 @@ function displayCounter($period) {
 function performAction($action) {
 	if ($action) {
 		if ($action == 'loadQuestion') {
-			loadQuestion($("#id_course").val());
+			setTimeout(function() {
+				contentHide("#box_rightanswer");
+				loadQuestion($("#id_course").val());
+			}, 2000);
 		} else if ($action == 'monster_hit') {
 			contentShowData("#box_rightanswer", 'The monster got it right.<br />The answer was "'+$answer+'".');
 			setTimeout(function() {
