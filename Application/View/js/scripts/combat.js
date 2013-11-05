@@ -430,13 +430,15 @@ function restartCombat() {
 	// If this step is over
 	if (($current_monster > $tot_monsters) && ($step != $tot_steps)) {
 		//$("#step").val('1')
-		// Show action options
-		$("#boxright").load("/kqa/Combat/actionOptions/");
-		// Load encounter map
-		loadEncounterMap();
+		setTimeout(function() {
+			// Show action options
+			$("#boxright").load("/kqa/Combat/actionOptions/");
+			// Load encounter map
+			loadEncounterMap();
+		}, 2000);
 	// If dungeon is over
 	} else if (($current_monster > $tot_monsters) && ($step == $tot_steps)) {
-		dungeonEnd();
+		setTimeout(function() { dungeonEnd() }, 2000);
 	// If it's next monster
 	} else {
 		$("#step").val($step);
