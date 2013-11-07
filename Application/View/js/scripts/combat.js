@@ -642,16 +642,18 @@ function performAction($action) {
 
 function dungeonEnd() {
 	// Variables
-	$id_aremap	= $("#id_areamap").val();
+	$id_areamap	= $("#id_areamap").val();
 	$tot_xp		= $("#tot_xp").val();
 	$("#tot_xp").val(0);
 	$("#target").val('');
-	if (($id_aremap) && ($tot_xp)) {
+	if (($id_areamap) && ($tot_xp)) {
 		// Save Xp to DB
 		saveXP($tot_xp);
+		// Alter Encounter Log
+		encounterLog($id_areamap);
 		// Calculate treasure drop
 		$.post('/kqa/Combat/calculateTreasureDrop/', {
-			id_aremap:	$id_aremap
+			id_areamap:	$id_areamap
 		}, function($return) {
 			if ($return) {
 				// Save Gold  -- detele this -> add to this /Combat/calculateTreasureDrop procedure	
@@ -722,5 +724,11 @@ function saveXP($tot_xp) {
 				contentShowData("#xp", $return);
 			}
 		});
+	}
+}
+
+function encounterLog($id_areamap) {
+	if ($id_areamap) {
+		$.post('/kqa/Combat/encounterLog/', { id_areamap: $id_areamap }, function() {} );
 	}
 }

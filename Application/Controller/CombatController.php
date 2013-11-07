@@ -363,12 +363,13 @@
 			$level1			= false;
 			$level2			= false;
 			$user			= Session::getVar('user');
-			$id_areamap		= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : 201;
+			$id_areamap		= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
 			$sorted			= rand(1, 100);
 			// If data was sent
 			if ($id_areamap) {
 				// Get area level
-				$level 		= ($level = $RepMap->getAreaInfoByMapId($id_areamap)) ? $level['int_level'] : false;
+				$level		= $RepMap->getAreaInfoByMapId($id_areamap);
+				$level 		= ($level) ? $level['int_level'] : false;
 				// Calculate treasure drop according to level
 				switch ($level) {
 					// If it's a level 1 dungeon
@@ -881,6 +882,7 @@
 				$return['gold']			= $gold;
 				$return['name_item1']	= ($item1) ? $item1['vc_name'] : false;
 				$return['name_item2']	= ($item2) ? $item2['vc_name'] : false;
+				$return['level']		= $level;
 			}
 			// Return
 			header('Content-Type: application/json');
@@ -921,6 +923,25 @@
 			// Return
 			header('Content-Type: application/json');
 			echo json_encode($return);
+		}
+
+		public function encounterLog() {
+			// Classes
+			$RepCombat		= new RepCombat();
+			$RepCharacter	= new RepCharacter();
+			// Initialize variables
+			$return			= false;
+			$user			= Session::getVar('user');
+			$id_areamap		= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
+			// If values were sent
+			if ($id_areamap) {
+				// Get Char Id
+				$id_char	= $RepCharacter->getCharIdByUserId($user['id']);
+				// Make the log and prepare return
+				$return		= ($RepCombat->encounterLog($id_areamap, $id_char)) ? 'ok' : false;
+			}
+			// Return
+			echo $return;
 		}
 
 	}

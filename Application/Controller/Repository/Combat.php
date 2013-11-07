@@ -92,4 +92,26 @@
 			return $return;
 		}
 
+		/*
+		Encounter Area Log - encounterLog($id_areamap, $id_character)
+			@param integer	- Area Map id
+			@param integer	- Character ID
+			@return format	- boolean
+		*/
+		public function encounterLog($id_areamap = false, $id_character = false) {
+			// Database Connection
+			$db				= $GLOBALS['db'];
+			if (($id_areamap) && ($id_character)) {
+				// Query and return
+				$encounter	= $db->getRow('tb_encounter_log', 'id, int_visits', "id_areamap = {$id_areamap} AND id_character = {$id_character}");
+				if ($encounter) {
+					$return	= ($db->updateRow('tb_encounter_log', array('id_areamap', 'id_character', 'int_visits'), array($id_areamap, $id_character, $encounter['int_visits'] + 1), 'id = '.$encounter['id'])) ? true : false;
+				} else {
+					$return	= ($db->insertRow('tb_encounter_log', array($id_areamap, $id_character, 1), array('id_areamap', 'id_character', 'int_visits'))) ? true : false;
+				};
+			}
+			// Return
+			return $return;
+		}
+
 	}

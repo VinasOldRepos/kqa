@@ -145,14 +145,15 @@
 						$ids[]			= ($combat_items['id_combatitem_legs'] > 0) ? $combat_items['id_combatitem_legs'] : false;
 						$ids[]			= ($combat_items['id_combatitem_feet'] > 0) ? $combat_items['id_combatitem_feet'] : false;
 						$combat_items	= $RepCharacter->getAllCombatItems($ids);
-						foreach ($combat_items as $item) {
-							$total_me_bonus		= $total_me_bonus + $item['int_magic_me'];
-							$total_ds			= $total_ds + $item['int_ds'] + $item['int_magic_ds'];
-							$total_time_bonus	= $total_time_bonus + $item['int_time'];
-							if (($item['id_type'] == 5) || ($item['id_type'] == 6)) {
-								$min_me			= $item['int_me_min'];
-								$max_me			= $item['int_me_max'];
-								$last_id		= $item['id'];
+						if ($combat_items) {
+							foreach ($combat_items as $item) {
+								$total_me_bonus		= $total_me_bonus + $item['int_magic_me'];
+								$total_ds			= $total_ds + $item['int_ds'] + $item['int_magic_ds'];
+								$total_time_bonus	= $total_time_bonus + $item['int_time'];
+								if (($item['id_type'] == 5) || ($item['id_type'] == 6)) {
+									$min_me			= $item['int_me_min'];
+									$max_me			= $item['int_me_max'];
+								}
 							}
 						}
 					}
@@ -181,11 +182,11 @@
 			$RepItem		= new RepItem();
 			$ModCharacter	= new ModCharacter();
 			// Initialize variables
-			$return				= false;
-			$user				= Session::getVar('user');
+			$return			= false;
+			$user			= Session::getVar('user');
 			// If there are values
 			if ($user) {
-				$id_char		= $RepCharacter->getCharIdByUserId($user['id']);
+				$id_char	= $RepCharacter->getCharIdByUserId($user['id']);
 				// Empty Player's bag
 				$RepCharacter->emptyBag($id_char);
 				// Load Player's inventory

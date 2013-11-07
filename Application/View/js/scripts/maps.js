@@ -56,7 +56,6 @@ $('document').ready(function() {
 				});
 			// If it's an encounter area
 			} else {
-
 				// User select gear fancybox
 				$.fancybox({
 					href			: '/kqa/Characters/selectGear/',
@@ -71,6 +70,20 @@ $('document').ready(function() {
 					speedOut		: 200,
 					type			: 'iframe',
 					onClosed		: function() {
+						// Load char info
+						$.post('/kqa/Characters/loadCharInfo/', {}, function($return) {
+							if ($return) {
+								$("#boxleft").html($return.character);
+								$("#player_hp").html($return.player_hp);
+								$("#player_min_dmg").html($return.player_min_dmg);
+								$("#player_max_dmg").html($return.player_max_dmg);
+								$("#player_me").html($return.player_me);
+								$("#player_ds").html($return.player_ds);
+								$("#timebonus").html($return.timebonus);
+							} else {
+								alert("Sorry,\n\nwe were not possible to retrieve your Character info.");
+							}
+						});
 						// Load encounter area
 						$.post('/kqa/Maps/loadEncounterArea/', {
 							id_areamap:		$target_map,
@@ -96,7 +109,6 @@ $('document').ready(function() {
 						});
 					}
 				});
-
 			}
 		} else {
 			cursorDefault(".local_map_tile");

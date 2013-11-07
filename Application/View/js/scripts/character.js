@@ -21,6 +21,12 @@ $('document').ready(function() {
 							$("#mainhand").html($item_name);
 							$("#offhand").html($item_name);
 						} else if ($place == 'offhand') {
+							$main_hand	= $("#mainhand").attr('key');
+							$off_hand	= $("#offhand").attr('key');
+							if ($main_hand == $off_hand) {
+								$("#mainhand").html('');
+								$("#mainhand").attr('key', '');
+							}
 							$("#offhand").html($item_name);
 						} else {
 							$("#"+$place).html($item_name);
