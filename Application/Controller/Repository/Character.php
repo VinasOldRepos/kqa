@@ -325,6 +325,42 @@
 		}
 
 		/*
+		Insert Character - newWearable($id_character)
+			@param integer	- Character id
+			@return format	- boolean
+		*/
+		public function newWearable($id_character = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Query set up
+			$data[]		= $id_character;
+			$data[]		= 0;
+			$data[]		= 0;
+			$data[]		= 0;
+			$data[]		= 0;
+			$data[]		= 0;
+			$data[]		= 0;
+			$data[]		= 0;
+			$data[]		= 0;
+			$data[]		= 0;
+			$data[]		= 0;
+			$fields[]	= 'id_character';
+			$fields[]	= 'id_combatitem_head';
+			$fields[]	= 'id_combatitem_neck';
+			$fields[]	= 'id_combatitem_chest';
+			$fields[]	= 'id_combatitem_back';
+			$fields[]	= 'id_combatitem_mainhand';
+			$fields[]	= 'id_combatitem_offhand';
+			$fields[]	= 'id_combatitem_rightfinger';
+			$fields[]	= 'id_combatitem_leftfinger';
+			$fields[]	= 'id_combatitem_legs';
+			$fields[]	= 'id_combatitem_feet';
+			$return		= ($id_character) ? $db->insertRow('tb_wearable', $data, $fields) : false;
+			// Return
+			return $return;
+		}
+
+		/*
 		Insert Item to Inventory - saveItemtoInventory($id_char, $id_item, $boo_bag, $boo_combat)
 			@return format	- Mixed array
 		*/

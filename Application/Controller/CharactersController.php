@@ -84,6 +84,7 @@
 				$id_user		= ($user = Session::getVar('user')) ? $user['id'] : false;
 				$id_character	= $RepCharacter->insetCharacter($id_user, $vc_name);
 				if ($id_character) {
+					$RepCharacter->newWearable($id_character);
 					Session::setVar('id_character', $id_character);
 					$return		= 'ok';
 				}
@@ -223,8 +224,8 @@
 			// Initialize variables
 			$return			= false;
 			$user			= Session::getVar('user');
-			$id_item		= (isset($_POST['id_item'])) ? trim($_POST['id_item']): false;
-			$place			= (isset($_POST['place'])) ? trim($_POST['place']): false;
+			$id_item		= (isset($_POST['id_item'])) ? trim($_POST['id_item']): 1;
+			$place			= (isset($_POST['place'])) ? trim($_POST['place']): 'mainhand';
 			// if values were sent
 			if (($id_item) && ($place)) {
 				// Get Character id

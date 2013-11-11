@@ -108,7 +108,7 @@ $('document').ready(function() {
 		$monster_xp			= 1;
 		$answer				= $('#opt_'+$correct).attr('caption');
 		if (($id_course) && ($turn)) {
-			$("#box_rightanswer").hide();
+			//$("#box_rightanswer").hide();
 			//contentHide("#box_rightanswer");
 			// If it's player's turn
 			if ($turn == 'player') {
@@ -119,7 +119,7 @@ $('document').ready(function() {
 					$("#id_answer").val($id_answer);
 					if ($correct == $id_answer) {
 						// Display message
-						contentShowData("#box_rightanswer", 'Answer was correct!.<br /><br />It was: "'+$answer+'"');
+						contentShowData("#box_rightanswer", 'Answer was correct!.<br /><br />It is: "'+$answer+'"');
 						setTimeout(function(){contentHide("#box_rightanswer")},5000);
 						// Player hits monster
 						$action		= playerHits();
@@ -127,8 +127,11 @@ $('document').ready(function() {
 					} else {
 						// Display message
 						$("#box_run_round").hide();
-						setTimeout(function(){contentShow("#box_gotwrong")},2000);
 						contentShowData("#box_rightanswer", 'You were wrong.<br />The right answer was: "'+$answer+'"');
+						setTimeout(function(){
+							$("#box_rightanswer").hide();
+							loadQuestion($("#id_course").val());
+						}, 4000);
 					}
 				}
 			// If it's monster's turn
@@ -293,6 +296,7 @@ function loadQuestion($id_course, $id_areamap) {
 				$("#box_run_round").show();
 				// If it's player's turn
 				if ($turn == 'player') {
+					$(".radio_answer_opt").show();
 					// Display captions, time and activate timer
 					$("#turn").html("Turn: Player");
 					$("#box_rightanswer").hide();
@@ -304,6 +308,8 @@ function loadQuestion($id_course, $id_areamap) {
 					window.counter	= displayCounter($time_limit);
 				// If it's monter's turn
 				} else {
+					// Hide radio buttons
+					$(".radio_answer_opt").css('visibility', 'hidden');
 					// Display captions
 					setTimeout(function(){contentHide("#box_rightanswer")}, 2000);
 					$("#turn").html("Turn: Monster");
@@ -394,7 +400,7 @@ function playerDamage($damage, $cancel_timecount) {
 	$player_hp		= $player_hp - $damage;
 	$("#player_hp").val($player_hp);
 	contentShow("#monster_hit");
-	setTimeout(function(){contentHide("#monster_hit")}, 2000);
+	setTimeout(function(){contentHide("#monster_hit")}, 4000);
 	if ($player_hp <= 0) {
 		$return		= 'player_lost';
 	} else {
@@ -596,11 +602,12 @@ function performAction($action) {
 				loadQuestion($("#id_course").val());
 			}, 2000);
 		} else if ($action == 'monster_hit') {
+			$("#box_run_round").hide();
 			contentShowData("#box_rightanswer", 'The monster got it right.<br />The answer was "'+$answer+'".');
 			setTimeout(function() {
 				contentHide("#box_rightanswer");
 				loadQuestion($("#id_course").val());
-			}, 2000);
+			}, 5000);
 			//loadQuestion($("#id_course").val());
 		// If player died
 		} else if ($action == 'player_lost') {
@@ -635,7 +642,7 @@ function performAction($action) {
 			});
 			$("#box_counter").html('');
 			addTreasure($monster_treasure);
-			restartCombat();
+			setTimeout(function() {restartCombat()}, 3000);
 		}
 	}
 }
