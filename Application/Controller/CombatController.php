@@ -229,26 +229,27 @@
 
 		public function loadQuestion() {
 			// Classes
-			$RepCombat			= new RepCombat();
-			$ModCombat			= new ModCombat();
+			$RepCombat				= new RepCombat();
+			$ModCombat				= new ModCombat();
 			// Variables
-			$return				= false;
-			$id_course			= (isset($_POST['id_course'])) ? trim($_POST['id_course']) : false;
-			$id_areamap			= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
-			$time_limit			= false;
-			$id_question		= false;
-			$correct			= false;
+			$return					= false;
+			$id_course				= (isset($_POST['id_course'])) ? trim($_POST['id_course']) : false;
+			$id_areamap				= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
+			$time_limit				= false;
+			$id_question			= false;
+			$correct				= false;
 			if ((!$id_course) || ($id_course == 'false')) {
-				$id_course		= $RepCombat->getCourseIdByMapId($id_areamap);
-				$id_course		= ($id_course) ? $id_course['id_course'] : false;
+				$id_course			= $RepCombat->getCourseIdByMapId($id_areamap);
+				$id_course			= ($id_course) ? $id_course['id_course'] : false;
 			}
 			if ($id_course) {
 				// Get question and Answers
-				$RepQuestion	= new RepQuestion();
-				$id_question	= ($id_question = $RepQuestion->getRandomQuestionIdByCourseId($id_course)) ? $id_question['id_question'] : false;
-				$question		= ($id_question) ? $RepQuestion->getQuestionById($id_question) : false;
-				$answers		= ($id_question) ? $RepQuestion->getAnswersByQuestionId($id_question) : false;
-				shuffle($answers);
+				$RepQuestion		= new RepQuestion();
+				$id_question		= ($id_question = $RepQuestion->getRandomQuestionIdByCourseId($id_course)) ? $id_question['id_question'] : false;
+				$question			= ($id_question) ? $RepQuestion->getQuestionById($id_question) : false;
+				//$id_question		= 745;
+				//$question			= $RepQuestion->getQuestionById($id_question);
+				$answers			= ($id_question) ? $RepQuestion->getAnswersByQuestionId($id_question) : false;
 				// Model Data
 				if ($question) {
 					$time_limit			= $question['int_timelimit'];
@@ -256,6 +257,7 @@
 					$question			= $question['tx_question'];
 				}
 				if ($answers) {
+					shuffle($answers);
 					foreach ($answers as $answer) {
 						if ($answer['boo_correct'] == 1) {
 							$correct	= $answer['id'];

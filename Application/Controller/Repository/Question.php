@@ -124,6 +124,7 @@
 			$db				= $GLOBALS['db_q'];
 			// Query set up
 			$num_answers	= $num_answers - 1;
+			//$db->rq('SET CHARACTER SET utf8');
 			$correct		= ($id) ? $db->getAllRows_Arr('tb_answer', '*', "id_question = {$id} AND boo_correct = 1") : false;
 			$incorrect		= ($id) ? $db->getAllRows_Arr('tb_answer', '*', "id_question = {$id} AND boo_correct = 0 LIMIT {$num_answers}") : false;
 			$return			= (($correct) && ($incorrect)) ? array_merge($correct, $incorrect) : false;
@@ -233,6 +234,27 @@
 			$return			= false;
 			// Query set up	
 			$return			= ($id) ? $db->getRow('tb_course', '*', "id = {$id}") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get Courses Names' By Id  - getCoursesNamesById($courses)
+			@param array	- courses info
+			@return format	- Mixed array
+		*/
+		public function getCoursesNamesById($courses = false) {
+			// Database Connection
+			$db				= $GLOBALS['db_q'];
+			// Initialize variables
+			$return			= false;
+			if ($courses) {
+				for ($i = 0; $i < count($courses); $i++) {
+					$courses[$i]['vc_name']	= ($course = $db->getRow('tb_course', 'vc_course', "id = ".$courses[$i]['id_course'])) ? $course['vc_course'] : false;
+				}
+				// Query set up	
+				$return		= $courses;
+			}
 			// Return
 			return $return;
 		}

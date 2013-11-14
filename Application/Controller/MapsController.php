@@ -84,6 +84,8 @@
 				// Load World Map info
 				$map					= $RepMap->getMapById($id_areamap);
 				if (($map) && ($character)) {
+					// Get open courses for this player
+					$courses			= $RepMap->getOpenCoursesCountMaps($character['id']);
 					// Get character's bag contents
 					//$combat_bag		= $RepCharacter->getCombatBagContentsByCharId($character['id']);
 					$combat_items		= $RepCharacter->getAllWoreItems($character['id']);
@@ -91,16 +93,16 @@
 					// Get Combat Items's data
 					if ($combat_items) {
 						$item_ids[]		= ($combat_items['id_combatitem_head'] > 0) ? $combat_items['id_combatitem_head'] : false;
-						$item_ids[]			= ($combat_items['id_combatitem_neck'] > 0) ? $combat_items['id_combatitem_neck'] : false;
-						$item_ids[]			= ($combat_items['id_combatitem_chest'] > 0) ? $combat_items['id_combatitem_chest'] : false;
-						$item_ids[]			= ($combat_items['id_combatitem_back'] > 0) ? $combat_items['id_combatitem_back'] : false;
-						$item_ids[]			= ($combat_items['id_combatitem_mainhand'] > 0) ? $combat_items['id_combatitem_mainhand'] : false;
-						$item_ids[]			= ($combat_items['id_combatitem_offhand'] > 0) ? $combat_items['id_combatitem_offhand'] : false;
-						$item_ids[]			= ($combat_items['id_combatitem_rightfinger'] > 0) ? $combat_items['id_combatitem_rightfinger'] : false;
-						$item_ids[]			= ($combat_items['id_combatitem_leftfinger'] > 0) ? $combat_items['id_combatitem_leftfinger'] : false;
-						$item_ids[]			= ($combat_items['id_combatitem_legs'] > 0) ? $combat_items['id_combatitem_legs'] : false;
-						$item_ids[]			= ($combat_items['id_combatitem_feet'] > 0) ? $combat_items['id_combatitem_feet'] : false;
-						$combat_items		= ($combat_items = $RepCharacter->getAllCombatItems($item_ids)) ? $combat_items : false;
+						$item_ids[]		= ($combat_items['id_combatitem_neck'] > 0) ? $combat_items['id_combatitem_neck'] : false;
+						$item_ids[]		= ($combat_items['id_combatitem_chest'] > 0) ? $combat_items['id_combatitem_chest'] : false;
+						$item_ids[]		= ($combat_items['id_combatitem_back'] > 0) ? $combat_items['id_combatitem_back'] : false;
+						$item_ids[]		= ($combat_items['id_combatitem_mainhand'] > 0) ? $combat_items['id_combatitem_mainhand'] : false;
+						$item_ids[]		= ($combat_items['id_combatitem_offhand'] > 0) ? $combat_items['id_combatitem_offhand'] : false;
+						$item_ids[]		= ($combat_items['id_combatitem_rightfinger'] > 0) ? $combat_items['id_combatitem_rightfinger'] : false;
+						$item_ids[]		= ($combat_items['id_combatitem_leftfinger'] > 0) ? $combat_items['id_combatitem_leftfinger'] : false;
+						$item_ids[]		= ($combat_items['id_combatitem_legs'] > 0) ? $combat_items['id_combatitem_legs'] : false;
+						$item_ids[]		= ($combat_items['id_combatitem_feet'] > 0) ? $combat_items['id_combatitem_feet'] : false;
+						$combat_items	= ($combat_items = $RepCharacter->getAllCombatItems($item_ids)) ? $combat_items : false;
 						if ($combat_items) {
 							foreach ($combat_items as $item) {
 								$total_me_bonus		= $total_me_bonus + $item['int_magic_me'];
@@ -149,15 +151,20 @@
 							}
 						}
 					}
+					// Get courses' names
+					$courses		= ($courses) ? $RepQuestion->getCoursesNamesById($courses) : false;
+					// Model world / map
 					if ($id_areamap <= 100) {
-						// Model world
 						$map		= $ModMap->world($map, $links, $mouseovers, $navigation);
 					} else {
-						// Model world
 						$map		= $ModMap->map($map, $id_parentmap, 'world', $links, $mouseovers);
 					}
+					// Model Course List
+					$courses		= ($courses) ? $ModMap->courseList($courses) : false;
 				}
 			}
+			// Prepare return
+			View::set('course_list',	$courses);
 			View::set('character',		$ModCombat->characterDisplay($character, $combat_items, $noncombat_bag));
 			View::set('player_hp',		$character['int_hp']);
 			View::set('player_min_dmg',	$min_me);
@@ -165,14 +172,13 @@
 			View::set('player_me',		$total_me_bonus);
 			View::set('player_ds',		$total_ds);
 			View::set('timebonus',		$total_time_bonus);
-
-			// Prepare return
-			View::set('id_areamap',	$id_areamap);
-			View::set('map',		$map);
-			View::set('area_name',	$area_name);
-			View::set('tokens',		$tokens);
-			View::set('gold',		$gold);
-			View::set('char_name',	$char_name);
+			View::set('id_areamap',		$id_areamap);
+			View::set('map',			$map);
+			View::set('area_name',		$area_name);
+			View::set('tokens',			$tokens);
+			View::set('gold',			$gold);
+			View::set('char_name',		$char_name);
+			View::set('id_parentmap',	0);
 			// Return
 			View::render('map');
 		}
@@ -447,4 +453,53 @@
 			// Return
 			View::render('partial_shop');
 		}
+
+		/*
+		Prints out Map Search-by-course Results - loadCourseMapList()
+			@return format	- jquery print
+		*/
+		public function loadCourseMapList() {
+			// Classes
+			$RepMap			= new RepMap();
+			$RepCharacter	= new RepCharacter();
+			$ModMap			= new ModMap();
+			// Initialize variables
+			$return			= false;
+			$id_course		= (isset($_POST['id_course'])) ? trim($_POST['id_course']) : false;
+			$id_char		= ($user = Session::getVar('user')) ? $RepCharacter->getCharIdByUserId($user['id']) : false;
+			// If values were sent
+			if (($id_course) && ($id_char)) {
+				// Get all open maps for that user, under given course
+				$maps		= $RepMap->getLocalMapsByCourseId($id_course);
+				// Model and prepare return
+				$return		= ($maps) ? $ModMap->listMaps($maps) : false;
+			}
+			// Return
+			echo $return;
+		}
+
+		/*
+		Prints out Map Search-by-course Results - searchMapByName()
+			@return format	- jquery print
+		*/
+		public function searchMapByName() {
+			// Classes
+			$RepMap			= new RepMap();
+			$RepCharacter	= new RepCharacter();
+			$ModMap			= new ModMap();
+			// Initialize variables
+			$return			= false;
+			$mapsearch		= (isset($_POST['mapsearch'])) ? trim($_POST['mapsearch']) : false;
+			$id_char		= ($user = Session::getVar('user')) ? $RepCharacter->getCharIdByUserId($user['id']) : false;
+			// If values were sent
+			if (($mapsearch) && ($id_char)) {
+				// Get all open maps for that user, under given course
+				$maps		= $RepMap->searchLocalMapsByName($mapsearch);
+				// Model and prepare return
+				$return		= ($maps) ? $ModMap->listMaps($maps) : false;
+			}
+			// Return
+			echo $return;
+		}
+
 	}

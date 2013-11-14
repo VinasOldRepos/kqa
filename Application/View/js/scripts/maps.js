@@ -30,7 +30,7 @@ $('document').ready(function() {
 		$text		= $(this).attr('text');
 		$pos		= $(this).position();
 		if (($text) && ($pos)) {
-			window.tileinfo	= showFlyingBox("#tile_info", 1000, $text, $pos.left+25, $pos.top+25);
+			window.tileinfo	= showFlyingBox("#tile_info", 500, $text, $pos.left+25, $pos.top+25);
 		}
 	}).live("mouseout", function() {
 		clearInterval(window.tileinfo);
@@ -122,7 +122,7 @@ $('document').ready(function() {
 			document.body.style.cursor	= 'pointer';
 		}
 		if (($text) && ($pos)) {
-			window.tileinfo	= showFlyingBox("#tile_info", 1000, $text, $pos.left+25, $pos.top+25);
+			window.tileinfo	= showFlyingBox("#tile_info", 500, $text, $pos.left+25, $pos.top+25);
 		}
 	}).live("mouseout", function() {
 		clearInterval(window.tileinfo);
@@ -165,6 +165,51 @@ $('document').ready(function() {
 		document.body.style.cursor	= 'pointer';
 	}).live("mouseout", function() {
 		document.body.style.cursor	= 'default';
+	});
+
+	// What happens when user search a map by name
+	$("#mapsearch").live("keypress", function(e) {
+		if (e.keyCode == 13) {
+			$mapsearch	= $(this).val();
+			if ($mapsearch) {
+				$.post('/kqa/Maps/searchMapByName/', { mapsearch: $mapsearch }, function ($return) {
+					if ($return) {
+						$('#center').html($return);
+					} else {
+						alert("Sorry,\n\nNo maps with that name were found.");
+					}
+				});
+			}
+		}
+	});
+
+	// What happens when user clicks on a course in the list
+	$(".course_row").live("click", function() {
+		$id_course	= $(this).attr('key');
+		if ($id_course) {
+			$.post('/kqa/Maps/loadCourseMapList/', { id_course: $id_course }, function($return) {
+				if ($return) {
+					$('#center').html($return);
+				} else {
+					alert("Sorry,\n\nWe couldn't find open maps under that course.");
+				}
+			});
+		}
+	});
+
+	// What happens when User clicks on a map result line
+	$(".maps_row").live("click", function() {
+		$id_areamap	= $(this).attr('key');
+		if ($id_areamap) {
+			$.post('/kqa/Maps/loadLocalMap/', { id_areamap: $id_areamap }, function($return) {
+				if ($return) {
+					$("#center").html('<div id="map_area" class="map_area" style="margin-left: 130px; display: block;">'+$return.map+'</div>');
+					$("#level").html('Level '+$return.level);
+					$("#id_parentmap").val($return.id_parentmap);
+					contentShowData("#area_name",	$return.area_name);
+				}
+			});
+		}
 	});
 
 	$(".opt_town").live("click", function() {

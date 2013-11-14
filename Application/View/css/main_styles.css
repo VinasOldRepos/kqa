@@ -49,8 +49,8 @@ body						{background:url('/kqa/Application/View/img/background.jpg') no-repeat 
 #content .center .question		{width:630px;height:25px;float:left; z-index:2;margin-top:-7px;padding:15px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
 #content .center .answers		{width:630px;min-height:80px;float:left; z-index:2;margin-top:-7px;padding:10px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
 #content .center .response		{width:225px;height:70px;float:left; z-index:2;padding:5px;color:#000; font:14px 'GameFont', arial; overflow:hidden;}
-#content .center .report			{width:380px;height:40px;float:left; z-index:2;margin-top:0px;padding:15px;color:#fff; font:12px arial; overflow:hidden;}
-#content .center .combat			{width:630px;height:70px;float:left; z-index:2;margin-top:-7px;padding:15px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
+#content .center .report		{position: absolute; margin-left: 250px; padding-top: 40px; width:380px;height:40px;float:left; z-index:2;margin-top:0px;padding:15px;color:#fff; font:12px arial; overflow:hidden;}
+#content .center .combat		{width:630px;height:70px;float:left; z-index:2;margin-top:-7px;padding:15px;color:#fff; font:12px arial; overflow-x:hidden; overflow-y:auto;}
 #content .right					{width:225px;min-height:400px;float:left;}
 #content .right	.boxright 		{width:200px;height:175px;border:1px solid #ac8f0d;background-color:#1d1c19;color:#fff; font:12px arial;padding:10px;}
 
@@ -199,4 +199,17 @@ body						{background:url('/kqa/Application/View/img/background.jpg') no-repeat 
 
 .pointer:hover {
 	cursor:	pointer;
+}
+
+#center {
+	text-align:	center;
+	text-align:		center;
+	font-family:	GameFont, Arial, Helvetica, sans-serif;
+	font-size:		14px;
+	color:			#000;
+}
+
+.title {
+	color:			#1D1C19;
+	font:			18px 'GameFont',Arial,Verdana;
 }

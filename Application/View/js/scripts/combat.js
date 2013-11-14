@@ -395,7 +395,7 @@ function monstersTurn() {
 	return $return;
 }
 
-function playerDamage($damage, $cancel_timecount) {
+function playerDamage($damage) {
 	$player_hp		= parseInt($("#player_hp").val());
 	$player_hp		= $player_hp - $damage;
 	$("#player_hp").val($player_hp);

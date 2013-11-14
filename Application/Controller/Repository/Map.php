@@ -49,6 +49,38 @@
 		}
 
 		/*
+		Get all Maps by course Id - getLocalMapsByCourseId($id)
+			@param integer	- course Id
+			@return format	- Mixed array
+		*/
+		public function getLocalMapsByCourseId($id = false) {
+			// Database Connection
+			$db				= $GLOBALS['db'];
+			// Initialize variables
+			$return			= false;
+			// Query set up
+			$return			= ($id) ? $db->getAllRows_Arr('tb_areamap', 'id, vc_name', "id_course = '{$id}' AND boo_encounter = 0 ORDER BY vc_name") : false;
+			// Return
+			return $return;
+		}
+
+		/*
+		Get all Maps by course Id - searchLocalMapsByName($name)
+			@param integer	- map's name
+			@return format	- Mixed array
+		*/
+		public function searchLocalMapsByName($name = false) {
+			// Database Connection
+			$db				= $GLOBALS['db'];
+			// Initialize variables
+			$return			= false;
+			// Query set up
+			$return			= ($name) ? $db->getAllRows_Arr('tb_areamap', 'id, vc_name', "vc_name LIKE '%{$name}%' AND boo_encounter = 0 ORDER BY vc_name") : false;
+			// Return
+			return $return;
+		}
+
+		/*
 		Get links and icons by id - getLinksIconsByAreaId($id)
 			@param integer	- Area Id
 			@return format	- Mixed array
@@ -107,6 +139,20 @@
 					}
 				}
 			}
+			// Return
+			return $return;
+		}
+
+		/*
+		Get All Open Courses and count maps under each - getOpenCoursesCountMaps($id_char)
+			@param intere	- Character ID
+			@return format	- Mixed array
+		*/
+		public function getOpenCoursesCountMaps($id_char = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Query
+			$return		= $db->getAllRows_Arr('tb_areamap', 'id_course, COUNT(id) as total_maps', "id_course > 0 AND boo_encounter = 0 GROUP BY id_course");
 			// Return
 			return $return;
 		}

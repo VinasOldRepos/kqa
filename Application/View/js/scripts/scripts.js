@@ -105,7 +105,7 @@ function showFlyingBox($obj, $interval, $content, $pos_left, $pos_top) {
 			$($obj).html($content);
 			$($obj).css('left', $pos_left);
 			$($obj).css('top', $pos_top);
-			$($obj).show(400);
+			$($obj).show(200);
 		}, $interval);
 	}
 }

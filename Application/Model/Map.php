@@ -181,4 +181,57 @@
 			return $return;
 		}
 
+		public function courseList($courses = false) {
+			$return		= false;
+			$sorter		= array();
+			$ret		= array();
+			if ($courses) {
+				// Order Courses by Course name
+				reset($courses);
+				foreach ($courses as $ii => $va) {
+					$sorter[$ii]	= $va['vc_name'];
+				}
+				asort($sorter);
+				foreach ($sorter as $ii => $va) {
+					$ret[$ii]		= $courses[$ii];
+				}
+				$courses	= false;
+				foreach ($ret as $course) {
+					$courses[]	= $course;
+				}
+				// Prepare return
+				$return		.= '<div class="monster_row">'.PHP_EOL;
+				$return		.= '	<div class="monster_tit_name">Course</div>'.PHP_EOL;
+				$return		.= '	<div class="monster_tit_hp" >Maps</div>'.PHP_EOL;
+				$return		.= '</div>'.PHP_EOL;
+				$return		.= '<div class="course_list">'.PHP_EOL;
+				for ($i = 0; $i < count($courses); $i++) {
+					$course	= $i + 1;
+					$return	.= '	<div class="course_row" key="'.$courses[$i]['id_course'].'">'.PHP_EOL;
+					if (strlen($courses[$i]['vc_name']) < 25) {
+						$return	.= '		<div class="course_maps">'.$courses[$i]['vc_name'].'</div>'.PHP_EOL;
+					} else {
+						$return	.= '		<div class="course_maps">'.substr($courses[$i]['vc_name'], 0, 22).' (...)</div>'.PHP_EOL;
+					}
+					$return	.= '		<div class="total_maps">'.$courses[$i]['total_maps'].'</div>'.PHP_EOL;
+					$return	.= '	</div>'.PHP_EOL;
+				}
+				$return		.= '</div>'.PHP_EOL;
+			}
+			return $return;
+		}
+
+		public function listMaps($maps = false) {
+			$return		= false;
+			if ($maps) {
+				$return	.= '<div class="maps_list">'.PHP_EOL;
+				$return	.= '	<div class="title">MAPS FOUND</div><br />'.PHP_EOL;
+				foreach ($maps as $map) {
+					$return	.= '	<div class="maps_row" key="'.$map['id'].'">'.$map['vc_name'].'</div>'.PHP_EOL;
+				}
+				$return	.= '</div>'.PHP_EOL;
+			}
+			return $return;
+		}
+
 	}
