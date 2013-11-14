@@ -59,7 +59,7 @@
 			// Initialize variables
 			$return			= false;
 			// Query set up
-			$return			= ($id) ? $db->getAllRows_Arr('tb_areamap', 'id, vc_name', "id_course = '{$id}' AND boo_encounter = 0 ORDER BY vc_name") : false;
+			$return			= ($id) ? $db->getAllRows_Arr('tb_areamap', 'id, vc_name, vc_mouseover', "id_course = '{$id}' AND boo_encounter = 0 ORDER BY vc_name") : false;
 			// Return
 			return $return;
 		}
@@ -75,7 +75,7 @@
 			// Initialize variables
 			$return			= false;
 			// Query set up
-			$return			= ($name) ? $db->getAllRows_Arr('tb_areamap', 'id, vc_name', "vc_name LIKE '%{$name}%' AND boo_encounter = 0 ORDER BY vc_name") : false;
+			$return			= ($name) ? $db->getAllRows_Arr('tb_areamap', 'id, vc_name, vc_mouseover', "(vc_name LIKE '%{$name}%' OR vc_mouseover LIKE '%{name}%') AND boo_encounter = 0 ORDER BY vc_name") : false;
 			// Return
 			return $return;
 		}
