@@ -201,6 +201,10 @@
 				}
 				// Prepare return
 				$return		.= '<div class="monster_row">'.PHP_EOL;
+				$return		.= '	<div class="monsters_tit">SEARCH</div>'.PHP_EOL;
+				$return		.= '</div>'.PHP_EOL;
+				$return		.= 'Find map: <input type="text" name="mapsearch" id="mapsearch" value="" class="tiny_text_input" />'.PHP_EOL;
+				$return		.= '<div class="monster_row">'.PHP_EOL;
 				$return		.= '	<div class="monster_tit_name">Course</div>'.PHP_EOL;
 				$return		.= '	<div class="monster_tit_hp" >Maps</div>'.PHP_EOL;
 				$return		.= '</div>'.PHP_EOL;

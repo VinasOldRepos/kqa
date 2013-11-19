@@ -370,8 +370,8 @@
 			// If data was sent
 			if ($id_areamap) {
 				// Get area level
-				$level		= $RepMap->getAreaInfoByMapId($id_areamap);
-				$level 		= ($level) ? $level['int_level'] : false;
+				$id_map		= $RepMap->getLocalParentMapIdByMapId($id_areamap);
+				$level		= (($id_map) && ($level = $RepMap->getAreaInfoByMapId($id_map))) ? $level['int_level'] : false;
 				// Calculate treasure drop according to level
 				switch ($level) {
 					// If it's a level 1 dungeon

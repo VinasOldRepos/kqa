@@ -230,12 +230,35 @@
 			if (($id_item) && ($place)) {
 				// Get Character id
 				$id_char				= $RepCharacter->getCharIdByUserId($user['id']);
+				// Get wore items
+				$items					= ($id_char) ? $RepCharacter->getAllWoreItems($id_char) : false;
+				// If item is a ring
+				if ($place == 'finger') {
+					// Define target finger
+					if ($items['id_combatitem_rightfinger'] > 0) {
+						if ($items['id_combatitem_leftfinger'] > 0) {
+							$place		= 'rightfinger';
+						} else {
+							$place		= 'leftfinger';
+						}
+					} else {
+						$place			= 'rightfinger';
+					}
+				// If it's a main hand or off hand item
+				} else if (($place == 'mainhand') || ($place == 'offhand')) {
+					// If wore item uses both hands
+					if ($items['id_combatitem_mainhand'] == $items['id_combatitem_offhand']) {
+						// Empty both hands
+						$RepCharacter->placeWearable($id_char, 0, "mainhand");
+						$RepCharacter->placeWearable($id_char, 0, "offhand");
+					}
+				}
 				// Save item position in the database
 				$RepCharacter->placeWearable($id_char, $id_item, $place);
+				// Get wore items
+				$items					= ($id_char) ? $RepCharacter->getAllWoreItems($id_char) : false;
 				// Load Player's inventory
 				$inventory				= ($id_char) ? $RepCharacter->getAllInventoryContentsByCharId($id_char) : false;
-				// Get wore items names
-				$items					= ($id_char) ? $RepCharacter->getAllWoreItems($id_char) : false;
 				$wore['head']			= ($items['id_combatitem_head'] > 0) ? $RepItem->getCombatById($items['id_combatitem_head']) : false;
 				$wore['neck']			= ($items['id_combatitem_neck'] > 0) ? $RepItem->getCombatById($items['id_combatitem_neck']) : false;
 				$wore['chest']			= ($items['id_combatitem_chest'] > 0) ? $RepItem->getCombatById($items['id_combatitem_chest']) : false;
@@ -247,7 +270,8 @@
 				$wore['legs']			= ($items['id_combatitem_legs'] > 0) ? $RepItem->getCombatById($items['id_combatitem_legs']) : false;
 				$wore['feet']			= ($items['id_combatitem_feet'] > 0) ? $RepItem->getCombatById($items['id_combatitem_feet']) : false;
 				// Model results and prepare return
-				$return					= $ModCharacter->listInventory($inventory, $wore);
+				$return					= ($return = $ModCharacter->listInventory($inventory, $wore)) ? $return : 'no items';
+				
 			}
 			// Return
 			echo $return;

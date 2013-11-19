@@ -190,35 +190,47 @@
 		public function loadLocalMap() {
 			// Declare Classes
 			$RepMap			= new RepMap();
+			$RepCharacter	= new RepCharacter();
 			$ModMap			= new ModMap();
 			// Initialize variables
 			$return			= false;
 			$mouseovers		= false;
 			$ids			= false;
+			$user			= Session::getVar('user');
 			$id_areamap		= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
 			// If values were sent
 			if ($id_areamap) {
+				// Get char info
+				$character		= $RepCharacter->getCharByUserId($user['id']);
+				// Get open courses for this player
+				$courses		= ($character) ? $RepMap->getOpenCoursesCountMaps($character['id']) : false;
 				// Load Parent map's info
 				$parent			= $RepMap->getParentMapInfoIdByMapId($id_areamap);
 				$id_parentmap	= ($parent) ? $parent['id'] : false;
 				// Load Map info
-				$map				= $RepMap->getMapById($id_areamap);
+				$map			= $RepMap->getMapById($id_areamap);
 				// Get linking info
-				$links				= $RepMap->getLinksIconsByAreaId($id_areamap);
+				$links			= $RepMap->getLinksIconsByAreaId($id_areamap);
 				if ($links) {
 					foreach ($links as $link) {
-						$ids		= ($ids) ? $ids.','.$link['id_map_target'] : $link['id_map_target'];
+						$ids	= ($ids) ? $ids.','.$link['id_map_target'] : $link['id_map_target'];
 					}
-					$mouseovers		= $RepMap->getAllMouseOversByMapId($ids);
+					$mouseovers	= $RepMap->getAllMouseOversByMapId($ids);
 				}
 				// Get Map level
-				$level				= ($level = $RepMap->getAreaInfoByMapId($id_areamap)) ? $level['int_level'] : false;
+				$level			= ($level = $RepMap->getAreaInfoByMapId($id_areamap)) ? $level['int_level'] : false;
+				// Get courses' names
+				$RepQuestion	= new RepQuestion();
+				$courses		= ($courses) ? $RepQuestion->getCoursesNamesById($courses) : false;
+				// Model Course List
+				$courses		= ($courses) ? $ModMap->courseList($courses) : false;
 				// Model Return
 				if ($map) {
 					$return['id_areamap']	= $id_areamap;
 					$return['id_parentmap']	= $id_parentmap;
 					$return['area_name']	= $map['vc_name'];
 					$return['level']		= $level;
+					$return['courses']		= $courses;
 					$return['map']			= $ModMap->map($map, $id_parentmap, 'world', $links, $mouseovers);
 				}
 			}
@@ -268,7 +280,8 @@
 				$links				= $RepMap->getLinksIconsByAreaId($id_areamap);
 				$target				= ($links) ? $links[0]['id_map_target'] : '0';
 				// Get Map level
-				$level				= ($level = $RepMap->getAreaInfoByMapId($id_areamap)) ? $level['int_level'] : false;
+				$id_map				= $RepMap->getLocalParentMapIdByMapId($id_areamap);
+				$level				= (($id_map) && ($level = $RepMap->getAreaInfoByMapId($id_map))) ? $level['int_level'] : false;
 				// Get all tiles of this step
 				$tiles				= ($tiles = $RepCombat->getAllTilesInStep($id_areamap, $step)) ? $tiles['vc_tiles'] : false;
 				// Get total of monsters in the current room
@@ -299,43 +312,55 @@
 		public function loadParentMap() {
 			// Declare Classes
 			$RepMap			= new RepMap();
+			$RepCharacter	= new RepCharacter();
 			$ModMap			= new ModMap();
 			// Initialize variables
 			$return			= false;
 			$mouseovers		= false;
 			$ids			= false;
+			$user			= Session::getVar('user');
 			$id_areamap		= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
 			// If values were sent
 			if ($id_areamap) {
+				// Get char info
+				$character			= $RepCharacter->getCharByUserId($user['id']);
 				// Load Parent map's info
-				$parent		= $RepMap->getParentMapInfoIdByMapId($id_areamap);
-				if ($parent) {
+				$parent				= $RepMap->getParentMapInfoIdByMapId($id_areamap);
+				if (($character) && ($parent)) {
+					// Get open courses for this player
+					$courses		= $RepMap->getOpenCoursesCountMaps($character['id']);
 					// If Map is a dungeon, 
 					if ($parent['boo_encounter'] == 1) {
 						// Get closest parent local map
 						while ($parent['boo_encounter'] == 1) {
-							$parent		= $RepMap->getParentMapInfoIdByMapId($parent['id']);
+							$parent	= $RepMap->getParentMapInfoIdByMapId($parent['id']);
 						}
 					}
 					// get world map (parent) info
 					$worldmap		= $RepMap->getParentMapInfoIdByMapId($parent['id']);
 					// Load Map info
-					$map	= $RepMap->getMapById($parent['id']);
+					$map			= $RepMap->getMapById($parent['id']);
 					// Get linking info
-					$links				= $RepMap->getLinksIconsByAreaId($parent['id']);
+					$links			= $RepMap->getLinksIconsByAreaId($parent['id']);
 					if ($links) {
 						foreach ($links as $link) {
-							$ids		= ($ids) ? $ids.','.$link['id_map_target'] : $link['id_map_target'];
+							$ids	= ($ids) ? $ids.','.$link['id_map_target'] : $link['id_map_target'];
 						}
-						$mouseovers		= $RepMap->getAllMouseOversByMapId($ids);
+						$mouseovers	= $RepMap->getAllMouseOversByMapId($ids);
 					}
 					// Get Map level
-					$level				= ($level = $RepMap->getAreaInfoByMapId($parent['id'])) ? $level['int_level'] : false;
+					$level			= ($level = $RepMap->getAreaInfoByMapId($parent['id'])) ? $level['int_level'] : false;
+					// Get courses' names
+					$RepQuestion	= new RepQuestion();
+					$courses		= ($courses) ? $RepQuestion->getCoursesNamesById($courses) : false;
+					// Model Course List
+					$courses		= ($courses) ? $ModMap->courseList($courses) : false;
 					// Model world
 					if ($map) {
 						$return['id_parentmap']	= $worldmap['id'];
 						$return['area_name']	= $map['vc_name'];
 						$return['level']		= $level;
+						$return['courses']		= $courses;
 						$return['map']			= ($map) ? $ModMap->map($map, $worldmap['id'], 'world', $links, $mouseovers) : false;
 					}
 				}

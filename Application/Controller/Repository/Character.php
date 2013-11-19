@@ -319,7 +319,7 @@
 			// Database Connection
 			$db		= $GLOBALS['db'];
 			// Query set up
-			$return	= (($vc_name) && ($id_user)) ? $db->insertRow('tb_character', array($id_user, $vc_name, $hp), array('id_user', 'vc_name', 'int_hp')) : false;
+			$return	= (($vc_name) && ($id_user) && ($db->insertRow('tb_character', array($id_user, $vc_name, $hp), array('id_user', 'vc_name', 'int_hp')))) ? $db->last_id() : false;
 			// Return
 			return $return;
 		}

@@ -20,21 +20,29 @@ $('document').ready(function() {
 						if ($place == 'bothhands') {
 							$("#mainhand").html($item_name);
 							$("#offhand").html($item_name);
-						} else if ($place == 'offhand') {
-							$main_hand	= $("#mainhand").attr('key');
-							$off_hand	= $("#offhand").attr('key');
-							if ($main_hand == $off_hand) {
-								$("#mainhand").html('');
-								$("#mainhand").attr('key', '');
+						} else if ($place == 'finger') {
+							if ($("#rightfinger").html() == '-') {
+								$("#rightfinger").html($item_name);
+							} else {
+								if ($("#leftfinger").html() == '-') {
+									$("#leftfinger").html($item_name);
+								} else {
+									$("#rightfinger").html($item_name);
+								}
 							}
-							$("#offhand").html($item_name);
+						} else if (($place == 'mainhand') || ($place == 'offhand')) {
+							if ($("#mainhand").html() == $("#offhand").html()) {
+								$("#mainhand").html('-');
+								$("#offhand").html('-');
+							}
+							$("#"+$place).html($item_name);
 						} else {
 							$("#"+$place).html($item_name);
 						}
 						$("#"+$place).html($item_name);
 						$("#inventory").html($return);
 					} else {
-						alert("Sorry,\n\nwe weren't able to equip you with this item.\n\nReason: "+$return);
+						alert("Sorry,\n\nwe weren't able to equip you with this item.");
 					}
 				});
 			// If it's a bag item

@@ -100,7 +100,7 @@ $('document').ready(function() {
 								contentHide("#map_area");
 								contentShowData("#area_name",	$return.area_name);
 								contentShowData("#map_area",	$return.map);
-								contentShowData("#level",		'Level '+$return.step);
+								contentShowData("#level",		'Level '+$return.level);
 								contentShowData("#room",		'Room '+$return.step+' of '+$return.tot_steps);
 								// Show action options
 								$("#boxright").load("/kqa/Combat/actionOptions/");
@@ -151,6 +151,9 @@ $('document').ready(function() {
 					contentShowData("#id_areamap",	$return.area_name);
 					contentHide("#area_name");
 					contentHide("#map_area");
+					if ($return.level) {
+						contentShowData("#level",	'Level '+$return.level);
+					}
 					contentShowData("#area_name",	$return.area_name);
 					contentShowData("#map_area",	$return.map);
 				}
@@ -292,6 +295,7 @@ $('document').ready(function() {
 					contentShowData("#area_name",	$return.area_name);
 					contentShowData("#center",		'<div class="map_area" id="map_area" style="margin-left: 130px;">'+$return.map+'</div>');
 					contentShowData("#level",		'Level '+$return.level);
+					contentShowData("#boxright",	$return.courses);
 				} else {
 					alert("Sorry,\n\nWe weren't able to redirect you to the local map you were before this dungeon.\nWe are working on the problem.\n\nMeanhile, please, try reloading the world of Sophia.\n\nThank you.");
 				}

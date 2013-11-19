@@ -34,7 +34,7 @@
 				foreach ($inventory as $item) {
 					if (isset($item['vc_wearable'])) {
 						if ($wore) {
-							$show		= true;
+							$show			= true;
 							foreach ($wore as $weareable) {
 								if (($show) && ($weareable['id'] == $item['id'])){
 									$show	=  false;
@@ -43,12 +43,12 @@
 									$show	= true;
 								}
 							}
-							$return		.= ($show) ? '<div class="item_name" key="'.$item['id'].'" place="'.$item['vc_wearable'].'">'.$item['vc_name'].'</div>'.PHP_EOL : false;
+							$return			.= ($show) ? '<div class="item_name" key="'.$item['id'].'" place="'.$item['vc_wearable'].'">'.$item['vc_name'].'</div>'.PHP_EOL : false;
 						} else {
-							$return	.= '<div class="item_name" key="'.$item['id'].'" place="'.$item['vc_wearable'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
+							$return			.= '<div class="item_name" key="'.$item['id'].'" place="'.$item['vc_wearable'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
 						}
 					} else {
-						$return	.= '<div class="item_name" key="'.$item['id_inventory'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
+						$return				.= '<div class="item_name" key="'.$item['id_inventory'].'">'.$item['vc_name'].'</div>'.PHP_EOL;
 					}
 				}
 			}

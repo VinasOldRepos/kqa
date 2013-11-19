@@ -120,7 +120,7 @@ $('document').ready(function() {
 					if ($correct == $id_answer) {
 						// Display message
 						contentShowData("#box_rightanswer", 'Answer was correct!.<br /><br />It is: "'+$answer+'"');
-						setTimeout(function(){contentHide("#box_rightanswer")},5000);
+						//setTimeout(function(){contentHide("#box_rightanswer")},5000);
 						// Player hits monster
 						$action		= playerHits();
 					// If the Player got it wrong
@@ -250,8 +250,9 @@ $('document').ready(function() {
 					$("#tot_steps").val($return.tot_steps);
 					contentHide("#area_name");
 					contentHide("#map_area");
+					contentShowData("#level",		'Level '+$return.level);
 					contentShowData("#area_name",	$return.area_name);
-					contentShowData("#center",	'<div id="map_area" class="map_area" style="margin-left: 130px; display: block;">'+$return.map+'</div>');
+					contentShowData("#center",		'<div id="map_area" class="map_area" style="margin-left: 130px; display: block;">'+$return.map+'</div>');
 					contentShowData("#room",		'Room '+$return.step+' of '+$return.tot_steps);
 				}
 				cursorDefault(".local_map_tile");
@@ -300,6 +301,7 @@ function loadQuestion($id_course, $id_areamap) {
 					// Display captions, time and activate timer
 					$("#turn").html("Turn: Player");
 					$("#box_rightanswer").hide();
+					//$("#box_rightanswer").html('');
 					$time_limit		= parseInt($return.time_limit) * 1000;
 					if ($timebonus > 0) {
 						$time_limit	= $time_limit + $time_limit * ($timebonus / 100);
@@ -311,7 +313,8 @@ function loadQuestion($id_course, $id_areamap) {
 					// Hide radio buttons
 					$(".radio_answer_opt").css('visibility', 'hidden');
 					// Display captions
-					setTimeout(function(){contentHide("#box_rightanswer")}, 2000);
+					//setTimeout(function(){contentHide("#box_rightanswer")}, 2000);
+					$("#box_rightanswer").hide();
 					$("#turn").html("Turn: Monster");
 					$("#box_counter").html("");
 				}
@@ -345,7 +348,9 @@ function playerHits() {
 	// Calcutale damage
 	$player_dmg			= Math.floor(Math.random() * ($player_max_dmg - $player_min_dmg + 1)) + $player_min_dmg;
 	$player_dmg			= ($player_dmg + $player_me) - $monster_ds;
+	//$temp				= $player_dmg;
 	$player_dmg			= ($player_dmg < 1) ? 1 : $player_dmg;
+	//alert("Min dmg: "+$player_min_dmg+"\nMax dmg: "+$player_max_dmg+"\nmonster ds: "+$monster_ds+"\nrand dmg - monster ds: "+$temp+"\nfinal dmg: "+$player_dmg);
 	// Apply damage
 	$monster_hp			= $monster_hp - $player_dmg;
 	$("#monster_hp").val($monster_hp);
@@ -504,6 +509,7 @@ function loadLocalMap($id_areamap, $mode) {
 					parent.$("#id_parentmap").val($return.id_parentmap);
 					parent.$("#area_name").html($return.area_name);
 					//parent.$("#map_area").html($return.map);
+					parent.$("#boxright").html($return.courses);
 					parent.$("#level").html('Level '+$return.level);
 					parent.$.fancybox.close();
 				} else {
@@ -512,6 +518,7 @@ function loadLocalMap($id_areamap, $mode) {
 					contentHide("#map_area");
 					contentShowData("#area_name",	$return.area_name);
 					contentShowData("#map_area",	$return.map);
+					contentShowData("#boxright",	$return.courses);
 					contentShowData("#level",		'Level '+$return.level);
 				}
 			}
@@ -543,7 +550,8 @@ function loadEncounterMap() {
 				contentHide("#area_name");
 				contentHide("#map_area");
 				contentShowData("#area_name",	$return.area_name);
-				contentShowData("#center",	'<div id="map_area" class="map_area" style="margin-left: 130px; display: block;">'+$return.map+'</div>');
+				contentShowData("#level",		'Level '+$return.level);
+				contentShowData("#center",		'<div id="map_area" class="map_area" style="margin-left: 130px; display: block;">'+$return.map+'</div>');
 				contentShowData("#room",		'Room '+$return.step+' of '+$return.tot_steps);
 			}
 			cursorDefault(".local_map_tile");
@@ -598,14 +606,15 @@ function performAction($action) {
 	if ($action) {
 		if ($action == 'loadQuestion') {
 			setTimeout(function() {
-				contentHide("#box_rightanswer");
+				//$("#box_rightanswer").html('');
 				loadQuestion($("#id_course").val());
 			}, 2000);
 		} else if ($action == 'monster_hit') {
 			$("#box_run_round").hide();
 			contentShowData("#box_rightanswer", 'The monster got it right.<br />The answer was "'+$answer+'".');
 			setTimeout(function() {
-				contentHide("#box_rightanswer");
+				$("#box_rightanswer").html('');
+				//contentHide("#box_rightanswer");
 				loadQuestion($("#id_course").val());
 			}, 5000);
 			//loadQuestion($("#id_course").val());
@@ -619,9 +628,7 @@ function performAction($action) {
 			// Load/reset Char info
 			$.post('/kqa/Characters/loadCharInfo/', {}, function($player) {
 				contentShowData("#boxleft", $player.character);
-				if ($("#player_hp").val() <= 0) {
-					$("#player_hp").val($player.player_hp);
-				}
+				$("#player_hp").val($player.player_hp);
 				$("#player_min_dmg").val($player.player_min_dmg);
 				$("#player_max_dmg").val($player.player_max_dmg);
 				$("#player_me").val($player.player_me);
@@ -687,9 +694,7 @@ function dungeonEnd() {
 						// Load/reset Char info
 						$.post('/kqa/Characters/loadCharInfo/', {}, function($player) {
 							contentShowData("#boxleft", $player.character);
-							if ($("#player_hp").val() <= 0) {
-								$("#player_hp").val($player.player_hp);
-							}
+							$("#player_hp").val($player.player_hp);
 							$("#player_min_dmg").val($player.player_min_dmg);
 							$("#player_max_dmg").val($player.player_max_dmg);
 							$("#player_me").val($player.player_me);
