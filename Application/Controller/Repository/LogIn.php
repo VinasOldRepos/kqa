@@ -77,4 +77,23 @@
 			return $return;
 		}
 
+		/*
+		Check if user email already existis in DB - checkEmail($email)
+			@param string	- User's email
+			@return format	- Integer/boolean
+		*/
+		function checkEmail($email = false) {
+			$db					= $GLOBALS['db_q'];
+			$return				= false;
+			if ($email) {
+				// Query set up
+				$table			= 'tb_user';
+				$select_what	= 'id';
+				$conditions		= "vc_email = '{$email}'";
+				// Run query
+				$return			= $db->getRow($table, $select_what, $conditions);
+			}
+			return $return;
+		}
+
 	}

@@ -28,6 +28,7 @@
 	//use Application\Controller\Repository\Map			as RepMap;
 	//use Application\Controller\Repository\Question	as RepQuestion;
 	use Application\Controller\Repository\Character		as RepCharacter;
+	use Application\Controller\Repository\Combat		as RepCombat;
 	use Application\Controller\Repository\Item			as RepItem;
 
 	// Other Classes
@@ -185,8 +186,10 @@
 			// Initialize variables
 			$return			= false;
 			$user			= Session::getVar('user');
+			$target_map		= (isset($GLOBALS['params'][1])) ? trim(($GLOBALS['params'][1])) : false;
+			$id_areamap		= (isset($GLOBALS['params'][2])) ? trim(($GLOBALS['params'][2])) : false;
 			// If there are values
-			if ($user) {
+			if (($target_map !== false) && ($id_areamap !== false)) {
 				$id_char	= $RepCharacter->getCharIdByUserId($user['id']);
 				// Empty Player's bag
 				$RepCharacter->emptyBag($id_char);
@@ -207,6 +210,8 @@
 				// Model results and prepare return
 				View::set('inventory',	$ModCharacter->listInventory($inventory, $wore));
 				View::set('wore',		$ModCharacter->listWore($wore));
+				View::set('target_map',	$target_map);
+				View::set('id_areamap',	$id_areamap);
 			}
 			// Return
 			View::render('partial_modalSelectGear');
@@ -438,6 +443,80 @@
 			if ($id_inventory) {
 				// Remove this item from the inventory
 				$return		= ($RepCharacter->removeFromInventory($id_inventory)) ? 'ok' : false;
+			}
+			// Return
+			echo $return;
+		}
+
+		public function saveXP() {
+			// Class
+			$RepCharacter		= new RepCharacter();
+			$RepCombat			= new RepCombat();
+			// Variables
+			$user				= Session::getVar('user');
+			$tot_xp				= (isset($_POST['tot_xp'])) ? trim($_POST['tot_xp']) : false;
+			$id_areamap			= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
+			$character			= $RepCharacter->getCharByUserId($user['id']);
+			$return				= false;
+			if (($tot_xp) && ($id_areamap) && ($character)) {
+				// Get Course id
+				$id_course			= ($id_course = $RepCombat->getCourseIdByMapId($id_areamap)) ? $id_course['id_course'] : false;
+				// Save XP
+				if ($id_course) {
+					$xp				= $RepCharacter->getXpByCharCourseId($character['id'], $id_course);
+					if ($xp) {
+						$prev_xp	= $xp;
+						$xp			= $xp + $tot_xp;
+						$return		= (($RepCharacter->updateXpByCharCourseId($character['id'], $id_course, $xp))) ? $xp : false;
+					} else {
+						$prev_xp	= 0;
+						$xp			= $tot_xp;
+						$return		= (($RepCharacter->insertXpByCharCourseId($character['id'], $id_course, $xp))) ? $xp : false;
+					}
+					if (($prev_xp < 100) && ($xp >= 100)) {
+						$character				= $RepCharacter->getCharByUserId($user['id']);
+						$character['int_hp']	= $character['int_hp'] + 1;
+						$return					= (($RepCharacter->updateCharacter($character))) ? $character['int_gold'] : false;
+					} else if (($prev_xp >= 100) && ($xp > 100)) {
+						$stop		= false;
+						$min_hp		= 100;
+						$add_factor	= 500;
+						while (!$stop) {
+							$next_hp			= $min_hp + $add_factor;
+							if (($prev_xp >= $min_hp) && ($prev_xp < $next_hp) && ($xp >= $next_hp)) {
+								$character				= $RepCharacter->getCharByUserId($user['id']);
+								$character['int_hp']	= $character['int_hp'] + 1;
+								$return					= (($RepCharacter->updateCharacter($character))) ? $character['int_gold'] : false;
+								$stop					= false;
+								break;
+							} else if (($prev_xp >= $min_hp) && ($prev_xp < $next_hp) && ($xp < $next_hp)) {
+								$stop		= false;
+								break;
+							} else {
+								$min_hp		= $next_hp;
+							}
+						}
+					}
+				}
+			}
+			// Return
+			echo $return;
+		}
+
+		public function saveGold() {
+			// Class
+			$RepCharacter		= new RepCharacter();
+			// Variables
+			$user				= Session::getVar('user');
+			$monster_treasure	= (isset($_POST['monster_treasure'])) ? trim($_POST['monster_treasure']) : false;
+			$return				= false;
+			if (($monster_treasure) && ($user)) {
+				// Save XP
+				$character		= $RepCharacter->getCharByUserId($user['id']);
+				if ($character) {
+					$character['int_gold']	= $character['int_gold'] + $monster_treasure;
+					$return		= (($RepCharacter->updateCharacter($character))) ? $character['int_gold'] : false;
+				}
 			}
 			// Return
 			echo $return;

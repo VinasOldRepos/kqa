@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="pt-BR" xml:lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<title>Knowledge Quest Adventures - Piercing the Veil of Ignorance</title>
+		<!-- JS -->
+		<?php echo $GLOBALS['general_js']; ?>
+		<?php echo $GLOBALS['this_js']; ?>
+		<!-- CSS -->
+		<?php echo $GLOBALS['general_css']; ?>
+		<?php echo $GLOBALS['this_css']; ?>
+	</head>
+		
+	<body>
+
+		<div id="main">
+			<div id="header">
+				<div class="logo"><h1>Knowledge Quest Adventures - Piercing the Veil of Ignorance</h1></div>
+				<div class="advertising">
+					<div class="corra_logo"><img src="/kqa/Application/View/img/corra_logo.png" width="235" height="147" alt="Corra Studios" title="Corra Studios" /></div>
+				</div>
+			</div>
+			
+			<div id="top">
+				<div class="charinfo">
+					<div class="goldcoins">GOLD COINS: <div id="gold"></div></div>
+					<div class="charname tex-stroke"></div>
+					<div class="tokens">TOKENS: <div id="tokens"></div></div>
+				</div>
+				<div class="otherinfo">
+					<div class="turn" id="turn"></div>
+					<div class="dungeonname">
+						<div class="name" id="area_name">New user</div>
+						<div class="level" id="level"></div>
+						<div class="room" id="room"></div>
+					</div>
+					<div class="time" id="box_counter"></div>
+				</div>
+			</div>
+			
+			<div id="content">
+				<div class="left">
+					<div class="boxleft"></div>
+				</div>
+				<div class="center" id="center">
+					<br /><br />
+					<div class="form_new_char">
+						<fieldset style="width: 500px; border: 0px;">
+							<form class="form">
+								<input type="hidden" name="email" id="email" value="<?php echo $email; ?>" />
+								<label for="user_name">Your name:</label> <input type="text" name="user_name" id="user_name" maxlength="100" class="main_text_input" />
+								<br /><br />
+								<label for="pass1">Password:</label> <input type="password" name="pass1" id="pass1" maxlength="100" class="main_text_input" />
+								<br />
+								<label for="pass2">Confirm Password:</label> <input type="password" name="pass2" id="pass2" maxlength="100" class="main_text_input" />
+								<br /><br />
+								<img src="/kqa/Application/View/img/btn-continue.png" id="new_user_submit" class="pointer" width="95" height="28" border="0" alt="Continue" title="Continue" />
+							</form>
+						</fieldset>
+					</div>
+				</div>
+				<div class="right">
+					<div class="boxright" id="boxright">
+					</div>
+					<div class="boxright"></div>
+				</div>
+			</div>
+			
+			<div id="bottom">
+				<div class="left">
+					<div class="boxleft"></div>
+				</div>
+				<div class="center" id="center">
+					<div class="boxcenter"></div>
+				</div>
+				<div class="right">
+					<div class="boxright">
+						<div class="pointer underline" id="inviteafriend">Invite a friend</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="footer"></div>
+			
+		</div>
+
+	</body>
+
+</html>

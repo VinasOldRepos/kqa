@@ -112,6 +112,26 @@
 		}
 
 		/*
+		Get XP by User and course Id - getXpByCharCourseId($id, id_course)
+			@param integer	- char Id
+			@param integer	- course Id
+			@return format	- Mixed array
+		*/
+		public function getXpByCharCourseId($id = false, $id_course = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			// Initialize variables
+			$return		= false;
+			if (($id) && ($id_course)) {
+				// Query set up
+				$return	= $db->getRow('tb_course_xp', 'int_xp', "id_character = '{$id}' AND id_course = '{$id_course}'");
+				$return	= ($return) ? $return['int_xp'] : false;
+			}
+			// Return
+			return $return;
+		}
+
+		/*
 		Get All Characters by Id - getAllCharsByUserId($id)
 			@param integer	- user Id
 			@return format	- Mixed array
@@ -325,6 +345,22 @@
 		}
 
 		/*
+		Insert first xp for course - insertXpByCharCourseId($id_char, $id_course, $xp)
+			@param integer	- Character ID
+			@param integer	- Course id
+			@param integer	- xp
+			@return format	- Mixed array
+		*/
+		public function insertXpByCharCourseId($id_char = false, $id_course = false, $xp = false) {
+			// Database Connection
+			$db		= $GLOBALS['db'];
+			// Query set up
+			$return	= (($id_char) && ($id_course) && ($xp) && ($db->insertRow('tb_course_xp', array($id_char, $id_course, $xp), array('id_character', 'id_course', 'int_xp')))) ? $xp : false;
+			// Return
+			return $return;
+		}
+
+		/*
 		Insert Character - newWearable($id_character)
 			@param integer	- Character id
 			@return format	- boolean
@@ -389,6 +425,24 @@
 					$data[]	= $char;
 				}
 				$return	= $db->updateRow('tb_character', array('id_user', 'vc_name', 'int_hp', 'int_xp', 'int_gold'), $data, 'id = '.$id);
+			}
+			// Return
+			return $return;
+		}
+
+		/*
+		update xp points - updateXpByCharCourseId($id_char, $id_course, $xp)
+			@param integer	- Character id
+			@param integer	- Course id
+			@param integer	- xp
+			@return format	- Mixed array
+		*/
+		public function updateXpByCharCourseId($id_char = false, $id_course = false, $xp = false) {
+			// Database Connection
+			$db			= $GLOBALS['db'];
+			$return		= false;
+			if (($id_char) && ($id_course) && ($xp)) {
+				$return	= $db->updateRow('tb_course_xp', array('int_xp'), array($xp), 'id_character = '.$id_char.' AND id_course = '.$id_course);
 			}
 			// Return
 			return $return;

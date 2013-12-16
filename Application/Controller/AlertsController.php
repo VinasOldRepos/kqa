@@ -18,9 +18,6 @@
 	use SaSeed\Session;
 	//use SaSeed\General;
 
-	// Model Classes
-	//use Application\Model\Combat	as ModCombat;
-
 	// Repository Classes
 	use Application\Controller\Repository\Map			as RepMap;
 	use Application\Controller\Repository\Character		as RepCharacter;
@@ -41,6 +38,7 @@
 			} else {
 				// Define JSs e CSSs utilizados por este controller
 				$GLOBALS['this_js']		= '<script type="text/javascript" src="'.URL_PATH.'/Application/View/js/scripts/combat.js"></script>'.PHP_EOL;	// Se não houver, definir como vazio ''
+				$GLOBALS['this_js']		.= '<script type="text/javascript" src="'.URL_PATH.'/Application/View/js/scripts/alerts.js"></script>'.PHP_EOL;	// Se não houver, definir como vazio ''
 				$GLOBALS['this_js']		.= '<script type="text/javascript" src="'.URL_PATH.'/Application/View/js/libs/jquery.fancybox-1.3.4.pack.js"></script>'.PHP_EOL;	// Se não houver, definir como vazio ''
 				$GLOBALS['this_css']	= '<link rel="stylesheet" href="'.URL_PATH.'/Application/View/css/alerts.css" type="text/css" media="screen" />'.PHP_EOL;	// Se não houver, definir como vazio ''
 				$GLOBALS['this_css']	.= '<link href="'.URL_PATH.'/Application/View/css/jquery.fancybox-1.3.4.css" rel="stylesheet">'.PHP_EOL;	// Se não houver, definir como vazio ''
@@ -94,6 +92,10 @@
 				// Return
 				View::render('partial_modalPlayerDies');
 			}
+		}
+
+		public function inviteFriend() {
+			View::render('partial_modalInviteFriend');
 		}
 
 	}

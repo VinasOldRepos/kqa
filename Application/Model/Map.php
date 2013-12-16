@@ -116,20 +116,20 @@
 			}
 			if (($map) && ($id_parentmap) && ($parent_areatype)) {
 				//$return	.= '<input type="hidden" name="id_areamap" id="id_areamap" value="'.$map['id'].'">'.PHP_EOL;
-				$return	.= '<div class="go_left go pointer" key="'.$id_parentmap.'" type="'.$parent_areatype.'" style="margin-top: 156px;"><img src="/kqa/Application/View/img/img_arrow_left.gif" width="17" height="19" /></div>'.PHP_EOL;
+				$return				.= '<div class="go_left go pointer" key="'.$id_parentmap.'" type="'.$parent_areatype.'" style="margin-top: 156px;"><img src="/kqa/Application/View/img/img_arrow_left.gif" width="17" height="19" /></div>'.PHP_EOL;
 				for ($i = 1; $i <= 100; $i++) {
 					if ($i == 1) {
-						$return	.= '<div class="map_row">'.PHP_EOL;
+						$return		.= '<div class="map_row">'.PHP_EOL;
 					}
-					$pos		= sprintf('%03d', $i);
+					$pos			= sprintf('%03d', $i);
 					if (isset($targets[$i])) {
 						$text		= (isset($tile_txts[$targets[$i][2]])) ? $tile_txts[$targets[$i][2]] : false;
 						if ($targets[$i][2] > 0) {
-							$return		.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" text="'.$text.'" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
+							$return	.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" text="'.$text.'" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
 						} else if ($targets[$i][2] < 0) {
-							$return		.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" text="Town" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
+							$return	.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" text="Town" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
 						} else {
-							$return		.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
+							$return	.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="'.$targets[$i][0].'" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" target="'.$targets[$i][2].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');">'.PHP_EOL;
 						}
 						$return		.= '	<img src="/gamemaster/Application/View/img/textures/'.$targets[$i][1].'" width="32" height="32" />'.PHP_EOL;
 						$return		.= '</div>'.PHP_EOL;
@@ -137,11 +137,11 @@
 						$return		.= '<div class="map_tile local_map_tile" id="'.$pos.'" icon="" status="unselected" bkgrnd="'.$map['vc_coord_'.$pos].'" image="" style="background-image:url(/gamemaster/Application/View/img/textures/'.$map['vc_coord_'.$pos].');"></div>'.PHP_EOL;
 					}
 					if ($i % 10 == 0) {
-						$return	.= '</div>'.PHP_EOL;
-						$return	.= '<div class="map_row">'.PHP_EOL;
+						$return		.= '</div>'.PHP_EOL;
+						$return		.= '<div class="map_row">'.PHP_EOL;
 					}
 				}
-				$return			.= '</div>'.PHP_EOL;
+				$return				.= '</div>'.PHP_EOL;
 			}
 			return $return;
 		}
@@ -233,6 +233,8 @@
 				foreach ($maps as $map) {
 					$return	.= '	<div class="maps_row" key="'.$map['id'].'">'.$map['vc_name'].' - '.$map['vc_mouseover'].'</div>'.PHP_EOL;
 				}
+				$return	.='<br /><br />'.PHP_EOL;
+				$return	.= '<div class="pointer" id="back_localmap">Return to map</div>'.PHP_EOL;
 				$return	.= '</div>'.PHP_EOL;
 			}
 			return $return;

@@ -184,6 +184,87 @@
 		}
 
 		/*
+		Prints out a Map - loadMap()
+			@return format	- print json
+		*/
+		public function loadMap() {
+			// Declare Classes
+			$RepMap			= new RepMap();
+			$RepCharacter	= new RepCharacter();
+			$ModMap			= new ModMap();
+			// Initialize variables
+			$return			= false;
+			$mouseovers		= false;
+			$ids			= false;
+			$user			= Session::getVar('user');
+			$id_areamap		= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
+			// If values were sent
+			if ($id_areamap) {
+				// Get char info
+				$character		= $RepCharacter->getCharByUserId($user['id']);
+				// Get open courses for this player
+				$courses		= ($character) ? $RepMap->getOpenCoursesCountMaps($character['id']) : false;
+				// Load Parent map's info
+				$parent			= $RepMap->getParentMapInfoIdByMapId($id_areamap);
+				$id_parentmap	= ($parent) ? $parent['id'] : false;
+				// Load Map info
+				$map			= $RepMap->getMapById($id_areamap);
+				// Get Map level
+				$level			= ($level = $RepMap->getAreaInfoByMapId($id_areamap)) ? $level['int_level'] : false;
+				// Get linking info
+				$links			= $RepMap->getLinksIconsByAreaId($id_areamap);
+				$navigation		= $RepMap->getNavigationLinkByAreaId($id_areamap);
+				if ($links) {
+					foreach ($links as $link) {
+						$ids	= ($ids) ? $ids.','.$link['id_map_target'] : $link['id_map_target'];
+					}
+					$mouseovers	= $RepMap->getAllMouseOversByMapId($ids);
+						// Get branch ids
+						for ($i = 0; $i < count($links); $i++) {
+							if ($links[$i]['id_map_target'] > 0) {
+								$id_field	= $RepMap->getFieldIdByMapId($links[$i]['id_map_target']);
+								$links[$i]['id_field'] = ($id_field) ? $id_field : 0;
+							} else {
+								$links[$i]['id_field'] = 0;
+							}
+						}
+						$RepQuestion		= new RepQuestion();
+						for ($i = 0; $i < count($links); $i++) {
+							if ($links[$i]['id_field'] > 0) {
+								$id_branch	= $RepQuestion->getBranchIdByFieldId($links[$i]['id_field']);
+								$links[$i]['id_branch'] = ($id_branch) ? $id_branch : 0;
+							} else {
+								$links[$i]['id_branch'] = 0;
+							}
+						}
+				}
+				// Get courses' names
+				$courses		= ($courses) ? $RepQuestion->getCoursesNamesById($courses) : false;
+				// Model Course List
+				$courses		= ($courses) ? $ModMap->courseList($courses) : false;
+				// Model world / map
+				$area_name		= $map['vc_name'];
+				if ($id_areamap <= 100) {
+					$map		= $ModMap->world($map, $links, $mouseovers, $navigation);
+				} else {
+					$map		= $ModMap->map($map, $id_parentmap, 'world', $links, $mouseovers);
+				}
+				// prepare Return
+				if ($map) {
+					$return['id_areamap']	= $id_areamap;
+					$return['id_parentmap']	= $id_parentmap;
+					$return['area_name']	= $area_name;
+					$return['level']		= $level;
+					$return['courses']		= $courses;
+					$return['map']			= $map;
+				}
+			}
+			// Return
+			header('Content-Type: application/json');
+			echo json_encode($return);
+		}
+
+		/*
 		Prints out local Map - loadLocalMap()
 			@return format	- print json
 		*/
@@ -247,10 +328,12 @@
 			// Declare Classes
 			$RepMap				= new RepMap();
 			$RepCombat			= new RepCombat();
+			$RepCharacter		= new RepCharacter();
 			$ModMap				= new ModMap();
 			// Initialize variables
 			$return				= false;
 			$vis_tiles			= false;
+			$user				= Session::getVar('user');
 			$id_areamap			= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
 			$id_parentmap		= (isset($_POST['id_parentmap'])) ? trim($_POST['id_parentmap']) : false;
 			$current_monster	= (isset($_POST['current_monster'])) ? trim($_POST['current_monster']) : 1;
@@ -276,6 +359,10 @@
 				$vis_tiles			= ($vis_tiles) ? explode(',', $vis_tiles) : false;
 				// Load Dungeon Map
 				$map				= $RepMap->getMapById($id_areamap);
+				// Load XP info
+				$character			= $RepCharacter->getCharByUserId($user['id']);
+				$xp					= $RepCharacter->getXpByCharCourseId($character['id'], $map['id_course']);
+				$xp					= (!$xp) ? '0' : $xp;
 				// Get linking info
 				$links				= $RepMap->getLinksIconsByAreaId($id_areamap);
 				$target				= ($links) ? $links[0]['id_map_target'] : '0';
@@ -297,6 +384,7 @@
 					$return['level']			= $level;
 					$return['id_parentmap']		= $id_parentmap;
 					$return['area_name']		= $map['vc_name'];
+					$return['xp']				= $xp;
 					$return['map']				= ($map) ? $ModMap->encounter($map, $id_parentmap, $parent_areatype, $links, $vis_tiles, $step, $tot_steps) : false;
 				}
 			}
@@ -306,7 +394,7 @@
 		}
 
 		/*
-		Prints out parent map Map - loadParentMap()
+		Prints out parent Map - loadParentMap()
 			@return format	- print json
 		*/
 		public function loadParentMap() {

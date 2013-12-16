@@ -193,12 +193,16 @@ body						{background:url('/kqa/Application/View/img/background.jpg') no-repeat 
 
 .char_info {
 	position:		absolute;
-	margin-left:	100px;
+	margin-left:	120px;
 	float:			left;
 }
 
 .pointer:hover {
 	cursor:	pointer;
+}
+
+.underline:hover {
+	text-decoration:	underline;
 }
 
 #center {

@@ -38,3 +38,13 @@
 	float:			right;
 	margin-right:	110px;
 }
+
+.main_input {
+	width:	250px;
+	height:	12px;
+	
+}
+
+.pointer:hover {
+	cursor:	pointer;
+}

@@ -286,7 +286,7 @@
 			// Initialize variables
 			$return				= false;
 			// Database Connection
-			$db					= $GLOBALS['db'];
+			$db					= $GLOBALS['db_q'];
 			// Validate sent information
 			if (($courses) && ($id_status)  && ($int_timelimit) && ($tx_question) && ($tx_tutor)) {
 				// Prepare values
@@ -306,6 +306,36 @@
 		}
 
 		/*
+		Insert Question into Database - newUser($name, $email, $password)
+			@param string	- user name
+			@param string	- user email
+			@param string	- user password
+			@return integer	- user's ID
+		*/
+		public function newUser($name = false, $email = false, $password = false) {
+			// Initialize variables
+			$return			= false;
+			// Database Connection
+			$db				= $GLOBALS['db_q'];
+			// Validate sent information
+			if (($name) && ($email)  && ($password)) {
+				// Prepare values
+				$values[]	= 1;
+				$values[]	= $name;
+				$values[]	= $email;
+				$values[]	= $password;
+				$values[]	= 1;
+				// Add User to Database
+				$db->insertRow('tb_user', $values, '');
+				$user_id	= $db->last_id();
+				// Add User permissions
+				$db->insertRow('tb_user_permissions', array($user_id, 1, 0, 0), '');
+				$return		= $user_id;
+			}
+			return $return;
+		}
+
+		/*
 		Insert Answer into Database - insertAnswer($id_question, $vc_answer, $boo_correct)
 			@param integer	- Question ID
 			@param string	- Answer
@@ -316,7 +346,7 @@
 			// Initialize variables
 			$return				= false;
 			// Database Connection
-			$db					= $GLOBALS['db'];
+			$db					= $GLOBALS['db_q'];
 			// Validate sent information
 			if (($id_question) && ($vc_answer)) {
 				if ($boo_correct == 1) {
@@ -328,6 +358,32 @@
 				$values[]		= $boo_correct;
 				// Add Branch to Database
 				$return			= $db->insertRow('tb_answer', $values, '');
+			}
+			return $return;
+		}
+
+		
+		/*
+		Registers when a player invites a friend to play - logInviteFriend($id_user, $vc_email)
+			@param integer	- User ID
+			@param string	- Invited friend's email
+			@return boolean
+		*/
+		public function logInviteFriend($id_user = false, $vc_email = false) {
+			// Database Connection
+			$db			= $GLOBALS['db_q'];
+			// Initialize variables
+			$return		= false;
+			if (($id_user) && ($vc_email)) {
+				// If Invitation was not made yet
+				$invitation		= $db->getRow('tb_invited_user', 'id', "id_user_inviter = {$id_user} AND vc_email_friend = '{$vc_email}'");
+				if (!$invitation) {
+					// Record new invitation and prepare return
+					$values[]	= $id_user;
+					$values[]	= $vc_email;
+					$values[]	= 0;
+					$return		= $db->insertRow('tb_invited_user', $values, '');
+				}
 			}
 			return $return;
 		}

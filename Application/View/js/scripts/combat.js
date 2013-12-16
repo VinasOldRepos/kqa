@@ -4,11 +4,11 @@ $('document').ready(function() {
 	$(".encounter_map_tile, #next_area").live("click", function() {
 		cursorWait(".encounter_map_tile");
 		$id_areamap		= $("#id_areamap").val();
-		$step			= $("#step").val();
+		$step			= parseInt($("#step").val());
 		$monsters_left	= $("#monsters_left").val();
 		$target			= $("#target").val();
-		$turn			= $("#turn").val();
-		$tot_steps		= $("#tot_steps").val();
+		$turn			= parseInt($("#turn").val());
+		$tot_steps		= parseInt($("#tot_steps").val());
 		if ($tot_steps >= $step) {
 			// if it's next floor
 			if (($tot_steps == $step) && ($target > 0)) {
@@ -248,6 +248,7 @@ $('document').ready(function() {
 					$("#current_monster").val($return.current_monster);
 					$("#step").val($return.step);
 					$("#tot_steps").val($return.tot_steps);
+					$("#xp").html($return.xp);
 					contentHide("#area_name");
 					contentHide("#map_area");
 					contentShowData("#level",		'Level '+$return.level);
@@ -547,6 +548,7 @@ function loadEncounterMap() {
 				$("#current_monster").val($return.current_monster);
 				$("#step").val($return.step);
 				$("#tot_steps").val($return.tot_steps);
+				$("#xp").html($return.xp);
 				contentHide("#area_name");
 				contentHide("#map_area");
 				contentShowData("#area_name",	$return.area_name);
@@ -641,7 +643,7 @@ function performAction($action) {
 		} else if ($action == 'player_won') {
 			//openFancyboxTemp('/kqa/Alerts/MonsterDies/', 300, 200, false, 3000);
 			$monster_treasure	= $("#monster_treasure").val();
-			$.post('/kqa/Combat/saveGold/', {monster_treasure: $monster_treasure}, function($return) {
+			$.post('/kqa/Characters/saveGold/', {monster_treasure: $monster_treasure}, function($return) {
 				if ($return) {
 					$return		= $return.trim();
 					contentShowData("#gold", $return);
@@ -662,7 +664,7 @@ function dungeonEnd() {
 	$("#target").val('');
 	if (($id_areamap) && ($tot_xp)) {
 		// Save Xp to DB
-		saveXP($tot_xp);
+		saveXP($tot_xp, $id_areamap);
 		// Alter Encounter Log
 		encounterLog($id_areamap);
 		// Calculate treasure drop
@@ -671,7 +673,7 @@ function dungeonEnd() {
 		}, function($return) {
 			if ($return) {
 				// Save Gold  -- detele this -> add to this /Combat/calculateTreasureDrop procedure	
-				$.post('/kqa/Combat/saveGold/', {monster_treasure: $return.gold}, function($return) {
+				$.post('/kqa/Characters/saveGold/', {monster_treasure: $return.gold}, function($return) {
 					if ($return) {
 						$return		= $return.trim();
 						contentShowData("#gold", $return);
@@ -728,9 +730,12 @@ function dungeonEnd() {
 	}
 }
 
-function saveXP($tot_xp) {
-	if ($tot_xp) {
-		$.post('/kqa/Combat/saveXP/', {tot_xp: $tot_xp}, function($return) {
+function saveXP($tot_xp, $id_areamap) {
+	if (($tot_xp) && ($id_areamap)) {
+		$.post('/kqa/Characters/saveXP/', {
+			tot_xp:		$tot_xp,
+			id_areamap:	$id_areamap
+		}, function($return) {
 			if ($return) {
 				$return	= $return.trim();
 				contentShowData("#xp", $return);

@@ -317,44 +317,6 @@
 			View::render('partial_modalBagContents');
 		}
 
-		public function saveXP() {
-			// Class
-			$RepCharacter	= new RepCharacter();
-			// Variables
-			$user			= Session::getVar('user');
-			$tot_xp			= (isset($_POST['tot_xp'])) ? trim($_POST['tot_xp']) : false;
-			$return			= false;
-			if (($tot_xp) && ($user)) {
-				// Save XP
-				$character	= $RepCharacter->getCharByUserId($user['id']);
-				if ($character) {
-					$character['int_xp']	= $character['int_xp'] + $tot_xp;
-					$return	= (($RepCharacter->updateCharacter($character))) ? $character['int_xp'] : false;
-				}
-			}
-			// Return
-			echo $return;
-		}
-
-		public function saveGold() {
-			// Class
-			$RepCharacter		= new RepCharacter();
-			// Variables
-			$user				= Session::getVar('user');
-			$monster_treasure	= (isset($_POST['monster_treasure'])) ? trim($_POST['monster_treasure']) : false;
-			$return				= false;
-			if (($monster_treasure) && ($user)) {
-				// Save XP
-				$character		= $RepCharacter->getCharByUserId($user['id']);
-				if ($character) {
-					$character['int_gold']	= $character['int_gold'] + $monster_treasure;
-					$return		= (($RepCharacter->updateCharacter($character))) ? $character['int_gold'] : false;
-				}
-			}
-			// Return
-			echo $return;
-		}
-
 		public function calculateTreasureDrop() {
 			// Classes
 			$RepMap			= new RepMap();
@@ -362,8 +324,8 @@
 			$RepCharacter	= new RepCharacter();
 			// Initialize variables
 			$return			= false;
-			$level1			= false;
-			$level2			= false;
+			$item1			= false;
+			$item2			= false;
 			$user			= Session::getVar('user');
 			$id_areamap		= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
 			$sorted			= rand(1, 100);
@@ -376,505 +338,74 @@
 				switch ($level) {
 					// If it's a level 1 dungeon
 					case 1:
-						$gold				= rand(1, 10);
-						if ($sorted <= 30) {
-							$sorted			= rand(1, 100);
-							if ($sorted <= 5) {
-								$level1 	= 0;
-							} else if (($sorted >= 6) && ($sorted <= 53)) {
-								$level1 	= 1;
-							} else if (($sorted >= 54) && ($sorted <= 67)) {
-								$level1 	= 2;
-							} else if (($sorted >= 68) && ($sorted <= 82)) {
-								$level1 	= 3;
-							} else if (($sorted >= 83) && ($sorted <= 92)) {
-								$level1 	= 4;
-							} else if (($sorted >= 93) && ($sorted <= 98)) {
-								$level1 	= 5;
-							} else if ($sorted == 99) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted <= 5) {
-									$level2 = 0;
-								} else if (($sorted >= 6) && ($sorted <= 53)) {
-									$level2 = 1;
-								} else if (($sorted >= 54) && ($sorted <= 67)) {
-									$level2 = 2;
-								} else if (($sorted >= 68) && ($sorted <= 82)) {
-									$level2 = 3;
-								} else if (($sorted >= 83) && ($sorted <= 92)) {
-									$level2 = 4;
-								} else if (($sorted >= 93) && ($sorted <= 98)) {
-									$level2 = 5;
-								} else if ($sorted >= 99) {
-									$level2 = rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level1drop();
 						break;
 					// If it's a level 2 dungeon
 					case 2:
-						$gold				= rand(10, 50);
-						if ($sorted <= 35) {
-							$sorted			= rand(1, 100);
-							if ($sorted <= 4) {
-								$level1 	= 0;
-							} else if (($sorted >= 5) && ($sorted <= 52)) {
-								$level1 	= 1;
-							} else if (($sorted >= 53) && ($sorted <= 66)) {
-								$level1 	= 2;
-							} else if (($sorted >= 67) && ($sorted <= 81)) {
-								$level1 	= 3;
-							} else if (($sorted >= 82) && ($sorted <= 91)) {
-								$level1 	= 4;
-							} else if (($sorted >= 92) && ($sorted <= 97)) {
-								$level1 	= 5;
-							} else if (($sorted >= 98) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted <= 4) {
-									$level2 = 0;
-								} else if (($sorted >= 5) && ($sorted <= 52)) {
-									$level2 = 1;
-								} else if (($sorted >= 53) && ($sorted <= 66)) {
-									$level2 = 2;
-								} else if (($sorted >= 67) && ($sorted <= 81)) {
-									$level2 = 3;
-								} else if (($sorted >= 82) && ($sorted <= 91)) {
-									$level2 = 4;
-								} else if (($sorted >= 92) && ($sorted <= 97)) {
-									$level2 = 5;
-								} else if ($sorted >= 98) {
-									$level2 = rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level2drop();
 						break;
 					// If it's a level 3 dungeon
 					case 3:
-						$gold				= rand(50, 100);
-						if ($sorted <= 40) {
-							$sorted			= rand(1, 100);
-							if ($sorted <= 3) {
-								$level1 	= 0;
-							} else if (($sorted >= 4) && ($sorted <= 50)) {
-								$level1 	= 1;
-							} else if (($sorted >= 51) && ($sorted <= 64)) {
-								$level1 	= 2;
-							} else if (($sorted >= 65) && ($sorted <= 79)) {
-								$level1 	= 3;
-							} else if (($sorted >= 80) && ($sorted <= 89)) {
-								$level1 	= 4;
-							} else if (($sorted >= 90) && ($sorted <= 97)) {
-								$level1 	= 5;
-							} else if (($sorted >= 98) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted <= 3) {
-									$level2 = 0;
-								} else if (($sorted >= 4) && ($sorted <= 50)) {
-									$level2 = 1;
-								} else if (($sorted >= 51) && ($sorted <= 64)) {
-									$level2 = 2;
-								} else if (($sorted >= 65) && ($sorted <= 79)) {
-									$level2 = 3;
-								} else if (($sorted >= 80) && ($sorted <= 89)) {
-									$level2 = 4;
-								} else if (($sorted >= 90) && ($sorted <= 97)) {
-									$level2 = 5;
-								} else if ($sorted >= 98) {
-									$level2 = rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level3drop();
 						break;
 					// If it's a level 4 dungeon
 					case 4:
-						$gold				= rand(100, 200);
-						if ($sorted <= 45) {
-							$sorted			= rand(1, 100);
-							if ($sorted <= 2) {
-								$level1 	= 0;
-							} else if (($sorted >= 3) && ($sorted <= 47)) {
-								$level1 	= 1;
-							} else if (($sorted >= 48) && ($sorted <= 63)) {
-								$level1 	= 2;
-							} else if (($sorted >= 64) && ($sorted <= 78)) {
-								$level1 	= 3;
-							} else if (($sorted >= 79) && ($sorted <= 88)) {
-								$level1 	= 4;
-							} else if (($sorted >= 89) && ($sorted <= 96)) {
-								$level1 	= 5;
-							} else if (($sorted >= 97) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted <= 2) {
-									$level2	= 0;
-								} else if (($sorted >= 3) && ($sorted <= 47)) {
-									$level2	= 1;
-								} else if (($sorted >= 48) && ($sorted <= 63)) {
-									$level2	= 2;
-								} else if (($sorted >= 64) && ($sorted <= 78)) {
-									$level2	= 3;
-								} else if (($sorted >= 79) && ($sorted <= 88)) {
-									$level2	= 4;
-								} else if (($sorted >= 89) && ($sorted <= 96)) {
-									$level2	= 5;
-								} else if ($sorted >= 97) {
-									$level2	= rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level4drop();
 						break;
 					// If it's a level 5 dungeon
 					case 5:
-						$gold				= rand(200, 400);
-						if ($sorted <= 50) {
-							$sorted			= rand(1, 100);
-							if ($sorted == 1) {
-								$level1 	= 0;
-							} else if (($sorted >= 2) && ($sorted <= 45)) {
-								$level1 	= 1;
-							} else if (($sorted >= 46) && ($sorted <= 61)) {
-								$level1 	= 2;
-							} else if (($sorted >= 62) && ($sorted <= 78)) {
-								$level1 	= 3;
-							} else if (($sorted >= 79) && ($sorted <= 87)) {
-								$level1 	= 4;
-							} else if (($sorted >= 88) && ($sorted <= 95)) {
-								$level1 	= 5;
-							} else if (($sorted >= 96) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted == 1) {
-									$level2	= 0;
-								} else if (($sorted >= 2) && ($sorted <= 45)) {
-									$level2	= 1;
-								} else if (($sorted >= 46) && ($sorted <= 61)) {
-									$level2	= 2;
-								} else if (($sorted >= 62) && ($sorted <= 78)) {
-									$level2	= 3;
-								} else if (($sorted >= 79) && ($sorted <= 87)) {
-									$level2	= 4;
-								} else if (($sorted >= 88) && ($sorted <= 95)) {
-									$level2	= 5;
-								} else if ($sorted >= 96) {
-									$level2	= rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level5drop();
 						break;
 					// If it's a level 6 dungeon
 					case 6:
-						$gold				= rand(400, 800);
-						if ($sorted <= 55) {
-							$sorted			= rand(1, 100);
-							if ($sorted == 1) {
-								$level1 	= 0;
-							} else if (($sorted >= 2) && ($sorted <= 44)) {
-								$level1 	= 1;
-							} else if (($sorted >= 45) && ($sorted <= 59)) {
-								$level1 	= 2;
-							} else if (($sorted >= 60) && ($sorted <= 77)) {
-								$level1 	= 3;
-							} else if (($sorted >= 78) && ($sorted <= 86)) {
-								$level1 	= 4;
-							} else if (($sorted >= 87) && ($sorted <= 95)) {
-								$level1 	= 5;
-							} else if (($sorted >= 96) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted == 1) {
-									$level2	= 0;
-								} else if (($sorted >= 2) && ($sorted <= 44)) {
-									$level2	= 1;
-								} else if (($sorted >= 45) && ($sorted <= 59)) {
-									$level2	= 2;
-								} else if (($sorted >= 60) && ($sorted <= 77)) {
-									$level2	= 3;
-								} else if (($sorted >= 78) && ($sorted <= 86)) {
-									$level2	= 4;
-								} else if (($sorted >= 87) && ($sorted <= 95)) {
-									$level2	= 5;
-								} else if ($sorted >= 96) {
-									$level2	= rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level6drop();
 						break;
 					// If it's a level 7 dungeon
 					case 7:
-						$gold				= rand(800, 1600);
-						if ($sorted <= 60) {
-							$sorted			= rand(1, 100);
-							if ($sorted == 1) {
-								$level1 	= 0;
-							} else if (($sorted >= 2) && ($sorted <= 40)) {
-								$level1 	= 1;
-							} else if (($sorted >= 41) && ($sorted <= 57)) {
-								$level1 	= 2;
-							} else if (($sorted >= 58) && ($sorted <= 75)) {
-								$level1 	= 3;
-							} else if (($sorted >= 76) && ($sorted <= 84)) {
-								$level1 	= 4;
-							} else if (($sorted >= 85) && ($sorted <= 94)) {
-								$level1 	= 5;
-							} else if (($sorted >= 95) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted == 1) {
-									$level2	= 0;
-								} else if (($sorted >= 2) && ($sorted <= 40)) {
-									$level2	= 1;
-								} else if (($sorted >= 41) && ($sorted <= 57)) {
-									$level2	= 2;
-								} else if (($sorted >= 58) && ($sorted <= 75)) {
-									$level2	= 3;
-								} else if (($sorted >= 76) && ($sorted <= 84)) {
-									$level2	= 4;
-								} else if (($sorted >= 85) && ($sorted <= 94)) {
-									$level2	= 5;
-								} else if ($sorted >= 95) {
-									$level2	= rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level7drop();
 						break;
 					// If it's a level 8 dungeon
 					case 8:
-						$gold				= rand(1600, 3200);
-						if ($sorted >= 75) {
-							$sorted			= rand(1, 100);
-							if ($sorted == 1) {
-								$level1 	= 0;
-							} else if (($sorted >= 2) && ($sorted <= 38)) {
-								$level1 	= 1;
-							} else if (($sorted >= 39) && ($sorted <= 55)) {
-								$level1 	= 2;
-							} else if (($sorted >= 56) && ($sorted <= 72)) {
-								$level1 	= 3;
-							} else if (($sorted >= 73) && ($sorted <= 82)) {
-								$level1 	= 4;
-							} else if (($sorted >= 83) && ($sorted <= 93)) {
-								$level1 	= 5;
-							} else if (($sorted >= 94) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted == 1) {
-									$level2	= 0;
-								} else if (($sorted >= 2) && ($sorted <= 38)) {
-									$level2	= 1;
-								} else if (($sorted >= 39) && ($sorted <= 55)) {
-									$level2	= 2;
-								} else if (($sorted >= 56) && ($sorted <= 72)) {
-									$level2	= 3;
-								} else if (($sorted >= 73) && ($sorted <= 82)) {
-									$level2	= 4;
-								} else if (($sorted >= 83) && ($sorted <= 93)) {
-									$level2	= 5;
-								} else if ($sorted >= 94) {
-									$level2	= rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level8drop();
 						break;
 					// If it's a level 9 dungeon
 					case 9:
-						$gold				= rand(3200, 6400);
-						if ($sorted <= 80) {
-							$sorted			= rand(1, 100);
-							if ($sorted == 1) {
-								$level1 	= 0;
-							} else if (($sorted >= 2) && ($sorted <= 34)) {
-								$level1 	= 1;
-							} else if (($sorted >= 35) && ($sorted <= 52)) {
-								$level1 	= 2;
-							} else if (($sorted >= 53) && ($sorted <= 69)) {
-								$level1 	= 3;
-							} else if (($sorted >= 70) && ($sorted <= 80)) {
-								$level1 	= 4;
-							} else if (($sorted >= 81) && ($sorted <= 92)) {
-								$level1 	= 5;
-							} else if (($sorted >= 93) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted == 1) {
-									$level2	= 0;
-								} else if (($sorted >= 2) && ($sorted <= 34)) {
-									$level2	= 1;
-								} else if (($sorted >= 35) && ($sorted <= 52)) {
-									$level2	= 2;
-								} else if (($sorted >= 53) && ($sorted <= 69)) {
-									$level2	= 3;
-								} else if (($sorted >= 70) && ($sorted <= 80)) {
-									$level2	= 4;
-								} else if (($sorted >= 81) && ($sorted <= 92)) {
-									$level2	= 5;
-								} else if ($sorted >= 93) {
-									$level2	= rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level9drop();
 						break;
 					// If it's a level 10 dungeon
 					case 10:
-						$gold				= rand(6400, 12800);
-						if ($sorted >= 85) {
-							$sorted			= rand(1, 100);
-							if ($sorted == 1) {
-								$level1 	= 0;
-							} else if (($sorted >= 2) && ($sorted <= 30)) {
-								$level1 	= 1;
-							} else if (($sorted >= 31) && ($sorted <= 47)) {
-								$level1 	= 2;
-							} else if (($sorted >= 48) && ($sorted <= 65)) {
-								$level1 	= 3;
-							} else if (($sorted >= 66) && ($sorted <= 78)) {
-								$level1 	= 4;
-							} else if (($sorted >= 79) && ($sorted <= 91)) {
-								$level1 	= 5;
-							} else if (($sorted >= 92) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted == 1) {
-									$level2	= 0;
-								} else if (($sorted >= 2) && ($sorted <= 30)) {
-									$level2	= 1;
-								} else if (($sorted >= 31) && ($sorted <= 47)) {
-									$level2	= 2;
-								} else if (($sorted >= 48) && ($sorted <= 65)) {
-									$level2	= 3;
-								} else if (($sorted >= 66) && ($sorted <= 78)) {
-									$level2	= 4;
-								} else if (($sorted >= 79) && ($sorted <= 91)) {
-									$level2	= 5;
-								} else if ($sorted >= 92) {
-									$level2	= rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level10drop();
 						break;
 					// If it's a level 11 dungeon
 					case 11:
-						$gold				= rand(12800, 25600);
-						if ($sorted <= 90) {
-							$sorted			= rand(1, 100);
-							if ($sorted == 1) {
-								$level1 	= 0;
-							} else if (($sorted >= 2) && ($sorted <= 27)) {
-								$level1 	= 1;
-							} else if (($sorted >= 28) && ($sorted <= 43)) {
-								$level1 	= 2;
-							} else if (($sorted >= 44) && ($sorted <= 59)) {
-								$level1 	= 3;
-							} else if (($sorted >= 60) && ($sorted <= 74)) {
-								$level1 	= 4;
-							} else if (($sorted >= 75) && ($sorted <= 88)) {
-								$level1 	= 5;
-							} else if (($sorted >= 89) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted == 1) {
-									$level2	= 0;
-								} else if (($sorted >= 2) && ($sorted <= 27)) {
-									$level2	= 1;
-								} else if (($sorted >= 28) && ($sorted <= 43)) {
-									$level2	= 2;
-								} else if (($sorted >= 44) && ($sorted <= 59)) {
-									$level2	= 3;
-								} else if (($sorted >= 60) && ($sorted <= 74)) {
-									$level2	= 4;
-								} else if (($sorted >= 75) && ($sorted <= 88)) {
-									$level2	= 5;
-								} else if ($sorted >= 89) {
-									$level2	= rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level11drop();
 						break;
 					// If it's a level 12 dungeon
 					case 12:
-						$gold				= rand(25600, 51200);
-						if ($sorted <= 95) {
-							$sorted			= rand(1, 100);
-							if ($sorted == 1) {
-								$level1 	= 0;
-							} else if (($sorted >= 2) && ($sorted <= 21)) {
-								$level1 	= 1;
-							} else if (($sorted >= 22) && ($sorted <= 39)) {
-								$level1 	= 2;
-							} else if (($sorted >= 40) && ($sorted <= 55)) {
-								$level1 	= 3;
-							} else if (($sorted >= 56) && ($sorted <= 70)) {
-								$level1 	= 4;
-							} else if (($sorted >= 71) && ($sorted <= 85)) {
-								$level1 	= 5;
-							} else if (($sorted >= 86) && ($sorted <= 99)) {
-								$level1 	= rand(6, 12);
-							} else if ($sorted == 100) {
-								$level1 	= rand(6, 12);
-								$sorted		= rand(1, 100);
-								if ($sorted == 1) {
-									$level2	= 0;
-								} else if (($sorted >= 2) && ($sorted <= 21)) {
-									$level2	= 1;
-								} else if (($sorted >= 22) && ($sorted <= 39)) {
-									$level2	= 2;
-								} else if (($sorted >= 40) && ($sorted <= 55)) {
-									$level2	= 3;
-								} else if (($sorted >= 56) && ($sorted <= 70)) {
-									$level2	= 4;
-								} else if (($sorted >= 71) && ($sorted <= 85)) {
-									$level2	= 5;
-								} else if ($sorted >= 86) {
-									$level2	= rand(6, 12);
-								}
-							}
-						}
+						list($item1, $item2, $gold)	= $this->level12drop();
+						break;
+					// If it's a level 13 dungeon
+					case 13:
+						list($item1, $item2, $gold)	= $this->level13drop();
 						break;
 					default:
 						$gold	= 0;
-						$level1	= 0;
-						$level2	= false;
+						$item1	= false;
+						$item2	= false;
 						break;
 				}
 				// Load items
-				$item1	= ($level1) ? $RepItem->getRandItemByLevel($level1) : false;
-				$item2	= ($level2) ? $RepItem->getRandItemByLevel($level2) : false;
-				// If there is item 1
-				if ($level1) {
+				if ($item1) {
 					// Get item type
-					$type				= (isset($item['int_bonus_min'])) ? 0 : 1;
+					$type				= (isset($item1['int_bonus_start'])) ? 0 : 1;
 					// Get character id
 					$id_character		= $RepCharacter->getCharIdByUserId($user['id']);
 					// Save Item
 					$RepCharacter->saveItemtoInventory($id_character, $item1['id'], 0, $type);
 				}
-				if ($level2) {
+				if ($item2) {
 					// Get item type
-					$type				= (isset($item['int_bonus_min'])) ? 0 : 1;
+					$type				= (isset($item2['int_bonus_start'])) ? 0 : 1;
 					// Get character id
 					$id_character		= $RepCharacter->getCharIdByUserId($user['id']);
 					// Save Item
@@ -944,6 +475,340 @@
 			}
 			// Return
 			echo $return;
+		}
+
+
+		private function level1drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(1, 10);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 30) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(1);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(2);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(3);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list ($item1, $item2)	= $this->level2drop();
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(3);
+					list($item2)	= $this->level1drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level2drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(10, 50);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 35) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(1);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(2);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(3);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(4);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list ($item1, $item2)	= $this->level3drop();
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(4);
+					list($item2)	= $this->level2drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level3drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(50, 100);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 40) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(2);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(3);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(4);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(5);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list ($item1, $item2)	= $this->level4drop();
+				} else if ($sorted == 100) {
+					list($item1, $item2)	= $this->level5drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level4drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(100, 200);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 45) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(3);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(4);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(5);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(6);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list($item1, $item2)	= $this->level5drop();
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(6);
+					list($item2)	= $this->level4drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level5drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(200, 400);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 50) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(4);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(5);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(6);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(7);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list($item1, $item2)	= $this->level6drop();
+				} else if ($sorted == 100) {
+					$item1	= $RepItem->getRandItemByLevel(7);
+					list($item2)	= $this->level5drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level6drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(400, 800);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 55) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(5);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(6);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(7);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(8);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list($item1, $item2)	= $this->level7drop();
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(8);
+					list($item2)	= $this->level6drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level7drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(800, 1600);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 60) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(6);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(7);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(8);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(9);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list($item1, $item2)	= $this->level8drop();
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(9);
+					list($item2)	= $this->level7drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level8drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(1600, 3200);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 65) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(7);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(8);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(9);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(10);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list($item1, $item2)	= $this->level9drop();
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(10);
+					list($item2)	= $this->level8drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level9drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(3200, 6400);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 70) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(8);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(9);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(10);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(11);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list($item1, $item2)	= $this->level10drop();
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(11);
+					list($item2)	= $this->level9drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level10drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(6400, 12800);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 75) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(9);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(10);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(11);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(12);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list($item1, $item2)	= $this->level11drop();
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(12);
+					list($item2)	= $this->level10drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level11drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(12800, 25600);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 80) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(10);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(11);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(12);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(13);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					list($item1, $item2)	= $this->level12drop();
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(13);
+					list($item2)	= $this->level11drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level12drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(25600, 51200);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 85) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(11);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(12);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(13);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(14);
+				} else if (($sorted >= 98) && ($sorted <= 99)) {
+					$item1	= $RepItem->getRandItemByLevel(15);
+				} else if ($sorted == 100) {
+					$item1			= $RepItem->getRandItemByLevel(15);
+					list($item2)	= $this->level12drop();
+				}
+			}
+			return array($item1, $item2, $gold);
+		}
+
+		private function level13drop() {
+			$RepItem	= new RepItem();
+			$item1		= false;
+			$item2		= false;
+			$gold		= rand(51200, 102400);
+			$sorted		= rand(1, 100);
+			if ($sorted <= 90) {
+				$sorted		= rand(1, 100);
+				if (($sorted >= 1) && ($sorted <= 10)) {
+					$item1	= $RepItem->getRandItemByLevel(12);
+				} else if (($sorted >= 11) && ($sorted <= 60)) {
+					$item1	= $RepItem->getRandItemByLevel(13);
+				} else if (($sorted >= 61) && ($sorted <= 90)) {
+					$item1	= $RepItem->getRandItemByLevel(14);
+				} else if (($sorted >= 91) && ($sorted <= 97)) {
+					$item1	= $RepItem->getRandItemByLevel(15);
+				} else if (($sorted >= 98) && ($sorted <= 100)) {
+					$item1			= $RepItem->getRandItemByLevel(15);
+					list($item2)	= $this->level13drop();
+				}
+			}
+			return array($item1, $item2, $gold);
 		}
 
 	}

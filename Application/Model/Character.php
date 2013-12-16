@@ -29,7 +29,7 @@
 		}
 
 		public function listInventory($inventory = false, $wore = false){
-			$return	= false;
+			$return	= '(inventory empty)';
 			if ($inventory) {
 				foreach ($inventory as $item) {
 					if (isset($item['vc_wearable'])) {

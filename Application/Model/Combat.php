@@ -67,8 +67,9 @@
 				$return	.= '	<div class="char_info" id="current_hp">'.$character['int_hp'].'</div>'.PHP_EOL;
 				$return	.= '</div>'.PHP_EOL;
 				$return	.= '<div class="monster_row">'.PHP_EOL;
-				$return	.= '	<div class="char_detail">XP:</div>'.PHP_EOL;
-				$return	.= '	<div class="char_info" id="xp">'.$character['int_xp'].'</div>'.PHP_EOL;
+				$return	.= '	<div class="char_detail">XP in this course:</div>'.PHP_EOL;
+				//$return	.= '	<div class="char_info" id="xp">'.$character['int_xp'].'</div>'.PHP_EOL;
+				$return	.= '	<div class="char_info" id="xp"></div>'.PHP_EOL;
 				$return	.= '</div>'.PHP_EOL;
 			}
 			$return		.= '<div class="char_spacer">&nbsp;</div>'.PHP_EOL;

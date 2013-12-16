@@ -52,6 +52,44 @@ $('document').ready(function() {
 		parent.$.fancybox.close();
 		return false;
 	});
+
+	$("#inviteafriend").live("click", function() {
+		openFancybox('/kqa/Alerts/inviteFriend/', 404, 254, true)
+	});
+
+	$("#new_user_submit").live("click", function() {
+		$email		= $("#email").val();
+		$user_name	= $("#user_name").val();
+		$pass1		= $("#pass1").val();
+		$pass2		= $("#pass2").val();
+		if (($user_name) && ($email) && ($pass1) && ($pass2)) {
+			$user_name.trim();
+			$pass1.trim();
+			$pass2.trim();
+			if ($pass1 == $pass2) {
+				$.post('/kqa/GetStarted/newUser/', {
+					name: 		$user_name,
+					email:		$email,
+					password:	$pass1
+				}, function($return) {
+					$return		= $return.trim();
+					if ($return == 'ok') {
+						$(location).attr('href', '/kqa/');
+					} else {
+						alert("Sorry,\n\nThere was an error while trying to create you user.\n\nError: "+$return);
+					}
+				});
+			} else {
+				alert("Atention,\n\nPasswords don't match. Please, try and type them again.");
+				$("#pass1").val('');
+				$("#pass2").val('');
+				$("#pass1").focus();
+			}
+		} else {
+			alert("Please,\n\nFill in all information!");
+		}
+	});
+
 });
 
 // ***************************** \\

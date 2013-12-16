@@ -58,7 +58,7 @@ $('document').ready(function() {
 			} else {
 				// User select gear fancybox
 				$.fancybox({
-					href			: '/kqa/Characters/selectGear/',
+					href			: '/kqa/Characters/selectGear/'+$target_map+'/'+$id_areamap,
 					width			: 604,
 					height			: 464,
 					autoScale		: false,
@@ -70,43 +70,7 @@ $('document').ready(function() {
 					speedOut		: 200,
 					type			: 'iframe',
 					onClosed		: function() {
-						// Load char info
-						$.post('/kqa/Characters/loadCharInfo/', {}, function($return) {
-							if ($return) {
-								$("#boxleft").html($return.character);
-								$("#player_hp").html($return.player_hp);
-								$("#player_min_dmg").html($return.player_min_dmg);
-								$("#player_max_dmg").html($return.player_max_dmg);
-								$("#player_me").html($return.player_me);
-								$("#player_ds").html($return.player_ds);
-								$("#timebonus").html($return.timebonus);
-							} else {
-								alert("Sorry,\n\nwe were not possible to retrieve your Character info.");
-							}
-						});
-						// Load encounter area
-						$.post('/kqa/Maps/loadEncounterArea/', {
-							id_areamap:		$target_map,
-							id_parentmap:	$id_areamap
-						}, function($return) {
-							if ($return) {
-								$("#id_parentmap").val($id_areamap);
-								$("#id_areamap").val($return.id_areamap);
-								$("#tot_monsters").val($return.tot_monsters);
-								$("#current_monster").val($return.current_monster);
-								$("#step").val($return.step);
-								$("#tot_steps").val($return.tot_steps);
-								contentHide("#area_name");
-								contentHide("#map_area");
-								contentShowData("#area_name",	$return.area_name);
-								contentShowData("#map_area",	$return.map);
-								contentShowData("#level",		'Level '+$return.level);
-								contentShowData("#room",		'Room '+$return.step+' of '+$return.tot_steps);
-								// Show action options
-								$("#boxright").load("/kqa/Combat/actionOptions/");
-							}
-							cursorDefault(".local_map_tile");
-						});
+						cursorDefault(".local_map_tile");
 					}
 				});
 			}
@@ -255,14 +219,15 @@ $('document').ready(function() {
 
 	$("#back_localmap").live("click", function() {
 		$id_areamap	= $("#town_id_parentmap").val();
+		$id_areamap	= (!$id_areamap) ? $("#id_areamap").val() : $id_areamap;
 		if ($id_areamap) {
-			$.post('/kqa/Maps/loadLocalMap/', {
+			$.post('/kqa/Maps/loadMap/', {
 				id_areamap:	$id_areamap
 			}, function($return) {
 				if ($return) {
 					$("#center").html('');
 					$("#turn").html('');
-					$("#boxright").html('');
+					//$("#boxright").html('');
 					$("#room").html('');
 					$("#id_parentmap").val($id_areamap);
 					$("#id_areamap").val($return.id_areamap);
@@ -278,6 +243,19 @@ $('document').ready(function() {
 		}
 	});
 
+	$("#back_town").live("click", function() {
+		$id_parentmap	= $("#id_areamap").val();
+		if ($id_parentmap) {
+			$.post('/kqa/Maps/loadTown/', { id_parentmap: $id_parentmap}, function($return) {
+				if ($return) {
+					contentShowData("#center",	$return);
+				} else {
+					alert("Sorry,\n\nWe weren't able to redirect you to the Town you were before.\nWe are working on the problem.\n\nMeanhile, please, try reloading the world of Sophia.\n\nThank you.");
+				}
+			});
+		}
+	});
+
 	$("#flee_dungeon").live("click", function() {
 		$id_areamap	= $("#id_areamap").val();
 		if ($id_areamap) {
@@ -285,6 +263,16 @@ $('document').ready(function() {
 				id_areamap: $id_areamap
 			}, function($return) {
 				if ($return) {
+					// Load/reset Char info
+					$.post('/kqa/Characters/loadCharInfo/', {}, function($player) {
+						contentShowData("#boxleft", $player.character);
+						$("#player_hp").val($player.player_hp);
+						$("#player_min_dmg").val($player.player_min_dmg);
+						$("#player_max_dmg").val($player.player_max_dmg);
+						$("#player_me").val($player.player_me);
+						$("#player_ds").val($player.player_ds);
+						$("#timebonus").val($player.timebonus);
+					});
 					$("#id_parentmap",				$return.id_parentmap);
 					contentHide("#area_name");
 					contentHide("#center");

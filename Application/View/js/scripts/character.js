@@ -110,4 +110,61 @@ $('document').ready(function() {
 		}
 	});
 
+	$("#proceed_dungeon").live("click", function() {
+		document.body.style.cursor	= 'wait';
+		$target_map	= $("#target_map").val();
+		$id_areamap	= $("#id_areamap").val();
+		if (($target_map) && ($id_areamap)) {
+			// Load char info
+			$.post('/kqa/Characters/loadCharInfo/', {}, function($return) {
+				if ($return) {
+					parent.$("#boxleft").html($return.character);
+					parent.$("#player_hp").html($return.player_hp);
+					parent.$("#player_min_dmg").html($return.player_min_dmg);
+					parent.$("#player_max_dmg").html($return.player_max_dmg);
+					parent.$("#player_me").html($return.player_me);
+					parent.$("#player_ds").html($return.player_ds);
+					parent.$("#timebonus").html($return.timebonus);
+				} else {
+					alert("Sorry,\n\nwe were not possible to retrieve your Character info.");
+				}
+			});
+			// Load encounter area
+			$.post('/kqa/Maps/loadEncounterArea/', {
+				id_areamap:		$target_map,
+				id_parentmap:	$id_areamap
+			}, function($return) {
+				if ($return) {
+					parent.$("#id_parentmap").val($id_areamap);
+					parent.$("#id_areamap").val($return.id_areamap);
+					parent.$("#tot_monsters").val($return.tot_monsters);
+					parent.$("#current_monster").val($return.current_monster);
+					parent.$("#step").val($return.step);
+					parent.$("#tot_steps").val($return.tot_steps);
+					parent.$("#xp").html($return.xp);
+					parent.contentHide("#area_name");
+					parent.contentHide("#map_area");
+					parent.contentShowData("#area_name",	$return.area_name);
+					parent.contentShowData("#map_area",	$return.map);
+					parent.contentShowData("#level",		'Level '+$return.level);
+					parent.contentShowData("#room",		'Room '+$return.step+' of '+$return.tot_steps);
+					// Show action options
+					parent.$("#boxright").load("/kqa/Combat/actionOptions/");
+					document.body.style.cursor	= 'default';
+					parent.document.body.style.cursor	= 'default';
+					parent.$.fancybox.close();
+				}
+			});
+		}
+	});
+
+	$("#giveup_dungeon").live("click", function() {
+		$id_areamap	= parent.$("#id_areamap").val();
+		if ($id_areamap) {
+			document.body.style.cursor	= 'default';
+			parent.document.body.style.cursor	= 'default';
+			parent.$.fancybox.close();
+		}
+	});
+
 });

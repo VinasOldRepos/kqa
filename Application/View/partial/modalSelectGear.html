@@ -8,6 +8,8 @@
 		<?php echo $GLOBALS['this_css']; ?>
 	</head>
 	<body leftmargin="0" rightmargin="0" bottommargin="0" topmargin="0" bgcolor="#1D1C19">
+		<input type="hidden" name="target_map" id="target_map" value="<?php echo $target_map; ?>" />
+		<input type="hidden" name="id_areamap" id="id_areamap" value="<?php echo $id_areamap; ?>" />
 		<div class="modalmessage">
 			<br>
 			<div class="title">Select your gear</div>
@@ -40,9 +42,10 @@
 			<br>
 			<br>
 			<br>
-			<a href="#" id="close_fancy">Proceed to Dungeon</a><br>
-			<br>
+			<a href="#" id="proceed_dungeon">Proceed to Dungeon</a><br />
 			(Atention: Time and Resurrection items temporarily not working)
+			<br /><br />
+			<a href="#" id="giveup_dungeon">Go back to Local Map</a><br>
 		</div>
 	</body>
 </html>
