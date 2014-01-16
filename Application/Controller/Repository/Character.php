@@ -424,7 +424,7 @@
 				foreach ($character as $char) {
 					$data[]	= $char;
 				}
-				$return	= $db->updateRow('tb_character', array('id_user', 'vc_name', 'int_hp', 'int_xp', 'int_gold'), $data, 'id = '.$id);
+				$return	= $db->updateRow('tb_character', array('id_user', 'vc_name', 'int_hp', 'int_xp', 'int_gold', 'boo_tutorial'), $data, 'id = '.$id);
 			}
 			// Return
 			return $return;

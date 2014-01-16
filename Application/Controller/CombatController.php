@@ -333,83 +333,106 @@
 			if ($id_areamap) {
 				// Get area level
 				$id_map		= $RepMap->getLocalParentMapIdByMapId($id_areamap);
-				$level		= (($id_map) && ($level = $RepMap->getAreaInfoByMapId($id_map))) ? $level['int_level'] : false;
-				// Calculate treasure drop according to level
-				switch ($level) {
-					// If it's a level 1 dungeon
-					case 1:
-						list($item1, $item2, $gold)	= $this->level1drop();
-						break;
-					// If it's a level 2 dungeon
-					case 2:
-						list($item1, $item2, $gold)	= $this->level2drop();
-						break;
-					// If it's a level 3 dungeon
-					case 3:
-						list($item1, $item2, $gold)	= $this->level3drop();
-						break;
-					// If it's a level 4 dungeon
-					case 4:
-						list($item1, $item2, $gold)	= $this->level4drop();
-						break;
-					// If it's a level 5 dungeon
-					case 5:
-						list($item1, $item2, $gold)	= $this->level5drop();
-						break;
-					// If it's a level 6 dungeon
-					case 6:
-						list($item1, $item2, $gold)	= $this->level6drop();
-						break;
-					// If it's a level 7 dungeon
-					case 7:
-						list($item1, $item2, $gold)	= $this->level7drop();
-						break;
-					// If it's a level 8 dungeon
-					case 8:
-						list($item1, $item2, $gold)	= $this->level8drop();
-						break;
-					// If it's a level 9 dungeon
-					case 9:
-						list($item1, $item2, $gold)	= $this->level9drop();
-						break;
-					// If it's a level 10 dungeon
-					case 10:
-						list($item1, $item2, $gold)	= $this->level10drop();
-						break;
-					// If it's a level 11 dungeon
-					case 11:
-						list($item1, $item2, $gold)	= $this->level11drop();
-						break;
-					// If it's a level 12 dungeon
-					case 12:
-						list($item1, $item2, $gold)	= $this->level12drop();
-						break;
-					// If it's a level 13 dungeon
-					case 13:
-						list($item1, $item2, $gold)	= $this->level13drop();
-						break;
-					default:
-						$gold	= 0;
-						$item1	= false;
-						$item2	= false;
-						break;
-				}
-				// Load items
-				if ($item1) {
-					// Get item type
-					$type				= (isset($item1['int_bonus_start'])) ? 0 : 1;
-					// Get character id
-					$id_character		= $RepCharacter->getCharIdByUserId($user['id']);
-					// Save Item
-					$RepCharacter->saveItemtoInventory($id_character, $item1['id'], 0, $type);
-				}
-				if ($item2) {
-					// Get item type
-					$type				= (isset($item2['int_bonus_start'])) ? 0 : 1;
-					// Get character id
-					$id_character		= $RepCharacter->getCharIdByUserId($user['id']);
-					// Save Item
-					$RepCharacter->saveItemtoInventory($id_character, $item2['id'], 0, $type);
+				if ($id_map == 101) {
+					$gold	= rand(1, 10);
+					switch ($id_areamap) {
+						case 210:
+							$item1	= $RepItem->getCombatById(1);
+							break;
+
+						/***************************
+						// FIX THE FOLLOWING LINKS
+						***************************/
+
+						case 921:
+							$item1	= $RepItem->getCombatById(34);
+							break;
+						case 922: 
+							$item1	= $RepItem->getNonCombatById(2);
+							break;
+						case 923: 
+							$item1	= $RepItem->getNonCombatById(20);
+							break;
+					}
+				} else {
+					$level		= (($id_map) && ($level = $RepMap->getAreaInfoByMapId($id_map))) ? $level['int_level'] : false;
+					// Calculate treasure drop according to level
+					switch ($level) {
+						// If it's a level 1 dungeon
+						case 1:
+							list($item1, $item2, $gold)	= $this->level1drop();
+							break;
+						// If it's a level 2 dungeon
+						case 2:
+							list($item1, $item2, $gold)	= $this->level2drop();
+							break;
+						// If it's a level 3 dungeon
+						case 3:
+							list($item1, $item2, $gold)	= $this->level3drop();
+							break;
+						// If it's a level 4 dungeon
+						case 4:
+							list($item1, $item2, $gold)	= $this->level4drop();
+							break;
+						// If it's a level 5 dungeon
+						case 5:
+							list($item1, $item2, $gold)	= $this->level5drop();
+							break;
+						// If it's a level 6 dungeon
+						case 6:
+							list($item1, $item2, $gold)	= $this->level6drop();
+							break;
+						// If it's a level 7 dungeon
+						case 7:
+							list($item1, $item2, $gold)	= $this->level7drop();
+							break;
+						// If it's a level 8 dungeon
+						case 8:
+							list($item1, $item2, $gold)	= $this->level8drop();
+							break;
+						// If it's a level 9 dungeon
+						case 9:
+							list($item1, $item2, $gold)	= $this->level9drop();
+							break;
+						// If it's a level 10 dungeon
+						case 10:
+							list($item1, $item2, $gold)	= $this->level10drop();
+							break;
+						// If it's a level 11 dungeon
+						case 11:
+							list($item1, $item2, $gold)	= $this->level11drop();
+							break;
+						// If it's a level 12 dungeon
+						case 12:
+							list($item1, $item2, $gold)	= $this->level12drop();
+							break;
+						// If it's a level 13 dungeon
+						case 13:
+							list($item1, $item2, $gold)	= $this->level13drop();
+							break;
+						default:
+							$gold	= 0;
+							$item1	= false;
+							$item2	= false;
+							break;
+					}
+					// Load items
+					if ($item1) {
+						// Get item type
+						$type				= (isset($item1['int_bonus_start'])) ? 0 : 1;
+						// Get character id
+						$id_character		= $RepCharacter->getCharIdByUserId($user['id']);
+						// Save Item
+						$RepCharacter->saveItemtoInventory($id_character, $item1['id'], 0, $type);
+					}
+					if ($item2) {
+						// Get item type
+						$type				= (isset($item2['int_bonus_start'])) ? 0 : 1;
+						// Get character id
+						$id_character		= $RepCharacter->getCharIdByUserId($user['id']);
+						// Save Item
+						$RepCharacter->saveItemtoInventory($id_character, $item2['id'], 0, $type);
+					}
 				}
 				// Prepare return
 				$return['gold']			= $gold;

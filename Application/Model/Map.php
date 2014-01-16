@@ -15,41 +15,51 @@
 
 	class Map {
 
-		public function world($world = false, $links = false, $mouseovers = false, $navigation = false) {
+		public function world($world = false, $links = false, $mouseovers = false, $navigation = false, $boo_tutorial = false) {
 			$return				= false;
 			$blocked			= false;
 			$id_target			= false;
 			$color_branch		= false;
 			if ($links) {
 				foreach ($links as $link) {
-					$id_target[$link['int_pos']]	= $link['id_map_target'];
-					if ($link['id_branch'] == 1) {
-						$color_branch[$link['int_pos']]	= 'field_blue.png';
-						$blocked[$link['int_pos']]		= 0;
-					} else if ($link['id_branch'] == 2) {
-						$color_branch[$link['int_pos']]	= 'field_green.png';
-						$blocked[$link['int_pos']]		= 0;
-					} else if ($link['id_branch'] == 3) {
-						$color_branch[$link['int_pos']]	= 'field_purple.png';
-						$blocked[$link['int_pos']]		= 0;
-					} else if ($link['id_branch'] == 4) {
-						$color_branch[$link['int_pos']]	= 'field_red.png';
-						$blocked[$link['int_pos']]		= 0;
-					} else if ($link['id_branch'] == 5) {
-						$color_branch[$link['int_pos']]	= 'field_yellow.png';
-						$blocked[$link['int_pos']]		= 0;
-					} else if ($link['id_branch'] == 6) {
-						$color_branch[$link['int_pos']]	= 'field_gray.png';
-						$blocked[$link['int_pos']]		= 0;
-					} else if ($link['id_branch'] == 7) {
-						$color_branch[$link['int_pos']]	= 'field_white.png';
-						$blocked[$link['int_pos']]		= 0;
-					} else if ($link['id_branch'] == 8) {
-						$color_branch[$link['int_pos']]	= 'field_orange.png';
-						$blocked[$link['int_pos']]		= 0;
+					$id_target[$link['int_pos']]			= $link['id_map_target'];
+					if ($boo_tutorial) {
+						if ($link['id_branch'] == 1) {
+							$color_branch[$link['int_pos']]	= 'field_blue.png';
+							$blocked[$link['int_pos']]		= 0;
+						} else if ($link['id_branch'] == 2) {
+							$color_branch[$link['int_pos']]	= 'field_green.png';
+							$blocked[$link['int_pos']]		= 0;
+						} else if ($link['id_branch'] == 3) {
+							$color_branch[$link['int_pos']]	= 'field_purple.png';
+							$blocked[$link['int_pos']]		= 0;
+						} else if ($link['id_branch'] == 4) {
+							$color_branch[$link['int_pos']]	= 'field_red.png';
+							$blocked[$link['int_pos']]		= 0;
+						} else if ($link['id_branch'] == 5) {
+							$color_branch[$link['int_pos']]	= 'field_yellow.png';
+							$blocked[$link['int_pos']]		= 0;
+						} else if ($link['id_branch'] == 6) {
+							$color_branch[$link['int_pos']]	= 'field_gray.png';
+							$blocked[$link['int_pos']]		= 0;
+						} else if ($link['id_branch'] == 7) {
+							$color_branch[$link['int_pos']]	= 'field_white.png';
+							$blocked[$link['int_pos']]		= 0;
+						} else if ($link['id_branch'] == 8) {
+							$color_branch[$link['int_pos']]	= 'field_orange.png';
+							$blocked[$link['int_pos']]		= 0;
+						} else {
+							$color_branch[$link['int_pos']]	= 'pixel.gif';
+							$blocked[$link['int_pos']]		= 1;
+						}
 					} else {
-						$color_branch[$link['int_pos']]	= 'pixel.gif';
-						$blocked[$link['int_pos']]		= 1;
+						if ($link['id_branch'] == 8) {
+							$color_branch[$link['int_pos']]	= 'field_orange.png';
+							$blocked[$link['int_pos']]		= 0;
+						} else {
+							$color_branch[$link['int_pos']]	= 'pixel.gif';
+							$blocked[$link['int_pos']]		= 1;
+						}
 					}
 				}
 			}
@@ -100,13 +110,33 @@
 			return $return;
 		}
 
-		public function map($map = false, $id_parentmap = false, $parent_areatype = false, $links = false, $mouseovers = false) {
+		public function map($map = false, $id_parentmap = false, $parent_areatype = false, $links = false, $mouseovers = false, $gonetrhu = false) {
 			$return				= false;
+			$gone				= false;
 			if ($links) {
 				foreach ($links as $link) {
-					$targets[$link['int_pos']][0]	= $link['id_icon'];
-					$targets[$link['int_pos']][1]	= $link['vc_path'];
-					$targets[$link['int_pos']][2]	= ($link['id_map_target'] !== false) ? $link['id_map_target'] : false;
+					if ($gonetrhu) {
+						foreach ($gonetrhu as $areamap) {
+							if ($link['id_map_target'] == $areamap['id_areamap']) {
+								$gone						= true;
+								break;
+							}
+						}
+						if (!$gone) {
+							$targets[$link['int_pos']][0]	= $link['id_icon'];
+							$targets[$link['int_pos']][1]	= $link['vc_path'];
+							$targets[$link['int_pos']][2]	= ($link['id_map_target'] !== false) ? $link['id_map_target'] : false;
+						} else {
+							$targets[$link['int_pos']][0]	= $link['id_icon'];
+							$targets[$link['int_pos']][1]	= $link['vc_path'];
+							$targets[$link['int_pos']][2]	= false;
+							$gone							= false;
+						}
+					} else {
+						$targets[$link['int_pos']][0]	= $link['id_icon'];
+						$targets[$link['int_pos']][1]	= $link['vc_path'];
+						$targets[$link['int_pos']][2]	= ($link['id_map_target'] !== false) ? $link['id_map_target'] : false;
+					}
 				}
 			}
 			if ($mouseovers) {

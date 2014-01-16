@@ -243,6 +243,20 @@
 		}
 
 		/*
+		Get All Child Maps - getAllChildMaps($id)
+			@param integer	- ID area Map
+			@return format	- Mixed array
+		*/
+		public function getAllChildMaps($id = false) {
+			// Database Connection
+			$db				= $GLOBALS['db'];
+			// Query 
+			$return			= ($id) ? $db->getAllRows_Arr('tb_map_link_icon', 'id_map_target AS id', 'id_map_orign = '.$id) : false;
+			// Return
+			return $return;
+		}
+
+		/*
 		Get local parent map id by map id- getLocalParentMapIdByMapId($id)
 			@param integer	- Area Id
 			@return format	- Mixed array
@@ -268,4 +282,22 @@
 			return $return;
 		}
 
+		/*
+		Get the Maps the user has gone thru from a given list - getGoneThruFromList($id_char, $childmaps)
+			@param integer	- Character ID
+			@param array	- Child maps list Id
+			@return format	- Mixed array
+		*/
+		public function getGoneThruFromList($id_char = false, $childmaps = false) {
+			// Database Connection
+			$db		= $GLOBALS['db'];
+			$return	= false;
+			if (($id_char) && ($childmaps)) {
+				$childmaps	= implode(', ', $childmaps);
+				// Query
+				$return		= $db->getAllRows_Arr('tb_encounter_log', 'id_areamap', "id_character = {$id_char} AND id_areamap IN ({$childmaps})");
+			}
+			// Return
+			return $return;
+		}
 	}

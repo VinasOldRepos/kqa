@@ -155,7 +155,7 @@
 					$courses		= ($courses) ? $RepQuestion->getCoursesNamesById($courses) : false;
 					// Model world / map
 					if ($id_areamap <= 100) {
-						$map		= $ModMap->world($map, $links, $mouseovers, $navigation);
+						$map		= $ModMap->world($map, $links, $mouseovers, $navigation, $character['boo_tutorial']);
 					} else {
 						$map		= $ModMap->map($map, $id_parentmap, 'world', $links, $mouseovers);
 					}
@@ -277,21 +277,28 @@
 			$return			= false;
 			$mouseovers		= false;
 			$ids			= false;
+			$childmaps		= false;
 			$user			= Session::getVar('user');
 			$id_areamap		= (isset($_POST['id_areamap'])) ? trim($_POST['id_areamap']) : false;
 			// If values were sent
 			if ($id_areamap) {
 				// Get char info
-				$character		= $RepCharacter->getCharByUserId($user['id']);
+				$character			= $RepCharacter->getCharByUserId($user['id']);
 				// Get open courses for this player
-				$courses		= ($character) ? $RepMap->getOpenCoursesCountMaps($character['id']) : false;
+				$courses			= ($character) ? $RepMap->getOpenCoursesCountMaps($character['id']) : false;
 				// Load Parent map's info
-				$parent			= $RepMap->getParentMapInfoIdByMapId($id_areamap);
-				$id_parentmap	= ($parent) ? $parent['id'] : false;
+				$parent				= $RepMap->getParentMapInfoIdByMapId($id_areamap);
+				$id_parentmap		= ($parent) ? $parent['id'] : false;
 				// Load Map info
-				$map			= $RepMap->getMapById($id_areamap);
+				$map				= $RepMap->getMapById($id_areamap);
 				// Get linking info
-				$links			= $RepMap->getLinksIconsByAreaId($id_areamap);
+				$links				= $RepMap->getLinksIconsByAreaId($id_areamap);
+				// Get maps log info
+				foreach ($links as $link) {
+					$childmaps[]	= $link['id_map_target'];
+				}
+				$gonetrhu			= ($map['id'] == 101) ? $RepMap->getGoneThruFromList($character['id'], $childmaps) : false;
+				// links
 				if ($links) {
 					foreach ($links as $link) {
 						$ids	= ($ids) ? $ids.','.$link['id_map_target'] : $link['id_map_target'];
@@ -312,7 +319,7 @@
 					$return['area_name']	= $map['vc_name'];
 					$return['level']		= $level;
 					$return['courses']		= $courses;
-					$return['map']			= $ModMap->map($map, $id_parentmap, 'world', $links, $mouseovers);
+					$return['map']			= $ModMap->map($map, $id_parentmap, 'world', $links, $mouseovers, $gonetrhu);
 				}
 			}
 			// Return
