@@ -438,7 +438,7 @@
 				$return['gold']			= $gold;
 				$return['name_item1']	= ($item1) ? $item1['vc_name'] : false;
 				$return['name_item2']	= ($item2) ? $item2['vc_name'] : false;
-				$return['level']		= $level;
+				//$return['level']		= $level;
 			}
 			// Return
 			header('Content-Type: application/json');

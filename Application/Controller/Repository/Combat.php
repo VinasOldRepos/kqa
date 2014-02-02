@@ -120,6 +120,8 @@
 							$id				= $res['id'];
 						}
 					}
+					$return	= ($db->insertRow('tb_encounter_log', array($id_areamap, $id_character, 1), array('id_areamap', 'id_character', 'int_visits'))) ? true : false;
+					// If playe is in the start area
 					if ($id_localmap == 101) {
 						$parent	= $db->getRow('tb_map_link_icon AS mli JOIN tb_areamap AS am ON mli.id_map_orign = am.id', 'am.id, am.boo_encounter', "id_map_target = {$id_areamap}");
 						if ($parent['boo_encounter'] == 1) {
@@ -131,12 +133,11 @@
 						}
 						$gonethru			= $this->getGoneThruFromList($id_character, $childmaps);
 						// If player has gone thru all start area dungeons
-						if ((count($links)) && (count($gonethru))) {
+						if ((count($links) == count($gonethru))) {
 							// Flag user
 							$db->updateRow('tb_character', array('boo_tutorial'), array(1), 'id = '.$id_character);
 						}
 					}
-					$return	= ($db->insertRow('tb_encounter_log', array($id_areamap, $id_character, 1), array('id_areamap', 'id_character', 'int_visits'))) ? true : false;
 				};
 			}
 			// Return

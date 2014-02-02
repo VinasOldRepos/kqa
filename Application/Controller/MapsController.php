@@ -443,6 +443,11 @@
 						}
 						$mouseovers	= $RepMap->getAllMouseOversByMapId($ids);
 					}
+					// Get maps log info
+					foreach ($links as $link) {
+						$childmaps[]	= $link['id_map_target'];
+					}
+					$gonetrhu			= ($map['id'] == 101) ? $RepMap->getGoneThruFromList($character['id'], $childmaps) : false;
 					// Get Map level
 					$level			= ($level = $RepMap->getAreaInfoByMapId($parent['id'])) ? $level['int_level'] : false;
 					// Get courses' names
@@ -456,7 +461,7 @@
 						$return['area_name']	= $map['vc_name'];
 						$return['level']		= $level;
 						$return['courses']		= $courses;
-						$return['map']			= ($map) ? $ModMap->map($map, $worldmap['id'], 'world', $links, $mouseovers) : false;
+						$return['map']			= ($map) ? $ModMap->map($map, $worldmap['id'], 'world', $links, $mouseovers, $gonetrhu) : false;
 					}
 				}
 			}
